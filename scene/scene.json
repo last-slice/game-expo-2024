@@ -1,0 +1,54 @@
+{
+  "ecs7": true,
+  "runtimeVersion": "7",
+  "display": {
+    "title": "Rainbow Expo 2024",
+    "description": "Rainbow Expo 2024",
+    "navmapThumbnail": "images/scene-thumbnail.png",
+    "favicon": "favicon_asset"
+  },
+  "owner": "Lastraum & KJ Walker",
+  "contact": {
+    "name": "Last Slice Collective",
+    "email": "lastraum@lastslice.co"
+  },
+  "main": "bin/index.js",
+  "tags": [],
+  "scene": {
+    "parcels": [
+      "0,0",
+      "0,1",
+      "0,2",
+      "0,3",
+      "1,0",
+      "1,1",
+      "1,2",
+      "1,3",
+      "2,0",
+      "2,1",
+      "2,2",
+      "2,3",
+      "3,0",
+      "3,1",
+      "3,2",
+      "3,3"
+    ],
+    "base": "0,0"
+  },
+  "spawnPoints": [
+    {
+      "name": "spawn-0",
+      "default": true,
+      "position": {
+        "x": 32,
+        "y": 1,
+        "z": 1
+      }
+    }
+  ],
+  "requiredPermissions": [
+    "ALLOW_TO_MOVE_PLAYER_INSIDE_SCENE",
+    "ALLOW_TO_TRIGGER_AVATAR_EMOTE"
+  ],
+  "featureToggles": {}
+}

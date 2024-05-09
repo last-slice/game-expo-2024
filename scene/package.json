@@ -1,0 +1,34 @@
+{
+  "name": "dcl-project",
+  "version": "1.0.0",
+  "description": "SDK7 Template scene",
+  "scripts": {
+    "start": "sdk-commands start",
+    "start-web3": "sdk-commands start --web3",
+    "deploy": "sdk-commands deploy",
+    "build": "sdk-commands build",
+    "upgrade-sdk": "npm install --save-dev @dcl/sdk@latest",
+    "upgrade-sdk:next": "npm install --save-dev @dcl/sdk@next"
+  },
+  "devDependencies": {
+    "@dcl/js-runtime": "7.4.2",
+    "@dcl/sdk": "7.4.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=6.0.0"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120,
+    "trailingComma": "none"
+  },
+  "dependencies": {
+    "@dcl-sdk/utils": "^1.1.2",
+    "core-js": "^3.31.0",
+    "@types/cannon": "latest",
+    "cannon": "latest",
+    "colyseus.js": "^0.15.10"
+  }
+}
