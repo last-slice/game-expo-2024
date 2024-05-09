@@ -1,5 +1,4 @@
 import { Billboard, BillboardMode, EasingFunction, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine } from "@dcl/sdk/ecs"
-import { maxPlayers } from "./game"
 import { Color4, Vector3, Quaternion } from "@dcl/sdk/math"
 import { utils } from "../helpers/libraries"
 import { gameRoom, sendServerMessage } from "./server"
@@ -8,18 +7,18 @@ import { localPlayer } from "./player"
 import { log } from "../helpers/functions"
 import { createObjects } from "./objects"
 import resources from "../helpers/resources"
+import { podPositions } from "./game"
 
 const spacing:number = 2
 const zPosition:number = 24
 let xPosition:number = 39
+let ground:Entity
 
-let sceneYPosition:number = 27
-
-// utils.triggers.enableDebugDraw(true)
-
+export let sceneYPosition:number = 27
 export let activationPods:any[] = []
 export let sceneParent:Entity
-let ground:Entity
+
+utils.triggers.enableDebugDraw(true)
 
 export function createEnvironment(){
     createBase()
@@ -53,7 +52,7 @@ function createElevator(){
         [{type: 'box', position: {x: 0, y: 0, z: -1.5}, scale:{x:3, y:3,z:3}}],
 
         ()=>{
-            // MeshCollider.deleteFrom(ground)
+            MeshCollider.deleteFrom(ground)
             Tween.createOrReplace(elevator, {
                 mode: Tween.Mode.Move({
                   start: Vector3.create(32,0,32),
@@ -64,7 +63,7 @@ function createElevator(){
               })
         },
         ()=>{
-            // MeshCollider.setPlane(ground)a
+            MeshCollider.setPlane(ground)
             Tween.deleteFrom(elevator)
             utils.timers.setTimeout(()=>{
                 Transform.getMutable(elevator).position = Vector3.create(32,0,32)
@@ -79,9 +78,9 @@ function createGround(){
     // Transform.create(floor, {position: Vector3.create(32,0,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0)})
     // Material.setPbrMaterial(floor, {albedoColor: Color4.create(1,0,1,.5)})//
 
-    // ground = engine.addEntity()
-    // MeshRenderer.setPlane(ground)
-    // Transform.create(ground, {position: Vector3.create(32,0,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0), parent:sceneParent})
+    ground = engine.addEntity()
+    MeshRenderer.setPlane(ground)
+    Transform.create(ground, {position: Vector3.create(32,0,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0), parent:sceneParent})
 
 
     let building = engine.addEntity()
@@ -121,9 +120,11 @@ function createWalls(){
 }
 
 function createsStartPods(){
-    for(let i = 0; i < maxPlayers; i++){
+    for(let i = 0; i < podPositions.length; i++){
         let pod = engine.addEntity()
-        Transform.create(pod, {position: Vector3.create(xPosition, 0, zPosition), parent:sceneParent})
+        let pos = podPositions[i]
+        Transform.create(pod, {position: Vector3.create(pos.x, 0, pos.z), parent:sceneParent})
+        // addBuilderHUDAsset(pod, 'pod-' + i)
 
         let podModel = engine.addEntity()
         Transform.create(podModel, {parent:pod, scale:Vector3.create(1,.1,1)})

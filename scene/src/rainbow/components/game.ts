@@ -1,14 +1,26 @@
 import { EasingFunction, InputAction, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
-import { activationPods } from "./environment";
+import { activationPods, sceneParent, sceneYPosition } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
 import { Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
 import { resetRacingObjects } from "./objects";
 import { displayLeaderboardUI } from "../ui/leaderboardUI";
+import { localPlayer } from "./player";
 
-export const maxPlayers:number = 8
+export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
+
+export let podPositions:any[] = [
+    {x:43.5, y:28, z:40.5},
+    {x:36.6, y:28, z:45.9},
+    {x:27.1, y:28, z:46.1},
+    {x:19.8, y:28, z:41.1},
+    {x:20, y:28, z:23},
+    {x:27, y:28, z:18},
+    {x:36.55, y:28, z:18.3},
+    {x:43.7, y:28, z:23},
+]
 
 export let gameTargets:any[] = []
 
@@ -20,7 +32,6 @@ export function lockPod(info:any){
     let lockedModel = activationPods[info.pod].lockedModel
     VisibilityComponent.createOrReplace(lockedModel, {visible:true})
 }
-
 
 export function initGame(){
     //reset ui
@@ -42,15 +53,14 @@ export function prepGame(){
 export function addPodTarget(pod:any, i:number){
     console.log('adding target for pod', i)
     let target = engine.addEntity()
-    gameTargets.push(target)
+    let pTarget:any
 
-    if(pod.locked){
+    if(pod.locked && pod.id === localPlayer.userId){
         MeshRenderer.setPlane(target)
         MeshCollider.setPlane(target)
     
         let pos = Transform.get(activationPods[i].pod).position
-        Transform.create(target, {position: Vector3.create(pos.x, 2, pos.z + 5)})
-    
+        Transform.create(target, {position: Vector3.create(pos.x, sceneYPosition, pos.z + 5)})
     
         pointerEventsSystem.onPointerDown({entity:target,
             opts:{button: InputAction.IA_POINTER, maxDistance: 30, showFeedback:false, hoverText:"click me"}
@@ -60,6 +70,7 @@ export function addPodTarget(pod:any, i:number){
         })
     }
 
+    gameTargets.push({target:target, pTarget:pTarget, userId: localPlayer.userId})
 }
 
 export function hideStartPods(resetName?:boolean){
@@ -70,11 +81,12 @@ export function hideStartPods(resetName?:boolean){
 }
 
 export function resetTargets(){
-    gameTargets.forEach((target:any)=>{
-        engine.removeEntity(target)
+    gameTargets.forEach((gameTarget:any)=>{
+        engine.removeEntity(gameTarget.target)
     })
     gameTargets.length = 0
 }
+
 export function startGame(){
     displayLeaderboardUI(true)
     //add systems
@@ -86,14 +98,17 @@ export function endGame(){
     hideStartPods(true)
 }
 
-export function resetGame(){
+export function resetGame(testing?:boolean){
     resetRacingObjects()
-    displayLeaderboardUI(false)
+    if(testing){}
+    else{
+        displayLeaderboardUI(false)
+    }
 }
 
 export function movePod(id:number){
     if(gameRoom.state.started){
-        let target = gameTargets[id]
+        let target = gameTargets[id].target
         Tween.deleteFrom(target)
 
         let currentPosition = Transform.get(target).position
@@ -108,4 +123,8 @@ export function movePod(id:number){
             easingFunction: EasingFunction.EF_LINEAR,
         })
     }
-}//
+}
+
+export function animateLightShow(){
+
+}

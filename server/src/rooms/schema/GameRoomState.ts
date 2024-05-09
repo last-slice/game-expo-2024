@@ -5,12 +5,14 @@ import { GameManager } from "../../Objects/GameManager";
 import { TargetSystem } from "../../Objects/TargetSystem";
 
 let initialPositions:any[] = [
-  {x:39, y:2, z:24 + 5},
-  {x:37, y:2, z:24 + 5},
-  {x:35, y:2, z:24 + 5},
-  {x:33, y:2, z:24 + 5},
-  {x:31, y:2, z:24 + 5},
-  {x:29, y:2, z:24 + 5},
+  {x:19.8, y:28, z:41.1},
+  {x:27.1, y:28, z:46.1},
+  {x:36.6, y:28, z:45.9},
+  {x:43.5, y:28, z:40.5},
+  {x:43.7, y:28, z:23},
+  {x:36.55, y:28, z:18.3},
+  {x:27, y:28, z:18},
+  {x:20, y:28, z:23},
 ]
 
 export class GameTarget extends Schema{
@@ -24,7 +26,7 @@ export class GameTarget extends Schema{
     this.x = 0
     this.y = 0
     this.z = 0
-    this.targetTick = 0//
+    this.targetTick = 0
   }
 
   setInitialPosition(id:number){

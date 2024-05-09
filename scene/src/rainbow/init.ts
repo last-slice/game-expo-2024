@@ -9,12 +9,15 @@ import { getPreview } from "./helpers/functions"
 import { joinServer, realm, updateRealm } from "./components/server";
 import { addLocalPlayer, addPlayer } from "./components/player";
 import resources from "./helpers/resources";
+import { createTests } from "./tests";
 
 
 export function init(){
 
   //setup ui
   setupUi()
+
+  createTests()
 
   getPreview().then(()=>{
     const playerData = getPlayer()

@@ -89,7 +89,7 @@ export function createServerHandlers(room:Room){
 
         pod.target.listen("targetTick", (c:any, p:any)=>{
             console.log('pod target y changed', key, p, c)
-            movePod(key)
+            // movePod(key)
         })
     })
 
@@ -108,4 +108,3 @@ export function createServerHandlers(room:Room){
         }
     })
 }
-
