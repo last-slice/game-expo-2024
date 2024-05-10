@@ -19,7 +19,7 @@ export class GameManager {
     countdownBase:number = 5
     countdownTime:number = this.countdownBase
 
-    gameTimeBase:number = 60
+    gameTimeBase:number = 300
     gameResetTimeBase:number = 10
 
     constructor(gameRoom:GameRoom){
@@ -55,11 +55,7 @@ export class GameManager {
 
     clearPods(){
         this.room.state.pods.forEach((pod)=>{
-            pod.name = ""
-            pod.id = ""
-            pod.score = 0
-            pod.locked = false
-            pod.target.resetTarget()
+            pod.resetPod()
         })
     }
 
@@ -178,13 +174,94 @@ export class GameManager {
 
     attemptScore(player:Player, pod:GamePod){
         if(this.isGameLive() && player && player.playing && pod){
-            pod.score += player.scoreFactor
-            if(pod.score >= this.winThreshold){
-                console.log('we have a winner, end game')
-                this.endGame()
-            }
+            pod.score += pod.factor
+            this.advanceObject(pod)
         }else{
             console.log('game isnt live')
         }
+    }
+
+    // checkPodWin(pod:GamePod){
+    //     if(pod.stage === 4 &&  pod.racingObject.y >= ){
+    //         console.log('we have a winner, end game')
+    //         this.endGame()
+    //     }
+    // }
+
+    advanceObject(pod:GamePod){
+        console.log('advancing object')
+        let step:number
+
+        switch(pod.stage){
+            case 1:
+                console.log('in stage one')
+                step = pod.factor + pod.racingObject.y
+    
+                if(step > 0){
+                    pod.stage = 2
+                    pod.factor = 1
+                    pod.racingObject.y = 22
+                    this.rotateRacingObject(pod, step)
+                }else{
+                  this.moveRacingObject(pod, pod.factor)
+                }
+            break;
+    
+            case 2:
+                console.log('in stage 2')
+
+                console.log('rotation is', pod.racingObject.rz)
+    
+                step = pod.racingObject.rz + pod.factor
+    
+                console.log('rotation step is', step)
+    
+                if(step >= 180){
+                    console.log('advance to stage 3')
+                    pod.stage = 3
+                    pod.factor = 0.1
+                    pod.racingObject.y = 0
+
+                    this.moveRacingObject(pod, step - pod.racingObject.rz)
+                    pod.racingObject.rz = 180
+
+                    console.log('target position is', pod.racingObject.y)
+                }else{
+                    this.rotateRacingObject(pod, pod.factor)
+                }
+            break;
+    
+            case 3:
+                console.log('stage 3')
+                console.log('target position is', pod.racingObject.y)
+                step = pod.racingObject.y + pod.factor
+
+                console.log('pod racingObject is ', pod.racingObject.y)
+    
+                console.log('step is', step)
+    
+                if(step >= 22){
+                    console.log('advancing to stage 4')
+                    pod.stage = 4
+                    pod.racingObject.y = 22
+                }else{
+                   this.moveRacingObject(pod, pod.factor)
+                }
+            break;
+
+            case 4:
+                console.log('stage 4')
+                this.endGame()
+                break;
+        }
+    }
+
+    moveRacingObject(pod:GamePod, amount:number){
+        console.log('moving object', amount)
+        pod.racingObject.y += amount
+    }
+
+    rotateRacingObject(pod:GamePod, amount:number){
+        pod.racingObject.rz += amount
     }
 }

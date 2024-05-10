@@ -1,7 +1,7 @@
 import { engine, MeshRenderer, MeshCollider, Transform, pointerEventsSystem, InputAction, Material } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
 import { utils } from "../helpers/libraries"
-import { advanceObject, moveRacingObject, racingObjects, rotateRacingObject } from "../components/objects"
+import { advanceObject, racingObjects } from "../components/objects"
 import { endGame, resetGame } from "../components/game"
 
 

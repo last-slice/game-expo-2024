@@ -8,6 +8,7 @@ import { log } from "../helpers/functions"
 import { createObjects } from "./objects"
 import resources from "../helpers/resources"
 import { podPositions } from "./game"
+import { addInputSystem } from "../systems/ClickSystem"
 
 const spacing:number = 2
 const zPosition:number = 24
@@ -18,7 +19,7 @@ export let sceneYPosition:number = 27
 export let activationPods:any[] = []
 export let sceneParent:Entity
 
-utils.triggers.enableDebugDraw(true)
+// utils.triggers.enableDebugDraw(true)//
 
 export function createEnvironment(){
     createBase()
@@ -32,7 +33,7 @@ function createBase(){
 
     sceneYPosition > 0 ? createElevator() : null
     createGround()
-    createWalls()
+    // createWalls()
 }
 
 function createElevator(){
@@ -44,7 +45,7 @@ function createElevator(){
     let elevator = engine.addEntity()
     MeshCollider.setPlane(elevator)
     MeshRenderer.setPlane(elevator)
-    Transform.create(elevator, {position: Vector3.create(32,0,32), scale: Vector3.create(7,7,1), rotation: Quaternion.fromEulerDegrees(90,0,0)})
+    Transform.create(elevator, {position: Vector3.create(32,0,51), scale: Vector3.create(7,7,1), rotation: Quaternion.fromEulerDegrees(90,0,0)})
 
 
     utils.triggers.addTrigger(
@@ -55,8 +56,8 @@ function createElevator(){
             MeshCollider.deleteFrom(ground)
             Tween.createOrReplace(elevator, {
                 mode: Tween.Mode.Move({
-                  start: Vector3.create(32,0,32),
-                  end: Vector3.create(32,27,32),
+                  start: Vector3.create(32,0,51),
+                  end: Vector3.create(32,27,51),
                 }),
                 duration: 3000,
                 easingFunction: EasingFunction.EF_EASEOUTQUAD,
@@ -66,7 +67,7 @@ function createElevator(){
             MeshCollider.setPlane(ground)
             Tween.deleteFrom(elevator)
             utils.timers.setTimeout(()=>{
-                Transform.getMutable(elevator).position = Vector3.create(32,0,32)
+                Transform.getMutable(elevator).position = Vector3.create(32,0,51)
             }, 1000 * 2)
         }, Color4.Teal()
     )

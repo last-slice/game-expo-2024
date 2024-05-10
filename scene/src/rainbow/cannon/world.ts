@@ -6,7 +6,7 @@ export let wallNorth:any
 
 export function loadPhysicsWorld(world: CANNON.World): void {
 
-  loadWalls(world)
+  // loadWalls(world)
 
   const groundPhysicsMaterial = new CANNON.Material('groundMaterial')
   const groundPhysicsContactMaterial = new CANNON.ContactMaterial(groundPhysicsMaterial, groundPhysicsMaterial, {
@@ -17,7 +17,9 @@ export function loadPhysicsWorld(world: CANNON.World): void {
 
   // Create a ground plane and apply physics material//
   const groundBody: CANNON.Body = new CANNON.Body({
-    mass: 0 // mass === 0 makes the body static
+    mass: 0, // mass === 0 makes the body static,
+    // shape: new CANNON.Box(new CANNON.Vec3(64, 64, 1)),
+    // position: new CANNON.Vec3(32, 27, 32)
   })
   groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2) // Reorient ground plane to be in the y-axis
 
@@ -33,6 +35,8 @@ export function loadPhysicsWorld(world: CANNON.World): void {
   })
   world.addContactMaterial(ballPhysicsContactMaterial)
 }
+
+//
 
 function loadWalls(world:CANNON.World){
     // Invisible walls

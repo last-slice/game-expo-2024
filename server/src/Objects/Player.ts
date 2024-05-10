@@ -29,7 +29,7 @@ export class Player extends Schema {
   enteredPod:boolean = false
   podLocked:boolean = false
 
-  scoreFactor:number = 5
+  scoreFactor:number = .5
 
   playing:boolean
 

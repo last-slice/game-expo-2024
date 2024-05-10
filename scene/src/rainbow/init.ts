@@ -10,7 +10,7 @@ import { joinServer, realm, updateRealm } from "./components/server";
 import { addLocalPlayer, addPlayer } from "./components/player";
 import resources from "./helpers/resources";
 import { createTests } from "./tests";
-
+import { createPhysics } from "./cannon";
 
 export function init(){
 
@@ -29,6 +29,8 @@ export function init(){
         if(resources.noServer){
           return
         }
+
+        createPhysics()
 
         let realmData = await getRealm({})
         updateRealm(realmData.realmInfo ? realmData.realmInfo.realmName : "")

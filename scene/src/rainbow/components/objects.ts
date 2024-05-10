@@ -12,19 +12,10 @@ export let racingObjects:any[] = []
 // export let parent:Entity
 
 export function createObjects(){
-
-    let planer = engine.addEntity()
-    MeshRenderer.setPlane(planer)
-    MeshCollider.setPlane(planer)
-    Transform.create(planer, {position: Vector3.create(8, 27, 18), rotation:Quaternion.fromEulerDegrees(90,0,0)})
-    // addBuilderHUDAsset(planer, "scaffold")
-
     for(let i = 0; i < podPositions.length; i++){ 
         let radius = initialX - i * spacing
         let parent = engine.addEntity()
         Transform.create(parent, {position: Vector3.create(32,24,32), parent:sceneParent})
-
-        // addBuilderHUDAsset(parent, "racing parent-" + i)
 
         let ent = engine.addEntity()
         MeshRenderer.setBox(ent)
@@ -36,8 +27,6 @@ export function createObjects(){
 
         racingObjects.push({object:ent, object2:ent2, r:radius, parent:parent, stage:1})
         initialX += spacing
-
-        // addBuilderHUDAsset(ent, "racking objet-" + i)
     }
 }
 
@@ -130,6 +119,44 @@ export function rotateRacingObject(index:number, amount:number){
     // if(rotation.z >= 180){
     //     rotation.z = 180
     // }//
+
+    console.log('parent rotation is', rotation.z)
+
+    transform.rotation = Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z)
+
+    let objectTransform = Transform.getMutable(object.object)
+    let objectRotation = Quaternion.toEulerAngles(objectTransform.rotation)
+    objectRotation.z = -Quaternion.toEulerAngles(transform.rotation).z
+    objectTransform.rotation = Quaternion.fromEulerDegrees(objectRotation.x, objectRotation.y, objectRotation.z)
+
+    let objectTransform2 = Transform.getMutable(object.object2)
+    let objectRotation2 = Quaternion.toEulerAngles(objectTransform2.rotation)
+    objectRotation2.z = -Quaternion.toEulerAngles(transform.rotation).z
+    objectTransform2.rotation = Quaternion.fromEulerDegrees(objectRotation2.x, objectRotation2.y, objectRotation2.z)
+}
+
+export function setRacingPosition(index:number, amount:number){
+    console.log('moving racing objet')
+    let object = racingObjects[index]
+
+    let objectTransform = Transform.getMutable(object.object)
+    objectTransform.position.y = amount
+
+    let objectTransform2 = Transform.getMutable(object.object2)
+    objectTransform2.position.y = amount
+
+    console.log('y is now', objectTransform2.position.y)
+}
+
+export function setRacingRotation(index:number, amount:number){
+    console.log('rotating racing object', index, amount)
+    let object = racingObjects[index]
+    let parent = object.parent
+    let transform = Transform.getMutable(parent)
+    let rotation = Quaternion.toEulerAngles(transform.rotation)
+    rotation.z = (-1 * amount)
+
+    console.log('parent rotation is', rotation.z)//
 
     transform.rotation = Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z)
 
