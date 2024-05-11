@@ -85,7 +85,8 @@ function createGround(){
 
 
     let building = engine.addEntity()
-    GltfContainer.create(building, {src: "models/rainbow-2.glb"})// resources.models.directory + resources.models.base})
+    // testing assets in gameModels.ts 
+   // GltfContainer.create(building, {src: "models/rainbow-2.glb"})// resources.models.directory + resources.models.base})
     Transform.create(building, {position: Vector3.create(32,0,32), scale:Vector3.create(1,1,1), rotation: Quaternion.fromEulerDegrees(0,0,0)})
 
 

@@ -7,10 +7,10 @@ const rainbow = 'models/thickRainbow.glb'
 const scene = 'models/scene.glb'
 
 const carouselPositions = [
-    Vector3.create(14, 0.5, 14),
-    Vector3.create(50, 0.5, 50),
-    Vector3.create(14, 0.5, 50),
-    Vector3.create(50, 0.5, 14)
+    Vector3.create(14, 1, 14),
+    Vector3.create(50, 1, 50),
+    Vector3.create(14, 1, 50),
+    Vector3.create(50, 1, 14)
 ];
 
 const rainbowTransforms = [
