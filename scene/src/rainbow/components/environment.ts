@@ -80,7 +80,7 @@ function createGround(){
     // Material.setPbrMaterial(floor, {albedoColor: Color4.create(1,0,1,.5)})//
 
     ground = engine.addEntity()
-    MeshRenderer.setPlane(ground)
+   // MeshRenderer.setPlane(ground)
     Transform.create(ground, {position: Vector3.create(32,0,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0), parent:sceneParent})
 
 
