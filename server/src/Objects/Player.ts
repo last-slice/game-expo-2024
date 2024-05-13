@@ -11,6 +11,7 @@ export class Player extends Schema {
   @type("string") name:string 
   @type("boolean") podCountingDown:boolean
   @type("number") podCountdown:number = 3
+  @type("number") pod:number = -500
 
   playFabData:any
   dclData:any
@@ -22,7 +23,6 @@ export class Player extends Schema {
   world:string = "main"
 
   startTime:any = 0
-  pod:number = -500
   
   podTimer:any
   podLockInterval:any

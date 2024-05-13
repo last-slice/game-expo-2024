@@ -1,7 +1,7 @@
 import { EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
-import { activationPods, sceneParent, sceneYPosition } from "./environment";
+import { activationPods, resetPodLock, sceneParent, sceneYPosition } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
 import { Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
@@ -12,6 +12,7 @@ import { localPlayer } from "./player";
 import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import resources, { colors } from "../helpers/resources";
+import { displayStartingSoonUI } from "../ui/startingSoonUI";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -34,7 +35,12 @@ export function lockPod(info:any){
     VisibilityComponent.createOrReplace(nameEntity, {visible:true})
 
     let lockedModel = activationPods[info.pod].lockedModel
-    VisibilityComponent.createOrReplace(lockedModel, {visible:true})
+    let transform = Transform.getMutableOrNull(lockedModel)
+    if(transform){
+        console.log('we found transform to lock pod')
+        transform.position = Vector3.create(0, 2, 0)
+        transform.scale = Vector3.create(1,4,1)
+    }
 }
 
 export function initGame(){
@@ -48,6 +54,7 @@ export function initGame(){
 export function prepGame(){
     resetTargets()
     hideStartPods()
+    displayStartingSoonUI(true)
 
     gameRoom.state.pods.forEach((pod:any, i:number) => {
         addPodTarget(pod, i)
@@ -86,9 +93,9 @@ export function addPodTarget(pod:any, i:number){
 }
 
 export function hideStartPods(resetName?:boolean){
-    activationPods.forEach((info)=>{
+    activationPods.forEach((info, index:number)=>{
         resetName ? TextShape.getMutable(info.nameEntity).text = "" : null
-        VisibilityComponent.getMutable(info.lockedModel).visible = false
+        resetPodLock(index)
     })
 }
 

@@ -7,6 +7,7 @@ import resources from '../helpers/resources'
 import { WinnerUI } from './winnerUI'
 import { LeaderboardUI } from './leaderboardUI'
 import { ReservationUI } from './reservationUI'
+import { StartingSoonUI, displayStartingSoonUI } from './startingSoonUI'
 
 
 export let showGaming = true
@@ -20,6 +21,7 @@ export function resetAllGamingUI(){
     displayGamingBorderUI(false)
     displayGamingTimer(false, 0)
     displayGamingCountdown(false, 0)
+    displayStartingSoonUI(false)
 }
 
 export function createGamingUI() {
@@ -36,6 +38,7 @@ export function createGamingUI() {
                 positionType: 'absolute',
             }}
         >
+            <StartingSoonUI/>
             <ReservationUI/>
             <LeaderboardUI/>
             <WinnerUI/>

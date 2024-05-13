@@ -6,7 +6,7 @@ import { SERVER_MESSAGE_TYPES } from "../helpers/types"
 import { localPlayer } from "./player"
 import { getRandomIntInclusive, log } from "../helpers/functions"
 import { createObjects } from "./objects"
-import resources from "../helpers/resources"
+import resources, { colors } from "../helpers/resources"
 import { podPositions } from "./game"
 import { addPigTrainSystem, removePigTrainSystem } from "../systems/PigTrain"
 import { addBuilderHUDAsset } from "../../dcl-builder-hud"
@@ -77,7 +77,7 @@ function createElevator(){
                   start: Vector3.create(32,0,51),
                   end: Vector3.create(32,27,51),
                 }),
-                duration: 3000,
+                duration: 4000,
                 easingFunction: EasingFunction.EF_EASEOUTQUAD,
               })
         },
@@ -156,10 +156,9 @@ function createsStartPods(){
         VisibilityComponent.createOrReplace(lockedEntity, {visible:false})
 
         let lockedModel = engine.addEntity()
-        Transform.create(lockedModel, {position: Vector3.create(0, 0,0), parent:lockedEntity, scale: Vector3.create(1,4,1)})
-        MeshRenderer.setBox(lockedModel)
-        Material.setPbrMaterial(lockedModel, {albedoColor: Color4.create(1,0,0,.5)})
-        VisibilityComponent.createOrReplace(lockedModel, {visible:false})
+        Transform.create(lockedModel, {position: Vector3.create(0, -2,0), parent:lockedEntity, scale: Vector3.create(1,0,1)})
+        MeshRenderer.setCylinder(lockedModel)
+        Material.setPbrMaterial(lockedModel, {albedoColor: colors[i]})
 
         let nameEntity = engine.addEntity()
         Transform.create(nameEntity, {position: Vector3.create(0,3,0), parent:pod})
@@ -223,8 +222,7 @@ function createRainbows(){
 }
 
 export function createPigTrain(){
-    console.log('creating pig train oject')
-    let random = getRandomIntInclusive(0,resources.models.pigs.length-1)
+    let random = getRandomIntInclusive(0,resources.models.pigs.length-1)//
 
     let parent = engine.addEntity()
     Transform.create(parent, {position: Vector3.create(32, 1, 0)})
@@ -254,4 +252,46 @@ export function createPigTrain(){
 
 
       PigTrainComponent.createOrReplace(parent)
+}
+
+export function resetPodLock(index:number){
+    console.log('resetting pod', index)
+    let pod = activationPods[index]
+    if(pod && pod.lockedModel){
+        VisibilityComponent.createOrReplace(pod.lockedModel, {visible:false})
+        console.log('pod to reset is found')
+        if(Tween.has(pod.lockedModel)){
+            console.log('found pod lock tweent')
+            let tween = Tween.getMutable(pod.lockedModel)
+            tween.playing = false
+            Tween.deleteFrom(pod.lockedModel)
+        }
+            
+        let transform = Transform.getMutableOrNull(pod.lockedModel)
+        if(transform){
+            console.log('found transform pod to reset')
+            transform.position = Vector3.create(0,-2,0)
+            transform.scale = Vector3.create(1,0,1)
+        }
+    }
+}
+
+export function expandPodLock(index:number, amount:number){
+    let pod = activationPods[index]
+    if(pod && pod.lockedModel){
+        VisibilityComponent.createOrReplace(pod.lockedModel, {visible:true})
+        if(!Tween.has(pod.lockedModel)){
+            Tween.createOrReplace(pod.lockedModel, {
+                mode: Tween.Mode.Scale({
+                  start: Vector3.create(1, 0,1),
+                  end: Vector3.create(1, 7, 1),
+                }),
+                duration: 1000 * 2,
+                easingFunction: EasingFunction.EF_LINEAR,
+              })
+        }
+    }
+
+    // transform.position = Vector3.create(0, -2,0)
+    // transform.scale = Vector3.create(1,0,1)
 }

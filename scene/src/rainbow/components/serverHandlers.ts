@@ -9,6 +9,7 @@ import { displayReservationUI, updateReservationCounter } from "../ui/reservatio
 import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
 import { createBall } from "../cannon";
+import { resetPodLock } from "./environment";
 
 
 export function createServerHandlers(room:Room){
@@ -132,12 +133,18 @@ export function createServerHandlers(room:Room){
         if(player.address === localPlayer.userId){
             player.listen("podCountingDown", (c:any, p:any)=>{
                 console.log('podCountingDown changed', p, c)
-                displayReservationUI(c)
+                displayReservationUI(player.pod, c)
+            })
+
+            player.listen("pod", (c:any, p:any)=>{
+                if(c === -500 && p !== undefined){
+                    resetPodLock(p)
+                }
             })
 
             player.listen("podCountdown", (c:any, p:any)=>{
-                console.log('countdown is', p, c)
-                updateReservationCounter(c)
+                console.log('countdown is', p, c, player.pod)
+                updateReservationCounter(player.pod, c)
             })
         }
     })

@@ -15,15 +15,15 @@ export let colorsLabels:string[] = [
 ]
 
 export let colors:Color4[] = [
-    Color4.Red(),
-    Color4.create(1, 119/255, 0),
-    Color4.Yellow(),
-    Color4.Green(),
+    Color4.create(1,0,0,.5),
+    Color4.create(1, 119/255, 0, .5),
+    Color4.create(0,1,1,.5),
+    Color4.create(0,1,0,.5),
 
     Color4.Teal(),
-    Color4.Purple(),
-    Color4.create(203/255, 0/255, 206/255),
-    Color4.create(253/255, 108/255, 225/255),
+    Color4.create(1,0,1,.5),
+    Color4.create(203/255, 0/255, 206/255, .5),
+    Color4.create(253/255, 108/255, 225/255, .5),
 ]
 
 export default {

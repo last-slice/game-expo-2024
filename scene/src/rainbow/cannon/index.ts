@@ -56,9 +56,9 @@ export function createBall(info:any){
     let pos = info.pos
 
     let entity = engine.addEntity()
-    MeshRenderer.setSphere(entity)
-    Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size)})
+    // MeshRenderer.setSphere(entity)
     // Material.setPbrMaterial(entity, {albedoColor: colors[info.id], emissiveColor: colors[info.id], emissiveIntensity: 2})
+    Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size)})
     GltfContainer.create(entity, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[info.id]})
 
 

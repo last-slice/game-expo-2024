@@ -4,12 +4,13 @@ import { dimensions, sizeFont } from './ui'
 import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
+import { activationPods, expandPodLock, resetPodLock } from '../components/environment'
 
 export let show = false
 
 export let counter = new CustomCounter( 4, 4, 75, 'center', "images/customCounter/number_sheet.png")
 
-export function displayReservationUI(value: boolean) {
+export function displayReservationUI(index:number, value: boolean) {
     show = value
 
     if(!value){
@@ -17,8 +18,12 @@ export function displayReservationUI(value: boolean) {
     }
 }
 
-export function updateReservationCounter(value:number){
+export function updateReservationCounter(index:number, value:number){
     counter.setNumber(value)
+
+    if(value > 0){
+        expandPodLock(index, value)
+    }
 }
 
 
@@ -36,7 +41,7 @@ export function ReservationUI() {
                 positionType: 'absolute',
                 position:{top:'10%', right:'25%'},
             }}
-            uiBackground={{color:Color4.Green()}}
+            // uiBackground={{color:Color4.Green()}}
         >
 
         <UiEntity
@@ -49,7 +54,7 @@ export function ReservationUI() {
             margin:{bottom:'2%'}
         }}
         // uiBackground={{color:Color4.Red()}}
-        uiText={{value:"Reserving Spot", fontSize:sizeFont(50,30), textAlign:'middle-center', color:Color4.White()}}
+        uiText={{value:"Reserving Spot", fontSize:sizeFont(65,35), textAlign:'middle-center', color:Color4.White()}}
         />
 
         {gameRoom && getDisplay()}
