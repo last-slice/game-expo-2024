@@ -6,13 +6,16 @@ import {
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { createGamingUI } from './createGamingUI'
+import { createBuilderHud } from '../../dcl-builder-hud'
+import { createBuilderHUDPanel } from '../../dcl-builder-hud/ui/builderpanel'
 export function setupUi() {
   ReactEcsRenderer.setUiRenderer(uiComponent)
   engine.addSystem(uiSizer)
 }
 
 const uiComponent = () => [
-  createGamingUI()
+  createGamingUI(),
+  createBuilderHUDPanel("game::expo::2024")
 ]
 
 

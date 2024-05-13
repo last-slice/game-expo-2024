@@ -34,8 +34,32 @@ export default {
     multiplayerRoom: 'game-expo',
 
     models:{
-        directory: "src/rainbow/models/",
-        base: "rainbow-2.glb",
+        directory: "models/",
+        pigDirectory:"pigs/",
+        balloonDirectory:"targets/",
+        base: "scene.glb",
+        rainbow:"thickRainbow.glb",
+        carousel:"carousel.glb",
+        pigs:[
+            "redPig.glb",
+            "orangePig.glb",
+            "yellowPig.glb",
+            "greenPig.glb",
+            "bluePig.glb",
+            "indigoPig.glb",
+            "violetPig.glb",
+            "pinkPig.glb",
+        ],
+        balloons:[
+            "redBalloon.glb",
+            "orangeBalloon.glb",
+            "yellowBalloon.glb",
+            "greenBalloon.glb",
+            "blueBalloon.glb",
+            "indigoBalloon.glb",
+            "violetBalloon.glb",
+            "pinkBalloon.glb",
+        ],
     },
 
 

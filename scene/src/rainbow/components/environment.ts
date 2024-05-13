@@ -1,14 +1,19 @@
-import { Billboard, BillboardMode, EasingFunction, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine } from "@dcl/sdk/ecs"
+import { Billboard, BillboardMode, ColliderLayer, EasingFunction, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine } from "@dcl/sdk/ecs"
 import { Color4, Vector3, Quaternion } from "@dcl/sdk/math"
 import { utils } from "../helpers/libraries"
 import { gameRoom, sendServerMessage } from "./server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
 import { localPlayer } from "./player"
-import { log } from "../helpers/functions"
+import { getRandomIntInclusive, log } from "../helpers/functions"
 import { createObjects } from "./objects"
 import resources from "../helpers/resources"
 import { podPositions } from "./game"
-import { addInputSystem } from "../systems/ClickSystem"
+import { addPigTrainSystem, removePigTrainSystem } from "../systems/PigTrain"
+import { addBuilderHUDAsset } from "../../dcl-builder-hud"
+import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel"
+
+export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
+
 
 const spacing:number = 2
 const zPosition:number = 24
@@ -19,7 +24,22 @@ export let sceneYPosition:number = 27
 export let activationPods:any[] = []
 export let sceneParent:Entity
 
-// utils.triggers.enableDebugDraw(true)//
+// utils.triggers.enableDebugDraw(true)
+
+const rainbowTransforms = [
+    { position: Vector3.create(32, 6.75, 62), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25)},
+    { position: Vector3.create(3, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.5) },
+    { position: Vector3.create(32, 6.75, 2), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
+    { position: Vector3.create(62, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
+    { position: Vector3.create(32, 53, 32), rotation: Vector3.create(0, 0, 0), scale: Vector3.One() }
+]
+
+const carouselPositions = [
+    Vector3.create(14, 1, 14),
+    Vector3.create(50, 1, 50),
+    Vector3.create(14, 1, 50),
+    Vector3.create(50, 1, 14)
+];
 
 export function createEnvironment(){
     createBase()
@@ -33,24 +53,22 @@ function createBase(){
 
     sceneYPosition > 0 ? createElevator() : null
     createGround()
-    // createWalls()
+    createCarousels()
+    createRainbows()
+
+    addPigTrainSystem()
 }
 
 function createElevator(){
-    // let cylinder = engine.addEntity()
-    // MeshRenderer.setCylinder(cylinder)
-    // Transform.create(cylinder, {position:Vector3.create(32,15,32), scale: Vector3.create(3, 30, 3)})
-    // Material.setPbrMaterial(cylinder, {albedoColor: Color4.create(1,0,1,.5)})
-
     let elevator = engine.addEntity()
-    MeshCollider.setPlane(elevator)
-    MeshRenderer.setPlane(elevator)
-    Transform.create(elevator, {position: Vector3.create(32,0,51), scale: Vector3.create(7,7,1), rotation: Quaternion.fromEulerDegrees(90,0,0)})
+    MeshCollider.setCylinder(elevator)
+    MeshRenderer.setCylinder(elevator)
+    Transform.create(elevator, {position: Vector3.create(32,1,51), scale: Vector3.create(10,.1,10), rotation: Quaternion.fromEulerDegrees(0,0,0)})
 
 
     utils.triggers.addTrigger(
         elevator, utils.NO_LAYERS, utils.LAYER_1,
-        [{type: 'box', position: {x: 0, y: 0, z: -1.5}, scale:{x:3, y:3,z:3}}],
+        [{type: 'box', position: {x: 0, y: 0, z: -1.5}, scale:{x:3, y:5,z:3}}],
 
         ()=>{
             MeshCollider.deleteFrom(ground)
@@ -74,59 +92,35 @@ function createElevator(){
 }
 
 function createGround(){
-    // let floor = engine.addEntity()
-    // MeshRenderer.setPlane(floor)
-    // Transform.create(floor, {position: Vector3.create(32,0,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0)})
-    // Material.setPbrMaterial(floor, {albedoColor: Color4.create(1,0,1,.5)})//
+const sceneEntity = engine.addEntity()
+    GltfContainer.create(sceneEntity, {
+        src: resources.models.directory + resources.models.base,
+        visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+    })
+    Transform.create(sceneEntity, {
+        position: Vector3.create(32, 0, 32)
+    })
 
-    ground = engine.addEntity()
-   // MeshRenderer.setPlane(ground)
-    Transform.create(ground, {position: Vector3.create(32,0,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0), parent:sceneParent})
+    utils.triggers.addTrigger(
+        sceneEntity, utils.NO_LAYERS, utils.LAYER_1,
+        [{type: 'box', position: {x: 0, y: 40, z: 0}, scale:{x:64, y:60,z:64}}],
 
-
-    let building = engine.addEntity()
-    // testing assets in gameModels.ts 
-   // GltfContainer.create(building, {src: "models/rainbow-2.glb"})// resources.models.directory + resources.models.base})
-    Transform.create(building, {position: Vector3.create(32,0,32), scale:Vector3.create(1,1,1), rotation: Quaternion.fromEulerDegrees(0,0,0)})
-
-
-}
-
-function createWalls(){
-  // let top = engine.addEntity()
-    // MeshRenderer.setPlane(top)
-    // MeshCollider.setPlane(top)
-    // Transform.create(top, {position: Vector3.create(32,64,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(90,0,0), parent:sceneParent})
-
-    // let left = engine.addEntity()
-    // MeshRenderer.setPlane(left)
-    // MeshCollider.setPlane(left)
-    // Transform.create(left, {position: Vector3.create(0,32,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(0,90,0)})
-
-    // let right = engine.addEntity()
-    // MeshRenderer.setPlane(right)
-    // MeshCollider.setPlane(right)
-    // Transform.create(right, {position: Vector3.create(64,32,32), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(0,90,0)})
-
-    // let front = engine.addEntity()
-    // MeshRenderer.setPlane(front)
-    // MeshCollider.setPlane(front)
-    // Transform.create(front, {position: Vector3.create(32,32,64), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(0,0,0)})
-
-
-    // let back = engine.addEntity()
-    // MeshRenderer.setPlane(back)
-    // MeshCollider.setPlane(back)
-    // Transform.create(back, {position: Vector3.create(32,32,64), scale:Vector3.create(64,64,1), rotation: Quaternion.fromEulerDegrees(0,90,0)})
-
+        ()=>{
+            removePigTrainSystem()
+        },
+        ()=>{
+            addPigTrainSystem()
+        }, Color4.Teal()
+    )
 }
 
 function createsStartPods(){
+    enableBuilderHUD(true)
     for(let i = 0; i < podPositions.length; i++){
         let pod = engine.addEntity()
         let pos = podPositions[i]
         Transform.create(pod, {position: Vector3.create(pos.x, 0, pos.z), parent:sceneParent})
-        // addBuilderHUDAsset(pod, 'pod-' + i)
+        addBuilderHUDAsset(pod, 'pod-' + i)
 
         let podModel = engine.addEntity()
         Transform.create(podModel, {parent:pod, scale:Vector3.create(1,.1,1)})
@@ -175,4 +169,89 @@ function createsStartPods(){
 
         activationPods.push({pod:pod, nameEntity:nameEntity, lockedEntity:lockedEntity, lockedModel:lockedModel})
     }
+}
+
+function createCarousels(){
+    carouselPositions.forEach(position => {
+        const carouselEntity = engine.addEntity();
+        GltfContainer.create(carouselEntity, {
+            src: resources.models.directory + resources.models.carousel,
+            visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+        });
+        Transform.create(carouselEntity, {
+            position: position,
+            scale: Vector3.create(1.2, 1.2, 1.2)
+        });
+
+        Tween.create(carouselEntity, {
+            mode: Tween.Mode.Rotate({
+              start: Quaternion.fromEulerDegrees(0, 0, 0),
+              end: Quaternion.fromEulerDegrees(0, 180, 0)
+            }),
+            duration: 10000,
+            easingFunction: EasingFunction.EF_LINEAR
+          })
+          TweenSequence.create(carouselEntity, {
+            loop: TweenLoop.TL_RESTART,
+            sequence: [
+              {
+                mode: Tween.Mode.Rotate({
+                  start: Quaternion.fromEulerDegrees(0, 180, 0),
+                  end: Quaternion.fromEulerDegrees(0, 360, 0)
+                }),
+                duration: 10000,
+                easingFunction: EasingFunction.EF_LINEAR
+              }
+            ]
+          })
+    });
+}
+
+function createRainbows(){
+    rainbowTransforms.forEach(({ position, rotation, scale }) => {
+        const rainbowEntity = engine.addEntity();
+        GltfContainer.create(rainbowEntity, {
+            src: resources.models.directory + resources.models.rainbow, 
+            visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+        })
+        Transform.create(rainbowEntity, {
+            position: position, 
+            rotation: Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z),
+            scale: scale
+        })
+    })
+}
+
+export function createPigTrain(){
+    console.log('creating pig train oject')
+    let random = getRandomIntInclusive(0,resources.models.pigs.length-1)
+
+    let parent = engine.addEntity()
+    Transform.create(parent, {position: Vector3.create(32, 1, 0)})
+
+    let pig = engine.addEntity()
+    Transform.create(pig, {position: Vector3.create(0, 0, 0), scale: Vector3.create(0.5, 0.5, 0.5), parent:parent})
+    GltfContainer.create(pig, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[random]})
+
+    Tween.create(parent, {
+        mode: Tween.Mode.Move({
+          start: Vector3.create(32, 1, 0),
+          end: Vector3.create(32, 1, 44),
+        }),
+        duration: 1000 * 7,
+        easingFunction: EasingFunction.EF_LINEAR,
+      })
+
+      Tween.create(pig, {
+        mode: Tween.Mode.Move({
+          start: Vector3.create(0, .5, 0),
+          end: Vector3.create(0 -.5, 0),
+        }),
+        duration: 500,
+        easingFunction: EasingFunction.EF_LINEAR,
+      })
+      TweenSequence.create(pig, { sequence: [], loop: TweenLoop.TL_YOYO })
+
+
+      PigTrainComponent.createOrReplace(parent)
 }

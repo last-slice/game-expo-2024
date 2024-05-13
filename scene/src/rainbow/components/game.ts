@@ -1,4 +1,4 @@
-import { EasingFunction, Entity, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
 import { activationPods, sceneParent, sceneYPosition } from "./environment";
@@ -11,19 +11,19 @@ import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
 import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
-import { colors } from "../helpers/resources";
+import resources, { colors } from "../helpers/resources";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
 export let podPositions:any[] = [
-    {x:43.5, y:28, z:40.5},
-    {x:36.6, y:28, z:45.9},
-    {x:27.1, y:28, z:46.1},
-    {x:19.8, y:28, z:41.1},
-    {x:20, y:28, z:23},
-    {x:27, y:28, z:18},
-    {x:36.55, y:28, z:18.3},
-    {x:43.7, y:28, z:23},
+    {x:45.1, y:28, z:40.1},
+    {x:37.9, y:28, z:45.1},
+    {x:25.9, y:28, z:45.1},
+    {x:18.8, y:28, z:40.2},
+    {x:18.8, y:28, z:23.9},
+    {x:25.9, y:28, z:18.9},
+    {x:37.9, y:28, z:18.9},
+    {x:45.1, y:28, z:23.9},
 ]
 
 export let gameTargets:any[] = []
@@ -60,13 +60,14 @@ export function addPodTarget(pod:any, i:number){
     let userId:any
 
     if(pod.locked && pod.id === localPlayer.userId){
-        console.log('adding target for pod', i)
-        MeshRenderer.setBox(target)
-        MeshCollider.setBox(target)//
+        // console.log('adding target for pod', i)
+        // MeshRenderer.setBox(target)
+        // MeshCollider.setBox(target)
     
         let pos = Transform.get(activationPods[i].pod).position
         Transform.create(target, {position: Vector3.create(pos.x, sceneYPosition + 2, pos.z + 5)})
-        Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
+        // Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
+        GltfContainer.create(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.balloons[i]})
 
         let targetPosition = Transform.get(target).position
 

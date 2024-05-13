@@ -1,12 +1,13 @@
-import { Entity, MeshCollider, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Entity, GltfContainer, MeshCollider, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { sceneParent } from "./environment";
 import { podPositions } from "./game";
+import resources from "../helpers/resources";
 
 // Parameters
 // Parameters
-let initialX = -27.5; // Initial x position for the first object
-const spacing = 1.9; // Spacing of 1 meter between each object//
+let initialX = -26.2; // Initial x position for the first object
+const spacing = 1.65; // Spacing of 1 meter between each object////
 
 export let racingObjects:any[] = []
 // export let parent:Entity
@@ -18,12 +19,12 @@ export function createObjects(){
         Transform.create(parent, {position: Vector3.create(32,24,32), parent:sceneParent})
 
         let ent = engine.addEntity()
-        MeshRenderer.setBox(ent)
-        Transform.create(ent, {position: Vector3.create(initialX, -22, -1.5), parent: parent})
+        GltfContainer.create(ent, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[i]})
+        Transform.create(ent, {position: Vector3.create(initialX, -22, -4.5), rotation: Quaternion.fromEulerDegrees(0,180,0), scale: Vector3.create(0.5, 0.5, 0.5), parent: parent})
 
         let ent2 = engine.addEntity()
-        MeshRenderer.setBox(ent2)
-        Transform.create(ent2, {position: Vector3.create(initialX, -22, 1.5), parent: parent})
+        GltfContainer.create(ent2, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[i]})
+        Transform.create(ent2, {position: Vector3.create(initialX, -22, 5), scale: Vector3.create(0.5,0.5,0.5), parent: parent})
 
         racingObjects.push({object:ent, object2:ent2, r:radius, parent:parent, stage:1})
         initialX += spacing

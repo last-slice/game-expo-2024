@@ -1,5 +1,5 @@
 
-import { Entity, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
+import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
 import { Color3, Color4, Vector3 } from '@dcl/sdk/math';
 import * as CANNON from 'cannon/build/cannon'
 import { ballPhysicsMaterial, loadPhysicsWorld } from './world';
@@ -7,7 +7,7 @@ import { BallComponent, gameTargets } from '../components/game';
 import { syncEntity, parentEntity } from '@dcl/sdk/network'
 import { localPlayer } from '../components/player';
 import { setForwardVector, PhysicsUpdateSystem, forwardVector } from '../systems/Physics';
-import { colors } from '../helpers/resources';
+import resources, { colors } from '../helpers/resources';
 
 export let ballBodies:Map<Entity, any> = new Map()
 export let world:CANNON.World 
@@ -58,7 +58,11 @@ export function createBall(info:any){
     let entity = engine.addEntity()
     MeshRenderer.setSphere(entity)
     Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size)})
-    Material.setPbrMaterial(entity, {albedoColor: colors[info.id], emissiveColor: colors[info.id], emissiveIntensity: 2})
+    // Material.setPbrMaterial(entity, {albedoColor: colors[info.id], emissiveColor: colors[info.id], emissiveIntensity: 2})
+    GltfContainer.create(entity, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[info.id]})
+
+
+
 
     const ballTransform = Transform.get(entity)
 
