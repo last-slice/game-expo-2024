@@ -264,4 +264,8 @@ export class GameManager {
     rotateRacingObject(pod:GamePod, amount:number){
         pod.racingObject.rz += amount
     }
+
+    createBall(player:Player, info:any){
+        this.room.broadcast(SERVER_MESSAGE_TYPES.CREATE_BALL, info)
+    }
 }

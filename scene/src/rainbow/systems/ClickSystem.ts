@@ -1,5 +1,8 @@
-import { InputAction, PointerEventType, engine, inputSystem } from "@dcl/sdk/ecs"
+import { InputAction, PointerEventType, Transform, engine, inputSystem } from "@dcl/sdk/ecs"
 import { createBall, velocity } from "../cannon"
+import { sendServerMessage } from "../components/server"
+import { SERVER_MESSAGE_TYPES } from "../helpers/types"
+import { Vector3 } from "@dcl/sdk/math"
 
 export let added = false
 export let factor = 10
@@ -28,7 +31,6 @@ export function InputListenSystem(){
         // console.log('result is', result)//
         clicked = true
         started = true
-        createBall()
     }
 
     if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_UP)) {
@@ -51,7 +53,9 @@ export function AddBallSystem(dt:number){
         }else{
             // updateMass(50, true)
         }
-        createBall()
+
+        let pos = Transform.get(engine.PlayerEntity).position
+        sendServerMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, {pos:pos, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)})
     }else{
         // if(mass >= 600000){
         //     if(time < .1){

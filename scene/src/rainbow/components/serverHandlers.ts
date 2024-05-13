@@ -8,11 +8,17 @@ import { localPlayer } from "./player";
 import { displayReservationUI, updateReservationCounter } from "../ui/reservationUI";
 import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
+import { createBall } from "../cannon";
 
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
         console.log(SERVER_MESSAGE_TYPES.POD_COUNTDOWN + " received", info)
+    })
+
+    room.onMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, (info:any)=>{
+        console.log(SERVER_MESSAGE_TYPES.CREATE_BALL + " received", info)
+        createBall(info)
     })
 
     room.state.listen("gameCountdown", (c:any, p:any)=>{
@@ -79,7 +85,7 @@ export function createServerHandlers(room:Room){
                 // rotateRacingObject(key, (c - (p === undefined ? 0 : p)))
                 // advanceObject(key, pod.factor)
                 updateLeaderboard()
-            }//
+            }
         })
 
         pod.listen("locked", (c:any, p:any)=>{
@@ -90,10 +96,9 @@ export function createServerHandlers(room:Room){
         })
 
         pod.target.listen("targetTick", (c:any, p:any)=>{
-            // console.log('pod target y changed', key, p, c)
-            if(gameRoom.state.started && c === 0){
-                // console.log('need to set pod position')
-                // setPodPosition(key)
+            // console.log('pod target tick changed', key, p, c)
+            if(gameRoom.state.started && c !== -500){
+                setPodPosition(pod, key)
             }
         })
 

@@ -1,16 +1,17 @@
 
-import { Entity, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
-import { Vector3 } from '@dcl/sdk/math';
+import { Entity, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
+import { Color3, Color4, Vector3 } from '@dcl/sdk/math';
 import * as CANNON from 'cannon/build/cannon'
 import { ballPhysicsMaterial, loadPhysicsWorld } from './world';
 import { BallComponent, gameTargets } from '../components/game';
 import { syncEntity, parentEntity } from '@dcl/sdk/network'
 import { localPlayer } from '../components/player';
 import { setForwardVector, PhysicsUpdateSystem, forwardVector } from '../systems/Physics';
+import { colors } from '../helpers/resources';
 
 export let ballBodies:Map<Entity, any> = new Map()
 export let world:CANNON.World 
-export let velocity:number = 50
+export let velocity:number = 25
 export let mass = 5
 
 let size:number = .1
@@ -51,12 +52,13 @@ export function removeBall(entity:Entity, target?:any){
     engine.removeEntity(entity)
 }
 
-export function createBall(){
-    let pos = Transform.get(engine.PlayerEntity).position
+export function createBall(info:any){
+    let pos = info.pos
 
     let entity = engine.addEntity()
     MeshRenderer.setSphere(entity)
     Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size)})
+    Material.setPbrMaterial(entity, {albedoColor: colors[info.id], emissiveColor: colors[info.id], emissiveIntensity: 2})
 
     const ballTransform = Transform.get(entity)
 

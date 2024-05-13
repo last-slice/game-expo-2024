@@ -7,7 +7,7 @@ export enum SERVER_MESSAGE_TYPES {
     POD_COUNTDOWN = 'pod_countdown',
     POD_LOCKED = 'pod_locked',
     HIT_TARGET = 'hit_target',
-
+    CREATE_BALL = 'create_ball',
 
 
     PLAYER_JOINED = 'player_joined',

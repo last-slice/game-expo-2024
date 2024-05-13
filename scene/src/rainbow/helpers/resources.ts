@@ -15,16 +15,15 @@ export let colorsLabels:string[] = [
 ]
 
 export let colors:Color4[] = [
-    Color4.Black(),
-    Color4.Blue(),
-    Color4.Gray(),
-    Color4.Green(),
-    Color4.Magenta(),
-    Color4.Purple(),
     Color4.Red(),
-    Color4.Teal(),
+    Color4.create(1, 119/255, 0),
     Color4.Yellow(),
-    Color4.White(),
+    Color4.Green(),
+
+    Color4.Teal(),
+    Color4.Purple(),
+    Color4.create(203/255, 0/255, 206/255),
+    Color4.create(253/255, 108/255, 225/255),
 ]
 
 export default {

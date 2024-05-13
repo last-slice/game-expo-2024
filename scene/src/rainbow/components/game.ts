@@ -1,4 +1,4 @@
-import { EasingFunction, Entity, InputAction, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { EasingFunction, Entity, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
 import { activationPods, sceneParent, sceneYPosition } from "./environment";
@@ -11,6 +11,7 @@ import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
 import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
+import { colors } from "../helpers/resources";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -54,24 +55,18 @@ export function prepGame(){
 }
 
 export function addPodTarget(pod:any, i:number){
-    console.log('adding target for pod', i)
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
 
     if(pod.locked && pod.id === localPlayer.userId){
+        console.log('adding target for pod', i)
         MeshRenderer.setBox(target)
-        MeshCollider.setBox(target)
+        MeshCollider.setBox(target)//
     
         let pos = Transform.get(activationPods[i].pod).position
         Transform.create(target, {position: Vector3.create(pos.x, sceneYPosition + 2, pos.z + 5)})
-    
-        // pointerEventsSystem.onPointerDown({entity:target,
-        //     opts:{button: InputAction.IA_POINTER, maxDistance: 30, showFeedback:false, hoverText:"click me"}
-        // },()=>{
-        //     console.log('clicked target')
-        //     sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, i)
-        // })
+        Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
 
         let targetPosition = Transform.get(target).position
 
@@ -131,8 +126,18 @@ export function resetGame(testing?:boolean){
     }
 }
 
-export function setPodPosition(id:number){
+export function setPodPosition(pod:any, id:number){
+    let target = gameTargets[id]
+    if(target.pTarget){
+        target.pTarget.position.x = pod.target.x
+        target.pTarget.position.y = pod.target.y
+        target.pTarget.position.z = pod.target.z
 
+        let targetPosition = Transform.getMutable(target.target).position
+        targetPosition.x = pod.target.x
+        targetPosition.y = pod.target.y
+        targetPosition.z = pod.target.z
+    }
 }
 
 export function moveTarget(id:number){

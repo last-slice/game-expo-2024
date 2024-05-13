@@ -24,7 +24,7 @@ export function PhysicsUpdateSystem(dt: number): void {
       if(object){
 
         let gameTargetIndex = gameTargets.findIndex((gt => gt.userId === localPlayer.userId))
-        if(gameTargetIndex >= 0 && checkOverlap(object.pBody, gameTargets[gameTargetIndex].pTarget)){//
+        if(gameTargetIndex >= 0 && checkOverlap(object.pBody, gameTargets[gameTargetIndex].pTarget)){
             sendScore(entity, gameTargets[gameTargetIndex].pTarget)
         }
 

@@ -136,7 +136,7 @@ export function rotateRacingObject(index:number, amount:number){
 }
 
 export function setRacingPosition(index:number, amount:number){
-    console.log('moving racing objet')
+    // console.log('moving racing objet')
     let object = racingObjects[index]
 
     let objectTransform = Transform.getMutable(object.object)
@@ -145,18 +145,18 @@ export function setRacingPosition(index:number, amount:number){
     let objectTransform2 = Transform.getMutable(object.object2)
     objectTransform2.position.y = amount
 
-    console.log('y is now', objectTransform2.position.y)
+    // console.log('y is now', objectTransform2.position.y)
 }
 
 export function setRacingRotation(index:number, amount:number){
-    console.log('rotating racing object', index, amount)
+    // console.log('rotating racing object', index, amount)
     let object = racingObjects[index]
     let parent = object.parent
     let transform = Transform.getMutable(parent)
     let rotation = Quaternion.toEulerAngles(transform.rotation)
     rotation.z = (-1 * amount)
 
-    console.log('parent rotation is', rotation.z)//
+    // console.log('parent rotation is', rotation.z)//
 
     transform.rotation = Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z)
 
