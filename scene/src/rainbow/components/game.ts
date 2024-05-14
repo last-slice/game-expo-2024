@@ -64,6 +64,7 @@ export function prepGame(){
 }
 
 export function addPodTarget(info:any){
+    console.log('adding pod target', info)
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
@@ -75,9 +76,9 @@ export function addPodTarget(info:any){
         // MeshCollider.setBox(target)
     
         // let pos = Transform.get(activationPods[i].pod).position
-        Transform.create(target, {position: Vector3.create(info.x, info.y, info.z)})
+        Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z)})
         // Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
-        GltfContainer.create(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.balloons[1]})
+        GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.balloons[1]})
 
         pTarget = new CANNON.Body({
             mass: 0,
@@ -132,13 +133,13 @@ export function startGame(){
         }
     })
     //add systems
-    //do other things//
+    //do other things
 }
 
 export function endGame(){
     removeInputSystem()
     // resetTargets()
-    hideStartPods(true)
+    hideStartPods(true)//
 }
 
 export function resetGame(testing?:boolean){
@@ -188,5 +189,12 @@ export function animateLightShow(){
 
 export function sendScore(entity:Entity, target:any){
     removeBall(entity)
-    sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target.id})
+    sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target})
+}
+
+export function explodeTarget(id:string){
+    let index = gameTargets.findIndex(target => target.id === id)
+    if(index >= 0){
+        console.log('play target explode animation')
+    }
 }

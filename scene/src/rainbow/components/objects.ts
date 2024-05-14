@@ -16,15 +16,15 @@ export function createObjects(){
     for(let i = 0; i < podPositions.length; i++){ 
         let radius = initialX - i * spacing
         let parent = engine.addEntity()
-        Transform.create(parent, {position: Vector3.create(32,24,32), parent:sceneParent})
+        Transform.createOrReplace(parent, {position: Vector3.create(32,24,32), parent:sceneParent})
 
         let ent = engine.addEntity()
         GltfContainer.create(ent, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[i]})
-        Transform.create(ent, {position: Vector3.create(initialX, -22, -4.5), rotation: Quaternion.fromEulerDegrees(0,180,0), scale: Vector3.create(0.5, 0.5, 0.5), parent: parent})
+        Transform.createOrReplace(ent, {position: Vector3.create(initialX, -22, -4.5), rotation: Quaternion.fromEulerDegrees(0,180,0), scale: Vector3.create(0.5, 0.5, 0.5), parent: parent})
 
         let ent2 = engine.addEntity()
         GltfContainer.create(ent2, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[i]})
-        Transform.create(ent2, {position: Vector3.create(initialX, -22, 5), scale: Vector3.create(0.5,0.5,0.5), parent: parent})
+        Transform.createOrReplace(ent2, {position: Vector3.create(initialX, -22, 5), scale: Vector3.create(0.5,0.5,0.5), parent: parent})
 
         racingObjects.push({object:ent, object2:ent2, r:radius, parent:parent, stage:1})
         initialX += spacing

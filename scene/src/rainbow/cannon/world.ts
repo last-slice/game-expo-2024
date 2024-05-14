@@ -1,7 +1,7 @@
 import * as CANNON from 'cannon/build/cannon'
 
 export let ballPhysicsMaterial:CANNON.Material
-export const wallShape = new CANNON.Box(new CANNON.Vec3(16, 32, 1))
+export const wallShape = new CANNON.Box(new CANNON.Vec3(64, 64, 1))
 export let wallNorth:any
 
 export function loadPhysicsWorld(world: CANNON.World): void {
@@ -36,8 +36,6 @@ export function loadPhysicsWorld(world: CANNON.World): void {
   world.addContactMaterial(ballPhysicsContactMaterial)
 }
 
-//
-
 function loadWalls(world:CANNON.World){
     // Invisible walls
     //   wallNorth = new CANNON.Body({
@@ -71,12 +69,12 @@ function loadWalls(world:CANNON.World){
     // world.addBody(wallEast)
 
 
-    world.addEventListener("beginContact", function(event:any) {
-      // if ((event.bodyA === ballBody && event.bodyB === wallBody) ||
-      //     (event.bodyB === ballBody && event.bodyA === wallBody)) {
-      //     console.log("Ball has hit the wall!");
-      // }
+  //   world.addEventListener("beginContact", function(event:any) {
+  //     // if ((event.bodyA === ballBody && event.bodyB === wallBody) ||
+  //     //     (event.bodyB === ballBody && event.bodyA === wallBody)) {
+  //     //     console.log("Ball has hit the wall!");
+  //     // }
 
-      console.log("Ball has hit the wall!");
-  });
+  //     console.log("Ball has hit the wall!");
+  // });
 }

@@ -4,10 +4,18 @@ import { GameTarget } from "../rooms/schema/GameRoomState";
 
 let startAmount:number = 4
 
+let tierRarity:any[] = [
+    {multiplier: 0, rarity:0},
+    {multiplier: 1, rarity:0.9},
+    {multiplier: 2, rarity:0.04},
+    {multiplier: 3, rarity:0.03},
+    {multiplier: 4, rarity:0.02},
+    {multiplier: 5, rarity:0.01},
+]
+
 export class TargetSystem extends Schema {
     
     room:GameRoom
-    targets:GameTarget[] = []
 
     self:any
 
@@ -19,7 +27,7 @@ export class TargetSystem extends Schema {
 
     init(){
         for(let i = 0; i < startAmount; i++){
-            this.addTarget(1, false)
+            this.addTarget(this.selectRarity(), false)
         }
     }
 
@@ -38,8 +46,31 @@ export class TargetSystem extends Schema {
     }
 
     createTarget(){
-        let multiplier = 1
+        let multiplier = this.selectRarity()
         this.addTarget(multiplier, true)
+    }
+
+    selectRarity(){
+        const cumulativeDistribution: number[] = [];
+        let cumulativeSum = 0;
+
+        for (const target of tierRarity) {
+            cumulativeSum += target.rarity;
+            cumulativeDistribution.push(cumulativeSum);
+        }
+
+        // Generate a random number between 0 and 1
+        const randomValue = Math.random();
+
+        // Find the target corresponding to the random value
+        for (let i = 0; i < cumulativeDistribution.length; i++) {
+            if (randomValue < cumulativeDistribution[i]) {
+            return tierRarity[i].multiplier;
+            }
+        }
+
+        // Fallback in case of rounding errors
+        return tierRarity[tierRarity.length - 1].multiplier;
     }
 
     addTarget(multiplier:number, move:boolean){
@@ -52,9 +83,5 @@ export class TargetSystem extends Schema {
             this.room.state.targets.splice(index, 1)
             this.createTarget()
         }
-    }
-
-    targetExists(id:string){
-        return this.targets.filter(target => target.id === id).length > 0 ? true : false
     }
 }

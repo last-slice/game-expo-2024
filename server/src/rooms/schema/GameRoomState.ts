@@ -5,6 +5,7 @@ import { GameManager } from "../../Objects/GameManager";
 import { getRandomIntInclusive } from "../../utils/functions";
 import { generateId } from "colyseus";
 import { TargetSystem } from "../../Objects/GameTargetSystem";
+import { SERVER_MESSAGE_TYPES } from "../../utils/types";
 
 let xMin:number = 20
 let xMax:number = 44
@@ -23,6 +24,7 @@ export class GameTarget extends Schema{
   @type("number") targetTick:number = -500
   @type("number") multiplier:number = 1
   @type("boolean") move:boolean = false
+  @type("boolean") enabled:boolean = false
 
   targetSystem:TargetSystem
 
@@ -37,6 +39,7 @@ export class GameTarget extends Schema{
     this.targetSystem = targetSystem
     this.multiplier = multiplier
     this.move = shouldMove
+    this.enabled = true
 
     this.chooseNewLocation()
     shouldMove ? this.startCountdown(this.movementCountdownBase) : null
@@ -51,9 +54,19 @@ export class GameTarget extends Schema{
   startCountdown(time:number){
     this.movementCountdown = setTimeout(()=>{
       this.clearTimers()
-      this.targetSystem.deleteTarget(this.id)
+      this.startDelete()
     }, 1000 * time)
   }
+
+  startDelete(){
+    this.enabled = false
+    this.targetSystem.room.broadcast(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, {id: this.id})
+    this.movementCountdown = setTimeout(()=>{
+      this.clearTimers()
+      this.targetSystem.deleteTarget(this.id)
+    }, 1000)
+  }
+
 
   clearTimers(){
     clearTimeout(this.movementCountdown)
@@ -100,6 +113,7 @@ export class GamePod extends Schema{
     this.name = ""
     this.id = ""
     this.score = 0
+    this.factor = .1
     this.locked = false
     this.racingObject.resetObject()
   }

@@ -9,21 +9,25 @@ export class GameManager {
 
     room:GameRoom
 
-    minPlayers:number = 2
+    minPlayers:number = 1
     maxPlayers:number = 8
+    numPlayers:number = 0
+
     winThreshold:number = 180
 
     pods:any[] = []
 
     countdownTimer:any
     countdownInterval:any
-    countdownBase:number = 5
+    countdownBase:number = 10
     countdownTime:number = this.countdownBase
 
     gameTimeBase:number = 300
     gameResetTimeBase:number = 10
 
     targetSystem:TargetSystem
+
+    haveMinPlayers:boolean = false
 
     constructor(gameRoom:GameRoom){
         this.room = gameRoom
@@ -45,6 +49,18 @@ export class GameManager {
                 console.log('found pod')
                 pod.resetPod()
             }
+            this.checkRemainingPlayers()
+        }
+    }
+
+    checkRemainingPlayers(){
+        let playing = 0
+        this.room.state.pods.forEach((pod)=>{
+            pod.locked ? playing++ : null
+        })
+
+        if(playing === 0){
+            this.endGame()
         }
     }
 
@@ -63,6 +79,7 @@ export class GameManager {
             pod.locked = true
             pod.id = playerData.userId
             pod.name = playerData.name
+            this.numPlayers++
             this.checkGameReady()
         }else{
             console.log('game already initializing')
@@ -78,10 +95,17 @@ export class GameManager {
     checkGameReady(){
         if(this.room.state.pods.filter(pod => pod.locked).length >= this.minPlayers && !this.room.state.startingSoon){
             console.log("we have minimum players, begin game")
+            
+            if(this.haveMinPlayers){
+                this.clearCountdown()
+            }else{
+                this.haveMinPlayers = true
+            }
+
             this.countdownTimer = setTimeout(()=>{
                 this.room.state.startingSoon = true
                 this.startGameCountdown()
-              }, 1000 * 3)
+              }, 1000 * 5)
         }
     }
 
@@ -128,7 +152,7 @@ export class GameManager {
           }, 1000 * this.countdownTime)
     }
 
-    endGame(){
+    async endGame(){
         this.room.state.ended = true
         this.clearCountdown()
 
@@ -141,7 +165,7 @@ export class GameManager {
             }
         })
 
-        this.determineWinner()
+        await this.determineWinner()
         //clean up etc
 
         this.countdownTime = this.gameResetTimeBase
@@ -157,11 +181,10 @@ export class GameManager {
         let highscore = 0
         let winner = ""
         this.room.state.pods.forEach((pod, i:number)=>{
-            if(i === this.maxPlayers && highscore === pod.score){
-                console.log('we have a tie!!')
-                winner = "tie"
-            }else{
-                if(pod.locked && pod.score > highscore){
+            if(pod.locked){
+                if(pod.score === highscore){
+                    winner = "tie"
+                }else{
                     highscore = pod.score
                     winner = pod.name
                 }
@@ -179,6 +202,8 @@ export class GameManager {
     resetGame(){
         this.clearPods()
         this.resetPlayers()
+        this.numPlayers = 0
+        this.haveMinPlayers = false
         this.room.state.started = false
         this.room.state.ended = false
         this.room.state.startingSoon = false
@@ -192,19 +217,24 @@ export class GameManager {
     }
 
     attemptScore(client:Client, info:any){
+        // console.log('player is', client.userData.userId)//
         if(this.isGameLive()){
-            // if(this.targetSystem.targetExists(info.id)){
+            let target = this.room.state.targets.find(target => target.id === info.id)
+            if(target && target.enabled){
                 let player:Player = this.room.state.players.get(client.userData.userId)
                 if(player && player.playing){
-                    let pod = this.room.state.pods.filter(pod => pod.id === player.dclData.userId)[0]
+                    let pod = this.room.state.pods.find(pod => pod.id === player.dclData.userId)
                     if(pod){
-                        pod.score += pod.factor
+                        console.log('adding score ', (pod.factor * target.multiplier))
+                        pod.score += (pod.factor * target.multiplier)
                         this.advanceObject(pod)
+                    }else{
+                        console.log('couldnt find pod')
                     }
                 }else{
                     console.log('player is not playing, cheating?', client.userData.userId)
                 }
-            // }
+            }
             // else{
             //     console.log('target doesnt exist, player cheating?', info.id,  client.userData.userId)
             // }
@@ -222,7 +252,7 @@ export class GameManager {
     // }
 
     advanceObject(pod:GamePod){
-        console.log('advancing object')
+        // console.log('advancing object')
         let step:number
 
         switch(pod.stage){
@@ -283,7 +313,7 @@ export class GameManager {
             break;
 
             case 4:
-                console.log('stage 4')
+                // console.log('stage 4')
                 this.endGame()
                 break;
         }

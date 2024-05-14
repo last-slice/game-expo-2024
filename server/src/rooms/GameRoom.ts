@@ -6,6 +6,7 @@ import { pushPlayfabEvent } from "../Objects/PlayfabEvents";
 import { GameRoomState } from "./schema/GameRoomState";
 import { RoomHandler } from "./handlers/RoomHandler";
 import { GameManager } from "../Objects/GameManager";
+import { addGameRoom, gameRooms, removeGameRoom } from "../Objects/Admin";
 
 export class GameRoom extends Room<GameRoomState> {
 
@@ -36,6 +37,8 @@ export class GameRoom extends Room<GameRoomState> {
 
     onCreate(options: any) {
         this.setState(new GameRoomState());
+        addGameRoom(this)
+
         this.state.world = options.world
 
         this.state.gameManager = new GameManager(this)
@@ -84,6 +87,8 @@ export class GameRoom extends Room<GameRoomState> {
         console.log("room", this.roomId, "disposing...");
         //clear all timers
         this.state.gameManager.garbageCollect()
+
+        removeGameRoom(this.roomId)
     }
 
     async getPlayerInfo(client: Client, options: any) {

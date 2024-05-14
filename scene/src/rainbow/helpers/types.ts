@@ -12,6 +12,7 @@ export enum SERVER_MESSAGE_TYPES {
 
     PLAYER_JOINED = 'player_joined',
     PLAYTIME = 'playtime',
+    EXPLODE_TARGET ='explode_target'
 }
 
 export enum POD_COLORS {

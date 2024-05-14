@@ -1,6 +1,6 @@
 import { Room } from "colyseus.js";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
-import { addPodTarget, endGame, lockPod, moveTarget, prepGame, removeTarget, resetGame, setPodPosition, startGame } from "./game";
+import { addPodTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, setPodPosition, startGame } from "./game";
 import { displayGamingCountdown, levelCountdownTimer } from "../ui/gamingCountdown";
 import { setRacingPosition, setRacingRotation } from "./objects";
 import { displayWinnerUI } from "../ui/winnerUI";
@@ -11,6 +11,8 @@ import { gameRoom } from "./server";
 import { createBall } from "../cannon";
 import { resetPodLock } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
+import { AudioSource, engine } from "@dcl/sdk/ecs";
+import { playSound } from "@dcl-sdk/utils";
 
 
 export function createServerHandlers(room:Room){
@@ -23,11 +25,17 @@ export function createServerHandlers(room:Room){
         createBall(info)
     })
 
+    room.onMessage(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, (info:any)=>{
+        console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
+        explodeTarget(info.id)
+    })
+
     room.state.listen("gameCountdown", (c:any, p:any)=>{
         // console.log('game countodown', p, c)
         if(p !== undefined && (c !== -500 || c !== 0)){
             displayGamingCountdown(true)
             levelCountdownTimer.setNumber(c)
+            playSound("sounds/countdown.mp3", false)
         }
 
         if(c === -500){
@@ -80,9 +88,9 @@ export function createServerHandlers(room:Room){
         }
 
         pod.listen("score", (c:any, p:any)=>{
-            // console.log('pod score changed', p, c)//
+            // console.log('pod score changed', p, c)
             // if(c < 180){//
-            //     rotateRacingObject(key, (c - (p === undefined ? 0 : p)))
+            //     rotateRacingObject(key, (c - (p === undefined ? 0 : p)))//
             // }else if(c >= 180){
             //     console.log('greater thamn 180')
             //     rotateRacingObject(key, 180)
@@ -91,6 +99,10 @@ export function createServerHandlers(room:Room){
                 // rotateRacingObject(key, (c - (p === undefined ? 0 : p)))
                 // advanceObject(key, pod.factor)
                 updateLeaderboard()
+            }
+
+            if(pod.id === localPlayer.userId){
+                playSound("sounds/ui_click_go.mp3", false)
             }
         })
 

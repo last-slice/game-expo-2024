@@ -23,14 +23,15 @@ export function PhysicsUpdateSystem(dt: number): void {
       let object = ballBodies.get(entity)
       if(object){
 
-        let gameTargetIndex = gameTargets.findIndex((gt => gt.userId === localPlayer.userId))
-        if(gameTargetIndex >= 0 && checkOverlap(object.pBody, gameTargets[gameTargetIndex].pTarget)){
-            sendScore(entity, gameTargets[gameTargetIndex].pTarget)
-        }
+        // let gameTargetIndex = gameTargets.findIndex((gt => gt.userId === localPlayer.userId))
+        // if(gameTargetIndex >= 0 && checkOverlap(object.pBody, gameTargets[gameTargetIndex].pTarget)){
+        //     sendScore(entity, gameTargets[gameTargetIndex].id)
+        // }//
 
         gameTargets.forEach((target)=>{
           if(checkOverlap(object.pBody, target.pTarget)){
-            sendScore(entity, target)
+            console.log('target is', target.id)
+            sendScore(entity, target.id)
           }
         })
 
@@ -43,7 +44,7 @@ export function PhysicsUpdateSystem(dt: number): void {
 
         // if(ballTransform.position.z < 0 || ballTransform.position.z > 64 || ballTransform.position.x < 0 || ballTransform.position.x > 64){
         //   removeBall(entity)
-        // }
+        // }//
       }
     }
 
