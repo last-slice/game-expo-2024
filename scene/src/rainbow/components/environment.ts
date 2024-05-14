@@ -1,4 +1,4 @@
-import { Billboard, BillboardMode, ColliderLayer, EasingFunction, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine } from "@dcl/sdk/ecs"
+import { Animator, Billboard, BillboardMode, ColliderLayer, EasingFunction, Entity, GltfContainer, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine } from "@dcl/sdk/ecs"
 import { Color4, Vector3, Quaternion } from "@dcl/sdk/math"
 import { utils } from "../helpers/libraries"
 import { gameRoom, sendServerMessage } from "./server"
@@ -24,7 +24,10 @@ export let sceneYPosition:number = 27
 export let activationPods:any[] = []
 export let sceneParent:Entity
 
-// utils.triggers.enableDebugDraw(true)//
+const animatedCloud = 'models/cloudVerticalElevator.glb'
+const sceneCenter = Vector3.create(32, 0, 32)
+
+const animatedClouds = 'models/cloudHover.glb'
 
 const rainbowTransforms = [
     { position: Vector3.create(32, 6.75, 62), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25)},
@@ -57,6 +60,87 @@ function createBase(){
     createRainbows()
 
     addPigTrainSystem()
+
+    createClouds()
+}
+
+function createClouds(){
+    const cloudEntity = engine.addEntity()
+    GltfContainer.create(cloudEntity, {src: animatedCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(cloudEntity, { position: sceneCenter})
+    Animator.create(cloudEntity, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.1
+            }
+        ]
+    })
+
+    const cloudEntity2 = engine.addEntity()
+    GltfContainer.create(cloudEntity2, {src: animatedCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(cloudEntity2, { position: sceneCenter, rotation: Quaternion.fromEulerDegrees(0, 90, 0)})
+    Animator.create(cloudEntity2, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.15
+            }
+        ]
+    })
+
+    const clouds1 = engine.addEntity()
+    GltfContainer.create(clouds1, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(clouds1, {position: sceneCenter})
+    Animator.create(clouds1, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.25
+            }
+        ]
+    })
+    const clouds2 = engine.addEntity()
+    GltfContainer.create(clouds2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(clouds2, {position: sceneCenter, rotation: Quaternion.fromEulerDegrees(0, 90, 0)})
+    Animator.create(clouds2, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.15
+            }
+        ]
+    })
+
+    const clouds3 = engine.addEntity()
+    GltfContainer.create(clouds3, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(clouds3, {position: sceneCenter, rotation: Quaternion.fromEulerDegrees(0, 180, 0)})
+    Animator.create(clouds3, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.15
+            }
+        ]
+    })
+
+    const clouds4 = engine.addEntity()
+    GltfContainer.create(clouds4, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(clouds4, {position: sceneCenter, rotation: Quaternion.fromEulerDegrees(0, 270, 0)})
+    Animator.create(clouds4, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.15
+            }
+        ]
+    })
 }
 
 function createElevator(){
