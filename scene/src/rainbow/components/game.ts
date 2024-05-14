@@ -13,6 +13,7 @@ import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import resources, { colors } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
+import { forwardVector, setForwardVector } from "../systems/Physics";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -38,7 +39,7 @@ export function lockPod(info:any){
     let transform = Transform.getMutableOrNull(lockedModel)
     if(transform){
         console.log('we found transform to lock pod')
-        transform.position = Vector3.create(0, 2, 0)
+        transform.position = Vector3.create(0, 0, 0)
         transform.scale = Vector3.create(1,4,1)
     }
 }
@@ -52,44 +53,44 @@ export function initGame(){
 }
 
 export function prepGame(){
-    resetTargets()
+    setForwardVector()
+    // resetTargets()
     hideStartPods()
-    displayStartingSoonUI(true)
+    displayStartingSoonUI(true, 'GAME STARTING SOON')
 
-    gameRoom.state.pods.forEach((pod:any, i:number) => {
-        addPodTarget(pod, i)
-    });
+    // gameRoom.state.pods.forEach((pod:any, i:number) => {
+    //     addPodTarget(pod, i)
+    // });
 }
 
-export function addPodTarget(pod:any, i:number){
+export function addPodTarget(info:any){
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
 
-    if(pod.locked && pod.id === localPlayer.userId){
+
+    // if(pod.locked && pod.id === localPlayer.userId){
         // console.log('adding target for pod', i)
         // MeshRenderer.setBox(target)
         // MeshCollider.setBox(target)
     
-        let pos = Transform.get(activationPods[i].pod).position
-        Transform.create(target, {position: Vector3.create(pos.x, sceneYPosition + 2, pos.z + 5)})
+        // let pos = Transform.get(activationPods[i].pod).position
+        Transform.create(target, {position: Vector3.create(info.x, info.y, info.z)})
         // Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
-        GltfContainer.create(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.balloons[i]})
-
-        let targetPosition = Transform.get(target).position
+        GltfContainer.create(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.balloons[1]})
 
         pTarget = new CANNON.Body({
             mass: 0,
             shape: new CANNON.Box(new CANNON.Vec3(1,1,1)),
-            position: new CANNON.Vec3(targetPosition.x, targetPosition.y, targetPosition.z),
+            position: new CANNON.Vec3(info.x, info.y, info.z),
             collisionFilterGroup:2,
             collisionFilterMask:0
           })
           world.addBody(pTarget)
           userId = localPlayer.userId
-    }
+    // }
 
-    gameTargets.push({target:target, pTarget:pTarget, userId: userId})
+    gameTargets.push({id:info.id, target:target, pTarget:pTarget, userId: userId})
 }
 
 export function hideStartPods(resetName?:boolean){
@@ -99,18 +100,32 @@ export function hideStartPods(resetName?:boolean){
     })
 }
 
-export function resetTargets(){
-    gameTargets.forEach((gameTarget:any)=>{
-        engine.removeEntity(gameTarget.target)
-        if(gameTarget.pTarget){
-            world.remove(gameTarget.pTarget)
-        }
-    })
-    gameTargets.length = 0
+export function removeTarget(id:string){
+    let index = gameTargets.findIndex(target => target.id === id)
+    if(index >= 0){
+        removeTargetObjects(gameTargets[index])
+        gameTargets.splice(index, 1)
+    }
 }
+
+export function removeTargetObjects(gameTarget:any){
+    engine.removeEntity(gameTarget.target)
+    if(gameTarget.pTarget){
+        world.remove(gameTarget.pTarget)
+    }
+}
+
+// export function resetTargets(){
+//     gameTargets.forEach((gameTarget:any)=>{
+//         removeTargetObjects(gameTarget)
+//     })
+//     gameTargets.length = 0
+// }
 
 export function startGame(){
     displayLeaderboardUI(true)
+    displayStartingSoonUI(false, "")
+
     gameTargets.forEach((objects:any)=>{
         if(objects.userId === localPlayer.userId){
             addInputSystem()
@@ -122,7 +137,7 @@ export function startGame(){
 
 export function endGame(){
     removeInputSystem()
-    resetTargets()
+    // resetTargets()
     hideStartPods(true)
 }
 
@@ -171,7 +186,7 @@ export function animateLightShow(){
 
 }
 
-export function sendScore(entity:Entity, target?:any){
-    removeBall(entity, target)
-    sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {})
+export function sendScore(entity:Entity, target:any){
+    removeBall(entity)
+    sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target.id})
 }

@@ -3,6 +3,7 @@ import { createBall, velocity } from "../cannon"
 import { sendServerMessage } from "../components/server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
 import { Vector3 } from "@dcl/sdk/math"
+import { forwardVector } from "./Physics"
 
 export let added = false
 export let factor = 10
@@ -55,7 +56,7 @@ export function AddBallSystem(dt:number){
         }
 
         let pos = Transform.get(engine.PlayerEntity).position
-        sendServerMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, {pos:pos, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)})
+        sendServerMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, {pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)})
     }else{
         // if(mass >= 600000){
         //     if(time < .1){

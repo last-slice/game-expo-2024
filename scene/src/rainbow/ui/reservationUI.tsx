@@ -39,7 +39,7 @@ export function ReservationUI() {
                 width: dimensions.width * 0.5,
                 height: dimensions.height * .2,
                 positionType: 'absolute',
-                position:{top:'10%', right:'25%'},
+                position:{top:'20%', right:'25%'},
             }}
             // uiBackground={{color:Color4.Green()}}
         >

@@ -28,15 +28,24 @@ export function PhysicsUpdateSystem(dt: number): void {
             sendScore(entity, gameTargets[gameTargetIndex].pTarget)
         }
 
+        gameTargets.forEach((target)=>{
+          if(checkOverlap(object.pBody, target.pTarget)){
+            sendScore(entity, target)
+          }
+        })
+
         ballTransform.position = object.pBody.position
         ballTransform.rotation = object.pBody.quaternion
 
         if(ballTransform.position.y < 20 || ballTransform.position.z < 0 || ballTransform.position.z > 64 || ballTransform.position.x < 0 || ballTransform.position.x > 64){
             removeBall(entity)
         }
+
+        // if(ballTransform.position.z < 0 || ballTransform.position.z > 64 || ballTransform.position.x < 0 || ballTransform.position.x > 64){
+        //   removeBall(entity)
+        // }
       }
     }
 
-    // Update forward vector
     forwardVector = Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)
   }

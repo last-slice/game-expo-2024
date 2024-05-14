@@ -1,12 +1,11 @@
 
 import { Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
-import { Color3, Color4, Vector3 } from '@dcl/sdk/math';
+import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math';
 import * as CANNON from 'cannon/build/cannon'
 import { ballPhysicsMaterial, loadPhysicsWorld } from './world';
-import { BallComponent, gameTargets } from '../components/game';
-import { syncEntity, parentEntity } from '@dcl/sdk/network'
+import { BallComponent } from '../components/game';
 import { localPlayer } from '../components/player';
-import { setForwardVector, PhysicsUpdateSystem, forwardVector } from '../systems/Physics';
+import { PhysicsUpdateSystem } from '../systems/Physics';
 import resources, { colors } from '../helpers/resources';
 
 export let ballBodies:Map<Entity, any> = new Map()
@@ -22,7 +21,6 @@ export function createPhysics(){
     world.gravity.set(0, -9.82, 0) // m/s²
 
     loadPhysicsWorld(world)
-    setForwardVector()
 
     engine.addSystem(PhysicsUpdateSystem)
 }
@@ -38,14 +36,10 @@ export function checkOverlap(bodyA:any, bodyB:any) {
     return aabbA.overlaps(aabbB);
 }
 
-export function removeBall(entity:Entity, target?:any){
+export function removeBall(entity:Entity){
     let object = ballBodies.get(entity)
       if(object){
         world.remove(object.pBody)
-      }
-
-      if(target){
-        world.remove(target)
       }
 
     ballBodies.delete(entity)    
@@ -54,20 +48,18 @@ export function removeBall(entity:Entity, target?:any){
 
 export function createBall(info:any){
     let pos = info.pos
+    let direction = info.direction
 
     let entity = engine.addEntity()
-    // MeshRenderer.setSphere(entity)
+    // MeshRenderer.setSphere(entity)//
     // Material.setPbrMaterial(entity, {albedoColor: colors[info.id], emissiveColor: colors[info.id], emissiveIntensity: 2})
-    Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size)})
+    Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size), rotation:Quaternion.fromEulerDegrees(0, direction.y, 0)})
     GltfContainer.create(entity, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[info.id]})
-
-
-
 
     const ballTransform = Transform.get(entity)
 
     const ballBody: CANNON.Body = new CANNON.Body({
-      mass: mass, // kg
+      mass: mass, // kg//
       position: new CANNON.Vec3(ballTransform.position.x, ballTransform.position.y, ballTransform.position.z), // m
       shape: new CANNON.Sphere(size) // m (Create sphere shaped body with a radius of 1)
     })
@@ -79,7 +71,7 @@ export function createBall(info:any){
     world.addBody(ballBody)
     ballBodies.set(entity, {pBody:ballBody, userId: localPlayer.userId})
 
-    ballBody.velocity.set(forwardVector.x * velocity, forwardVector.y * velocity, forwardVector.z * velocity)
+    ballBody.velocity.set(direction.x * velocity, direction.y * velocity, direction.z * velocity)
 
 
     // ballBody.applyImpulse(

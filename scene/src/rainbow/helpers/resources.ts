@@ -27,7 +27,7 @@ export let colors:Color4[] = [
 ]
 
 export default {
-    DEBUG: true,
+    DEBUG: false,
     noServer: false,
 
     slug:"game::jam::2024",
@@ -65,7 +65,7 @@ export default {
 
     endpoints:{
         wsTest: "ws://localhost:2551",
-        wsProd: "wss://dcl-iwb.co/toolset",
+        wsProd: "wss://lkdcl.co/game-expo",
 
         deploymentTest: "http://localhost:2551",
         deploymentProd: "https://deployment.dcl-iwb.co",

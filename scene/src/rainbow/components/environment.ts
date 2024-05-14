@@ -10,7 +10,7 @@ import resources, { colors } from "../helpers/resources"
 import { podPositions } from "./game"
 import { addPigTrainSystem, removePigTrainSystem } from "../systems/PigTrain"
 import { addBuilderHUDAsset } from "../../dcl-builder-hud"
-import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel"
+import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel"//
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
 
@@ -24,7 +24,7 @@ export let sceneYPosition:number = 27
 export let activationPods:any[] = []
 export let sceneParent:Entity
 
-// utils.triggers.enableDebugDraw(true)
+// utils.triggers.enableDebugDraw(true)//
 
 const rainbowTransforms = [
     { position: Vector3.create(32, 6.75, 62), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25)},
@@ -115,12 +115,12 @@ const sceneEntity = engine.addEntity()
 }
 
 function createsStartPods(){
-    enableBuilderHUD(true)
+    // enableBuilderHUD(true)
     for(let i = 0; i < podPositions.length; i++){
         let pod = engine.addEntity()
         let pos = podPositions[i]
         Transform.create(pod, {position: Vector3.create(pos.x, 0, pos.z), parent:sceneParent})
-        addBuilderHUDAsset(pod, 'pod-' + i)
+        // addBuilderHUDAsset(pod, 'pod-' + i)
 
         let podModel = engine.addEntity()
         Transform.create(podModel, {parent:pod, scale:Vector3.create(1,.1,1)})
@@ -291,7 +291,4 @@ export function expandPodLock(index:number, amount:number){
               })
         }
     }
-
-    // transform.position = Vector3.create(0, -2,0)
-    // transform.scale = Vector3.create(1,0,1)
 }

@@ -1,6 +1,6 @@
 import { Room } from "colyseus.js";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
-import { endGame, lockPod, moveTarget, prepGame, resetGame, setPodPosition, startGame } from "./game";
+import { addPodTarget, endGame, lockPod, moveTarget, prepGame, removeTarget, resetGame, setPodPosition, startGame } from "./game";
 import { displayGamingCountdown, levelCountdownTimer } from "../ui/gamingCountdown";
 import { setRacingPosition, setRacingRotation } from "./objects";
 import { displayWinnerUI } from "../ui/winnerUI";
@@ -10,6 +10,7 @@ import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
 import { createBall } from "../cannon";
 import { resetPodLock } from "./environment";
+import { displayStartingSoonUI } from "../ui/startingSoonUI";
 
 
 export function createServerHandlers(room:Room){
@@ -74,6 +75,10 @@ export function createServerHandlers(room:Room){
     room.state.pods.onAdd((pod:any, key:any) => {
         // console.log('pod added', key, pod)
 
+        if(!gameRoom.state.started && pod.locked){
+            lockPod({pod:key, name:pod.name})
+        }
+
         pod.listen("score", (c:any, p:any)=>{
             // console.log('pod score changed', p, c)//
             // if(c < 180){//
@@ -93,15 +98,23 @@ export function createServerHandlers(room:Room){
             // console.log('pod locked changed', p, c)
             if(c && p !== undefined){
                 lockPod({pod:key, name:pod.name})
+
+                if(!gameRoom.state.started){
+                    displayStartingSoonUI(true, "WAITING ON MORE PLAYERS")
+                }
+            }
+
+            if(!c && gameRoom.state.started){
+                updateLeaderboard()
             }
         })
 
-        pod.target.listen("targetTick", (c:any, p:any)=>{
-            // console.log('pod target tick changed', key, p, c)
-            if(gameRoom.state.started && c !== -500){
-                setPodPosition(pod, key)
-            }
-        })
+        // pod.target.listen("targetTick", (c:any, p:any)=>{
+        //     // console.log('pod target tick changed', key, p, c)
+        //     if(gameRoom.state.started && c !== -500){
+        //         setPodPosition(pod, key)
+        //     }
+        // })
 
         pod.racingObject.listen("y", (c:any, p:any)=>{
             // console.log('pod target y changed', key, p, c)
@@ -126,8 +139,7 @@ export function createServerHandlers(room:Room){
                 setRacingRotation(key, 0)
             }
         })
-    })
-
+    })//
 
     room.state.players.onAdd((player:any, key:any) => {
         if(player.address === localPlayer.userId){
@@ -147,5 +159,13 @@ export function createServerHandlers(room:Room){
                 updateReservationCounter(player.pod, c)
             })
         }
+    })
+
+    room.state.targets.onAdd((target:any, key:any) => {
+        addPodTarget(target)
+    })
+
+    room.state.targets.onRemove((target:any, key:any) => {
+        removeTarget(target.id)
     })
 }

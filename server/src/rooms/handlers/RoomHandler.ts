@@ -34,9 +34,7 @@ export class RoomHandler {
 
         room.onMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, async(client, info)=>{
             // console.log(SERVER_MESSAGE_TYPES.HIT_TARGET + " message", info)
-            let player:Player = this.room.state.players.get(client.userData.userId)
-            let pod = this.room.state.pods.filter(pod => pod.id === player.dclData.userId)[0]
-            this.room.state.gameManager.attemptScore(player, pod)
+            this.room.state.gameManager.attemptScore(client, info)
         })
 
         room.onMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, async(client, info)=>{

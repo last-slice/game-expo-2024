@@ -15,7 +15,7 @@ export function displayGamingCountdown(value: boolean, reset?:number) {
 
     if(value){
         levelCountdownTimer.show()
-        displayStartingSoonUI(false)
+        displayStartingSoonUI(false, "")
     }else{
         levelCountdownTimer.hide()
     }

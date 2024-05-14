@@ -5,9 +5,11 @@ import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
 
 export let show = false
+let message = "WAITING ON OTHER PLAYERS"
 
-export function displayStartingSoonUI(value: boolean) {
+export function displayStartingSoonUI(value: boolean, text:string) {
     show = value
+    message = text
 }
 
 export function StartingSoonUI() {
@@ -22,7 +24,7 @@ export function StartingSoonUI() {
                 width: dimensions.width * 0.5,
                 height: dimensions.height * .2,
                 positionType: 'absolute',
-                position:{top:'10%', right:'25%'},
+                position:{top:'5%', right:'25%'},
             }}
             // uiBackground={{color:Color4.Green()}}
         >
@@ -37,7 +39,7 @@ export function StartingSoonUI() {
             margin:{bottom:'2%'}
         }}
         // uiBackground={{color:Color4.Red()}}
-        uiText={{value:"GAME STARTING SOON", fontSize:sizeFont(65,35), textAlign:'middle-center', color:Color4.White()}}
+        uiText={{value:"" + message, fontSize:sizeFont(65,35), textAlign:'middle-center', color:Color4.White()}}
         />
 
         </UiEntity>

@@ -63,6 +63,9 @@ export class GameRoom extends Room<GameRoomState> {
     async onLeave(client: Client, consented: boolean) {
         let player:Player = this.state.players.get(client.userData.userId)
         if(player){
+
+            await this.state.gameManager.removePlayer(player)
+
             this.state.players.delete(client.userData.userId)
 
             //if player is playing, handle leave

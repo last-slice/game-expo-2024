@@ -1,0 +1,879 @@
+server {
+        root /var/www/html;
+
+        # Add index.php to the list if you are using PHP
+       index index.js 
+# index.htm index.nginx-debian.html;
+    server_name lkdcl.co; # managed by Certbot
+
+
+location /dcl/videos/dapp/ {
+            root /root/express/video-server/public;
+            index index.html;
+        }
+
+
+location / {
+      # add the following, to enable CORS
+      # CORS OPTIONS
+      #proxy_pass /var/www/html/;
+
+       # Disable cache
+        add_header Cache-Control no-cache;
+
+        # CORS setup
+        add_header 'Access-Control-Allow-Origin' '*' always;
+        add_header 'Access-Control-Expose-Headers' 'Content-Length';
+
+        # allow CORS preflight requests
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain charset=UTF-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+
+        types {
+            application/vnd.apple.mpegurl m3u8;
+            video/mp2t ts;
+        }
+
+         
+}
+
+location /game-expo/ {
+        proxy_pass http://localhost:2551/;
+        proxy_http_version 1.1;
+proxy_set_header	X-Real-IP	$remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+
+location /dcl/proxy {
+        proxy_pass http://localhost:9112;  # Change to your Node.js server's address
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+location /dcl/giveaways {
+proxy_pass http://localhost:8315/dcl/giveaways/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/videos/ {
+        proxy_pass http://localhost:2661/;
+        proxy_http_version 1.1;
+	proxy_set_header	X-Real-IP	$remote_addr;
+	proxy_set_header   X-Forwarded-Proto  $scheme;
+	proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+location /dcl/ {
+proxy_pass http://localhost:8817/dcl/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+    location /dcl/neurolink/ {
+        proxy_pass http://localhost:2756/;
+        proxy_http_version 1.1;
+proxy_set_header	X-Real-IP	$remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+
+    location /dcl/px/ {
+        proxy_pass http://localhost:2750/;
+        proxy_http_version 1.1;
+proxy_set_header	X-Real-IP	$remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+    location /dcl/angzaar/ {
+        proxy_pass http://localhost:2567/;
+        proxy_http_version 1.1;
+proxy_set_header	X-Real-IP	$remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+location /dcl/angtest/ {
+     proxy_pass http://localhost:8818/dcl/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+    location /dcl/angzaar/test/ {
+        proxy_pass http://localhost:2568/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+proxy_set_header	X-Real-IP	$remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_set_header X-Original-URL $request_uri;
+ }
+
+location /dcl/angzaar/rewards {
+proxy_pass http://localhost:8562/dcl/angzaar/rewards/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /angzaar/rewards {
+proxy_pass http://localhost:8881/angzaar/rewards/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /angzaar/monitor {
+proxy_pass http://localhost:8915/wss/colyseus/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /angzaar/wss {
+     proxy_pass http://localhost:8915/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+        # CORS setup
+       # add_header 'Access-Control-Expose-Headers' 'Content-Length, content-type, Content-Type';
+       # add_header 'Access-Control-Allow-Headers' 'content-type,Content-Type' always;
+
+# allow CORS preflight requests
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Max-Age' 1728000;
+           # add_header 'Access-Control-Allow-Headers' '*';
+            add_header 'Content-Type' 'text/plain charset=UTF-8';
+            add_header 'content-type' 'text/plain charset=UTF-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
+}
+
+location /dcl/apis {
+proxy_pass http://localhost:8334/dcl/apis/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/apis/wss {
+    proxy_pass http://localhost:8333/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /dcl/aiart {
+     proxy_pass http://localhost:8222/dcl/aiart/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/devplaza {
+proxy_pass http://localhost:8727/dcl/devplaza/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+client_max_body_size	500M;
+}
+
+location /dcl/atomic {
+proxy_pass http://localhost:8981/dcl/atomic/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+
+location /dcl/atomic/wss {
+    proxy_pass http://localhost:8919/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /dcl/aiartmint {
+proxy_pass http://localhost:8230/dcl/aiartmint/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /netflix {
+proxy_pass http://localhost:8215/netflix/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /aiartwss {
+    proxy_pass http://localhost:8223/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /netflixwss {
+    proxy_pass http://localhost:8216/netflixwss;  
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /snapple {
+     proxy_pass http://localhost:8214/snapple/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/etsx {
+     proxy_pass http://localhost:8231/dcl/etsx/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/etsx/wss {
+    proxy_pass http://localhost:8232/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /dcl/etsx-mints {
+     proxy_pass http://localhost:8321/dcl/etsx-mints/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/etsx/nounserver {
+proxy_pass http://localhost:8113/dcl/etsx/nounserver/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/validator {
+     proxy_pass http://localhost:8101/dcl/validator/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /dcl/sw {
+      proxy_pass http://localhost:8793/dcl/sw;
+}
+
+location /d/ {
+    proxy_pass http://localhost:8441/d/;
+}
+
+location /dcl/wedding2 {
+    proxy_pass http://localhost:7877/dcl/wedding2/;
+}
+
+location /dcl/wedding {
+    proxy_pass http://localhost:8711/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+
+location /dcl/rewards {
+     proxy_pass http://localhost:7772/dcl/rewards/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /neat {
+     proxy_pass http://localhost:7118/neat/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /neat/dcl/wss {
+    proxy_pass http://localhost:7119/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /dcl/airdrops {
+     proxy_pass http://localhost:7327/dcl/airdrops/;
+}
+
+location /dcl/etsxwss {
+     proxy_pass http://localhost:7771/dcl/etsxwss/;
+     proxy_set_header	X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+
+location /dcl/deadhead {
+    proxy_pass http://localhost:9888/dcl/deadhead/;
+}
+
+location /dcl/scenemgmt {
+      proxy_pass http://localhost:8998/dcl/scenemgmt/;
+}
+
+location /dcl/bm {
+      proxy_pass http://localhost:7898/dcl/bm/;
+}
+
+location /nfkey {
+      proxy_pass http://localhost:7676/nfkey/;
+}
+
+location /nft/metadata {
+      proxy_pass http://localhost:7777/nft/metadata/;
+}
+
+location /dcl/festival {
+      proxy_pass http://localhost:7999/dcl/festival/;
+} 
+
+location /terra/store {
+      # add the following, to enable CORS
+      # CORS OPTIONS
+      proxy_pass http://localhost:7779/terra/store/;
+}
+
+location /dcl/vip {
+      proxy_pass http://localhost:7171/dcl/vip/;
+}
+
+location /fent/logic {
+      proxy_pass http://localhost:8787/fent/logic/;
+}
+
+location /dcl/twitch2 {
+      proxy_pass http://localhost:8788/dcl/twitch2/;
+}
+
+location /terra/deploy {
+      proxy_pass http://localhost:7778/terra/deploy/;
+}
+
+location /terra/submit {
+      proxy_pass http://localhost:7777/terra/submit;
+}
+
+location /twitch {
+      proxy_pass http://localhost:7770/twitch/;
+}
+
+location /dcl/wssetsx {
+    proxy_pass http://localhost:8083/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /server {
+      proxy_pass http://localhost:7001;
+}
+
+location /dcl/lss {
+      proxy_pass http://localhost:7005;
+}
+
+location /dcl/mgmt {
+    proxy_pass http://localhost:8084;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+
+location /dcl/dh {
+    proxy_pass http://localhost:8888;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+location /proxystream {
+     if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        #
+        # Custom headers and headers various browsers *should* be OK with but aren't
+        #
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        #
+        # Tell client that this pre-flight info is valid for 20 days
+        #
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'text/plain; charset=utf-8';
+        add_header 'Content-Length' 0;
+        return 204;
+     }
+     if ($request_method = 'POST') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+     }
+     if ($request_method = 'GET') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+     }
+        proxy_pass http://localhost:8098/;
+}
+
+location /proxy {
+     if ($request_method = 'OPTIONS') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        #
+        # Custom headers and headers various browsers *should* be OK with but aren't
+        #
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        #
+        # Tell client that this pre-flight info is valid for 20 days
+        #
+        add_header 'Access-Control-Max-Age' 1728000;
+        add_header 'Content-Type' 'text/plain; charset=utf-8';
+        add_header 'Content-Length' 0;
+        return 204;
+     }
+     if ($request_method = 'POST') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+     }
+     if ($request_method = 'GET') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+        add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+     }
+        proxy_pass http://localhost:8089/;
+}
+
+location /anzaar {
+     proxy_pass http://localhost:8882/anzaar/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /angzaar/discord/wss {
+    proxy_pass http://localhost:8883;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Host $host;
+    add_header 'Access-Control-Allow-Origin' '*';
+    add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+    #
+    #  Extra headers needed for certain browsers
+    #
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,if-range';
+
+    if ($request_method = 'OPTIONS') {
+    #
+            # Tell client that this pre-flight info is valid for 20 days
+            #
+    	add_header 'Access-Control-Max-Age' 1728000;
+    	add_header 'Content-Type' 'text/plain; charset=utf-8';
+    	add_header 'Content-Length' 0;
+    	return 204;
+    }
+    if ($request_method = 'GET') {
+            add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    }
+}
+
+
+location /dcl/streams {
+      proxy_pass http://localhost:8000/;
+}
+
+location /dcl/twitch {
+     proxy_pass http://localhost:8001/;
+}
+
+ location /dcl/dominos/ {
+        proxy_pass http://localhost:9119/;
+        proxy_http_version 1.1;
+proxy_set_header	X-Real-IP	$remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+location /dominos/store {
+      proxy_pass http://localhost:7997/dominos/store/;
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+proxy_pass_header Set-Cookie;
+}
+
+location /api/tracking {
+      proxy_pass http://localhost:7999/api/tracking/;
+      proxy_pass_header Set-Cookie;
+      proxy_set_header Host   $host;
+      proxy_set_header X-Real-IP  $remote_addr;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+}
+
+location /scenes {
+rewrite ^/scenes(.*)$ https://main.d22g2mau8i5c4k.amplifyapp.com/ redirect;
+}
+
+location /lastslice {
+rewrite ^/lastslice(.*)$ https://dev4365.d3k5gt0uiqpoon.amplifyapp.com/ redirect;
+}
+
+location /dcl/store {
+rewrite ^/dcl/store(.*)$ https://main.d2x688p54pj4vu.amplifyapp.com/ redirect;
+}
+
+location /referral {
+rewrite ^/referral(.*)$ https://main.d3otccjziasmt9.amplifyapp.com/ redirect;
+}
+
+location /dcl/smartitems {
+      proxy_pass http://localhost:7774/dcl/smartitems/;
+proxy_pass_header  Set-Cookie;
+
+proxy_set_header   Host               $host;
+proxy_set_header   X-Real-IP          $remote_addr;
+proxy_set_header   X-Forwarded-Proto  $scheme;
+proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+}
+
+
+   # listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/lkdcl.co/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/lkdcl.co/privkey.pem; # managed by Certbot
+    #include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    #ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+server {
+    if ($host = lkdcl.co) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+        listen 80 ;
+        listen [::]:80 ;
+    server_name lkdcl.co;
+client_max_body_size 200M;
+    return 404; # managed by Certbot
+}
+

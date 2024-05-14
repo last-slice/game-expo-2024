@@ -2,39 +2,68 @@ import { Schema, MapSchema,ArraySchema, type } from "@colyseus/schema";
 import { Player } from "../../Objects/Player";
 import { RoomHandler } from "../handlers/RoomHandler";
 import { GameManager } from "../../Objects/GameManager";
-import { TargetSystem } from "../../Objects/TargetSystem";
+import { getRandomIntInclusive } from "../../utils/functions";
+import { generateId } from "colyseus";
+import { TargetSystem } from "../../Objects/GameTargetSystem";
 
-let initialPositions:any[] = [
-  {x:19.8, y:28, z:41.1},
-  {x:27.1, y:28, z:46.1},
-  {x:36.6, y:28, z:45.9},
-  {x:43.5, y:28, z:40.5},
-  {x:43.7, y:28, z:23},
-  {x:36.55, y:28, z:18.3},
-  {x:27, y:28, z:18},
-  {x:20, y:28, z:23},
-]
+let xMin:number = 20
+let xMax:number = 44
+
+let yMin:number = 29
+let yMax:number = 50
+
+let zMin:number = 55
+let zMax:number = 10
 
 export class GameTarget extends Schema{
-  @type("number") id:number
-  @type("number") x:number = 0
-  @type("number") y:number = 0
-  @type("number") z:number = 0
+  @type("string") id:string
+  @type("number") x:number
+  @type("number") y:number
+  @type("number") z:number
   @type("number") targetTick:number = -500
+  @type("number") multiplier:number = 1
+  @type("boolean") move:boolean = false
+
+  targetSystem:TargetSystem
+
+  movementCountdownBase:number = 5
+  movementCountdownRange:any[] = [3, 8]
+  movementCountdown:any
+
+  constructor(targetSystem:TargetSystem, multiplier:number, shouldMove:boolean){
+    super()
+    this.id = generateId(5)
+
+    this.targetSystem = targetSystem
+    this.multiplier = multiplier
+    this.move = shouldMove
+
+    this.chooseNewLocation()
+    shouldMove ? this.startCountdown(this.movementCountdownBase) : null
+  }
+
+  async chooseNewLocation(){
+    this.x = getRandomIntInclusive(xMin, xMax)
+    this.y = getRandomIntInclusive(yMin, yMax)
+    this.z = getRandomIntInclusive(zMin, zMax)
+  }
+
+  startCountdown(time:number){
+    this.movementCountdown = setTimeout(()=>{
+      this.clearTimers()
+      this.targetSystem.deleteTarget(this.id)
+    }, 1000 * time)
+  }
+
+  clearTimers(){
+    clearTimeout(this.movementCountdown)
+  } 
 
   resetTarget(){
     this.x = 0
     this.y = 0
     this.z = 0
     this.targetTick = 0
-  }
-
-  setInitialPosition(id:number){
-    let pos = initialPositions[id]
-    this.x = pos.x
-    this.y = pos.y + 2
-    this.z = pos.z
-    this.targetTick = -500
   }
 }
 
@@ -64,18 +93,15 @@ export class GamePod extends Schema{
   @type("number") stage:number = 1
   @type("number") score:number = 0
   @type("number") factor:number = .1
-  @type(GameTarget) target: GameTarget = new GameTarget()
   @type(GameRacerObject) racingObject: GameRacerObject = new GameRacerObject()
-  targetSystem:TargetSystem = new TargetSystem()
 
   resetPod(){
+    console.log('resetting pod')
     this.name = ""
     this.id = ""
     this.score = 0
     this.locked = false
-    this.target.resetTarget()
     this.racingObject.resetObject()
-    this.targetSystem.clearTimers()
   }
 }
 
@@ -90,6 +116,7 @@ export class GameRoomState extends Schema {
 
   @type([GamePod]) pods = new ArraySchema<GamePod>();
   @type({ map: Player }) players = new MapSchema<Player>();
+  @type([GameTarget]) targets = new ArraySchema<GameTarget>();
 
   handler: RoomHandler
   gameManager: GameManager

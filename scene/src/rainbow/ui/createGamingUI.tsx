@@ -21,7 +21,7 @@ export function resetAllGamingUI(){
     displayGamingBorderUI(false)
     displayGamingTimer(false, 0)
     displayGamingCountdown(false, 0)
-    displayStartingSoonUI(false)
+    displayStartingSoonUI(false, "")
 }
 
 export function createGamingUI() {
