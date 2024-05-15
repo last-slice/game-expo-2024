@@ -102,6 +102,7 @@ export class GameRacerObject extends Schema{
 export class GamePod extends Schema{
   @type("string") name:string
   @type("string") id:string
+  @type("number") index:number
   @type("boolean") locked:boolean = false
   @type("number") stage:number = 1
   @type("number") score:number = 0

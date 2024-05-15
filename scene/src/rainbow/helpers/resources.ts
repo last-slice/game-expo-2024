@@ -23,7 +23,7 @@ export let colors:Color4[] = [
     Color4.Teal(),
     Color4.create(1,0,1,.5),
     Color4.create(203/255, 0/255, 206/255, .5),
-    Color4.create(253/255, 108/255, 225/255, .5),//
+    Color4.create(253/255, 108/255, 225/255, .5),
 ]
 
 export default {
@@ -38,7 +38,7 @@ export default {
         pigDirectory:"pigs/",
         balloonDirectory:"targets/",
         base: "scene.glb",
-        rainbow:"thickRainbow.glb",
+        rainbow:"rainbowAnimations/fullRainbowAnimation.glb",
         carousel:"carousel.glb",
         pigs:[
             "redPig.glb",

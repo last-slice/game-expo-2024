@@ -17,7 +17,7 @@ export function init(){
   //setup ui
   setupUi()
 
-  // createTests()
+  createTests()
 
   getPreview().then(()=>{
     const playerData = getPlayer()

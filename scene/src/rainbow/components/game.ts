@@ -1,7 +1,7 @@
 import { EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
-import { activationPods, resetPodLock, sceneParent, sceneYPosition } from "./environment";
+import { activationPods, mainRainbow, resetPodLock, sceneParent, sceneYPosition } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
 import { Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
@@ -14,8 +14,11 @@ import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import resources, { colors } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { forwardVector, setForwardVector } from "../systems/Physics";
+import { turnOffAllRainbows, turnOffRainbow, turnOnRainbow } from "./animations";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
+
+
 
 export let podPositions:any[] = [
     {x:45.1, y:28, z:40.1},
@@ -57,6 +60,8 @@ export function prepGame(){
     // resetTargets()
     hideStartPods()
     displayStartingSoonUI(true, 'GAME STARTING SOON')
+
+    turnOffRainbow(mainRainbow)
 
     // gameRoom.state.pods.forEach((pod:any, i:number) => {
     //     addPodTarget(pod, i)
@@ -127,9 +132,19 @@ export function startGame(){
     displayLeaderboardUI(true)
     displayStartingSoonUI(false, "")
 
-    gameTargets.forEach((objects:any)=>{
-        if(objects.userId === localPlayer.userId){
-            addInputSystem()
+    // gameTargets.forEach((objects:any)=>{
+    //     if(objects.userId === localPlayer.userId){
+    //         addInputSystem()
+    //     }
+    // })
+
+    addInputSystem()
+
+    turnOffRainbow(mainRainbow)
+
+    gameRoom.state.pods.forEach((pod:any, i:number)=>{
+        if(pod.locked){
+            turnOnRainbow(mainRainbow, i)
         }
     })
     //add systems

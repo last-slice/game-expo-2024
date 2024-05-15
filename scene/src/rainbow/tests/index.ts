@@ -1,59 +1,71 @@
-import { engine, MeshRenderer, MeshCollider, Transform, pointerEventsSystem, InputAction, Material } from "@dcl/sdk/ecs"
+import { engine, MeshRenderer, MeshCollider, Transform, pointerEventsSystem, InputAction, Material, GltfContainer, Animator, ColliderLayer, AudioSource, Entity } from "@dcl/sdk/ecs"
+
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
+import { rainbows, turnOnRainbow } from "../components/animations"
+import { getRandomIntInclusive } from "../helpers/functions"
 import { utils } from "../helpers/libraries"
-import { advanceObject, racingObjects } from "../components/objects"
-import { endGame, resetGame } from "../components/game"
 
+export let testobject:Entity
 
-let timer:any
-let counter:number = 0
-let started = false
 export function createTests(){
-    let testobject = engine.addEntity()
-    MeshRenderer.setPlane(testobject)
-    MeshCollider.setPlane(testobject)
-    Transform.create(testobject, {position: Vector3.create(26, 32, 18), rotation:Quaternion.fromEulerDegrees(0,0,0)})
-    // addBuilderHUDAsset(testobject, "test")
-    Material.setPbrMaterial(testobject, {albedoColor: Color4.Green()})
+    testobject = engine.addEntity()
+
+    AudioSource.createOrReplace(testobject, {audioClipUrl: "sounds/countdown.mp3", loop:true})
+
+    Transform.create(testobject, {position: Vector3.create(32, 15, 32), scale:Vector3.create(.5,.5,.5), rotation:Quaternion.fromEulerDegrees(0,0,0)})
+    GltfContainer.create(testobject, {src:"models/rainbowAnimations/fullRainbowAnimation.glb", visibleMeshesCollisionMask:ColliderLayer.CL_POINTER})
+
+
+    let anims:any[] = []
+    rainbows.forEach((rainbow:any)=>{
+        anims.push({clip:rainbow.on, playing:false,  loop:true, weight:0.0555})
+        anims.push({clip:rainbow.off, playing:true,  loop:true, weight:0.0555})
+    })
+
+    Animator.create(testobject, {
+        states:[
+            {clip:"RedOff", playing:true,  loop:true, weight:0.0555},
+            {clip:"PinkOff",  playing:true,  loop:true, weight:0.0555},
+            {clip:"VioletOff", playing:true,  loop:true,weight:0.0555 },
+            {clip:"BlueOff",   playing:true,  loop:true, weight:0.0555},
+            {clip:"IndigoOff", playing:true,  loop:true, weight:0.0555},
+            {clip:"YellowOff",   playing:true,  loop:true, weight:0.0555},
+            {clip:"OrangeOff",  playing:true,  loop:true, weight:0.0555},
+            {clip:"GreenOff",   playing:true,  loop:true, weight:0.0555},
+
+            {clip:"RedOn", playing:false,  loop:true,weight:0.0555 },
+            {clip:"PinkOn",  playing:false,  loop:true, weight:0.0555},
+            {clip:"VioletOn", playing:false,  loop:true,weight:0.0555 },
+            {clip:"BlueOn",   playing:false,  loop:true,weight:0.0555 },
+            {clip:"IndigoOn", playing:false,  loop:true,weight:0.0555 },
+            {clip:"YellowOn",   playing:false,  loop:true,weight:0.0555 },
+            {clip:"OrangeOn",  playing:false,  loop:true, weight:0.0555},
+            {clip:"GreenOn",   playing:false,  loop:true, weight:0.0555},
+
+            // {clip:"AllOn",  playing:false,  loop:true, weight:0.0555},
+            // {clip:"AllOff",   playing:false,  loop:true, weight:0.0555},
+        ]
+        // states:anims//
+    })
 
     pointerEventsSystem.onPointerDown({entity:testobject,
         opts:{hoverText:"Run Test", button:InputAction.IA_POINTER, maxDistance:20}
     },()=>{
-        if(started){
-            return
-        }
-        started = true
 
-        counter = 0
-        timer = utils.timers.setInterval(()=>{
-            if(counter >= 223){
-                utils.timers.clearInterval(timer)
-                timer = utils.timers.setTimeout(()=>{
-                    utils.timers.clearTimeout(timer)
-                    utils.timers.clearInterval(timer)
-                    resetGame(true)
-                    started = false
-                }, 1000 * 3)
-            }else{
-                counter += 5
-                racingObjects.forEach((object, index:number)=>{
-                    advanceObject(index, 5)
-                    console.log('counter is now', counter)
-                })
-            }
-        }, 300)
+        startcountdown()
+
     })
+}
 
-    // let end = engine.addEntity()
-    // MeshRenderer.setPlane(end)
-    // MeshCollider.setPlane(end)
-    // Transform.create(end, {position: Vector3.create(28, 32, 18), rotation:Quaternion.fromEulerDegrees(0,0,0)})
-    // // addBuilderHUDAsset(testobject, "test")
-    // Material.setPbrMaterial(end, {albedoColor: Color4.Red()})
-
-    // pointerEventsSystem.onPointerDown({entity:end,
-    //     opts:{hoverText:"Reset Test", button:InputAction.IA_POINTER, maxDistance:20}
-    // },()=>{
-    //     utils.timers.clearInterval(timer)
-    // })
+function startcountdown(){
+    let time = 9
+    let counter = utils.timers.setInterval(()=>{
+        time--
+        if(time > 0){
+            console.log('time is', time)
+            turnOnRainbow(testobject, 8 - time)
+        }else{
+            utils.timers.clearInterval(counter)
+        }
+    }, 1000)
 }

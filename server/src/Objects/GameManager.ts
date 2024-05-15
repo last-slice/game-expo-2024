@@ -66,10 +66,7 @@ export class GameManager {
 
     initPods(){
         for(let i = 0; i < 8; i++){
-            this.room.state.pods.push(new GamePod({locked:false, score:0, name:"", id:""}))
-            this.pods.push(
-                {occupied:false, color:"", id:"", score:""}
-            )
+            this.room.state.pods.push(new GamePod({locked:false, score:0, name:"", id:"", index:i}))
         }
     }
 

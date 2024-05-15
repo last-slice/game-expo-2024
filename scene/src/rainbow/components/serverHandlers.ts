@@ -9,10 +9,11 @@ import { displayReservationUI, updateReservationCounter } from "../ui/reservatio
 import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
 import { createBall } from "../cannon";
-import { resetPodLock } from "./environment";
+import { mainRainbow, resetPodLock } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { AudioSource, engine } from "@dcl/sdk/ecs";
 import { playSound } from "@dcl-sdk/utils";
+import { turnOnRainbow } from "./animations";
 
 
 export function createServerHandlers(room:Room){
@@ -36,6 +37,10 @@ export function createServerHandlers(room:Room){
             displayGamingCountdown(true)
             levelCountdownTimer.setNumber(c)
             playSound("sounds/countdown.mp3", false)
+
+            if(c < 9 && c >= 0){
+                turnOnRainbow(mainRainbow, 8 - c)
+            }
         }
 
         if(c === -500){
@@ -110,6 +115,8 @@ export function createServerHandlers(room:Room){
             // console.log('pod locked changed', p, c)
             if(c && p !== undefined){
                 lockPod({pod:key, name:pod.name})
+
+                turnOnRainbow(mainRainbow, pod.index)
 
                 if(!gameRoom.state.started){
                     displayStartingSoonUI(true, "WAITING ON MORE PLAYERS")
