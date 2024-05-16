@@ -1,18 +1,22 @@
 import { getWorldTime } from '~system/Runtime'
 import { playGameSound } from '../components/sounds'
 import { engine } from '@dcl/sdk/ecs'
+import { utils } from '../helpers/libraries'
 
 let night:boolean = true
 let timer:number = 10
 
 export async function checkTime(){
-    night = await getTime()
-    if(night){
-        playGameSound('inNightMode')
-    }else{
-        playGameSound('suggestNightMode')//
-    }
-    engine.addSystem(TimeSystem)
+    utils.timers.setTimeout(async ()=>{
+        night = await getTime()
+        if(night){
+            playGameSound('inNightMode')
+        }else{
+            playGameSound('suggestNightMode')//
+        }
+        engine.addSystem(TimeSystem)
+    }, 1000 * 5)
+
 }
 
 async function getTime(){

@@ -1,9 +1,9 @@
-import { EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
 import { activationPods, mainRainbow, resetPodLock, sceneParent, sceneYPosition } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
-import { Vector3 } from "@dcl/sdk/math";
+import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
 import { resetRacingObjects } from "./objects";
 import { displayLeaderboardUI } from "../ui/leaderboardUI";
@@ -11,7 +11,7 @@ import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
 import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
-import resources, { colors, sounds } from "../helpers/resources";
+import resources, { colors, sounds, targets } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { setForwardVector } from "../systems/Physics";
 import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
@@ -81,7 +81,7 @@ export function prepGame(){
 }
 
 export function addPodTarget(info:any){
-    // console.log('adding pod target', info)
+    console.log('adding pod target', info)
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
@@ -93,9 +93,8 @@ export function addPodTarget(info:any){
         // MeshCollider.setBox(target)
     
         // let pos = Transform.get(activationPods[i].pod).position
-        Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z)})
-        // Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
-        GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.targets["1"]})
+        Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z), rotation:Quaternion.fromEulerDegrees(0, info.ry, 0)})
+        GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + targets[info.multiplier]})
 
         pTarget = new CANNON.Body({
             mass: 0,
@@ -107,6 +106,18 @@ export function addPodTarget(info:any){
           world.addBody(pTarget)
           userId = localPlayer.userId
     // }
+
+          let pos = Vector3.create(info.x, info.y, info.z)
+
+      Tween.create(target, {
+        mode: Tween.Mode.Move({
+          start: Vector3.create(pos.x, pos.y + .5, pos.z),
+          end: Vector3.create(pos.x, pos.y - .5, pos.z),
+        }),
+        duration: 500,
+        easingFunction: EasingFunction.EF_LINEAR,
+      })
+      TweenSequence.create(target, { sequence: [], loop: TweenLoop.TL_YOYO })
 
     gameTargets.push({id:info.id, target:target, pTarget:pTarget, userId: userId})
 }

@@ -22,8 +22,8 @@ export class GameManager {
     countdownBase:number = 10
     countdownTime:number = this.countdownBase
 
-    gameTimeBase:number = 15
-    gameResetTimeBase:number = 10
+    gameTimeBase:number = 10
+    gameResetTimeBase:number = 12
 
     targetSystem:TargetSystem
 
@@ -214,6 +214,7 @@ export class GameManager {
             this.room.state.started = false
             this.room.state.ended = false
             this.room.state.startingSoon = false
+            this.countdownTime = this.countdownBase
           }, 1000 * this.countdownTime)
     }
 

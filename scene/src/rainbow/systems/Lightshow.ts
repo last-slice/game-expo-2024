@@ -3,7 +3,6 @@ import { turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } 
 import { activeLightShows, allOff, lightShows, presets } from "../components/lightshow"
 import { utils } from "../helpers/libraries"
 import { getRandomIntInclusive, getRandomString } from "../helpers/functions"
-import { GroundRainbowComponent } from "../components/environment"
 import { playGameSound } from "../components/sounds"
 
 export const LightshowComponent = engine.defineComponent("game::expo::rainbow::lightshow::component", {
@@ -38,32 +37,32 @@ export function playRainbowLightShow(entity:Entity, name:string, data?:any){
 
     let lightshow:any = {...lightShows.find(show => show.name === name)}
 
-    console.log('data is', lightshow)
+    // console.log('data is', lightshow)
 
     if(lightshow.hasOwnProperty("index")){
-        console.log('found lightshow template')
+        // console.log('found lightshow template')
         show.index = lightshow.index
         show.presets = []
         lightshow.presets.forEach((preset:any)=>{
             show.presets.push({...preset})
         })
     }else{
-        console.log('no light show template')
+        // console.log('no light show template')
         show.index = data.index
         show.presets = []
         data.presets.forEach((preset:any)=>{
             show.presets.push({...preset})
         })
     }
-    console.log('show is', name, show)
+    // console.log('show is', name, show)
     activeLightShows.set(entity, show)
 }
 
 export function RainbowLightshowSystem(dt:number){
     activeLightShows.forEach((show:any, entity:Entity)=>{
-        console.log('show is', show)
+        // console.log('show is', show)
         if(show.index >= show.presets.length){
-            console.log('show is over')
+            // console.log('show is over')
             activeLightShows.delete(entity)
             if(show.newRandom){
                 createRandomLightShows(entity)
@@ -72,7 +71,7 @@ export function RainbowLightshowSystem(dt:number){
         }
         else{
             let preset:any = show.presets[show.index]
-            console.log('preset is', preset)
+            // console.log('preset is', preset)
             if(preset.index >= preset.animations.length){
                 show.index++
             }

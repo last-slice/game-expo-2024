@@ -26,6 +26,14 @@ export let colors:Color4[] = [
     Color4.create(253/255, 108/255, 225/255, .5),
 ]
 
+export let targets:any = {
+    1: "pinkBalloon.glb",
+    2: "yellowBalloon.glb",
+    3: "yellowBalloon.glb",
+    4: "yellowBalloon.glb",
+    5: "yellowBalloon.glb",
+}
+
 export let sounds:any = {
     starting:[
         "sounds/starting_soon.mp3",
@@ -71,6 +79,16 @@ export let sounds:any = {
     ],
     suggestNightMode:[
         "sounds/night_mode.mp3",
+    ],
+    powerup:[
+        "sounds/powerup.mp3",
+    ],
+    multiplier:[
+        "sounds/woa_multiplier.mp3",
+        "sounds/multiplier_alright.mp3",
+    ],
+    winSongs:[
+        "sounds/win_synth.mp3"
     ]
 }
 
@@ -108,9 +126,6 @@ export default {
             "violetBalloon.glb",
             "pinkBalloon.glb",
         ],
-        targets:{
-            1: "pinkBalloon.glb"
-        }
     },
 
 

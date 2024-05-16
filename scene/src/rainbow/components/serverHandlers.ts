@@ -67,7 +67,7 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.listen("started", (c:any, p:any)=>{
-        console.log('started variable', p, c)//
+        console.log('started variable', p, c)
         if(c && (p === undefined || !p)){
             startGame()
         }
@@ -93,6 +93,7 @@ export function createServerHandlers(room:Room){
 
             if(gameRoom.state.winnerId === localPlayer.userId){
                 playGameSound("winner")
+                playGameSound("winSongs")
             }else{
                 playGameSound("gameOver")
             }
@@ -213,6 +214,9 @@ export function createServerHandlers(room:Room){
 
     room.state.targets.onAdd((target:any, key:any) => {
         addPodTarget(target)
+        // if(gameRoom.state.started && target.multiplier > 1){
+        //     playGameSound("multiplier")
+        // }
     })
 
     room.state.targets.onRemove((target:any, key:any) => {

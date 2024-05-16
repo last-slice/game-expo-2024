@@ -21,6 +21,7 @@ export class GameTarget extends Schema{
   @type("number") x:number
   @type("number") y:number
   @type("number") z:number
+  @type("number") ry:number
   @type("number") targetTick:number = -500
   @type("number") multiplier:number
   @type("boolean") move:boolean = false
@@ -49,6 +50,7 @@ export class GameTarget extends Schema{
     this.x = getRandomIntInclusive(xMin, xMax)
     this.y = getRandomIntInclusive(yMin, yMax)
     this.z = getRandomIntInclusive(zMin, zMax)
+    this.ry = getRandomIntInclusive(0, 360)
   }
 
   startCountdown(time:number){
@@ -60,11 +62,12 @@ export class GameTarget extends Schema{
 
   startDelete(){
     this.enabled = false
-    this.targetSystem.room.broadcast(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, {id: this.id})
-    this.movementCountdown = setTimeout(()=>{
-      this.clearTimers()
-      this.targetSystem.deleteTarget(this.id)
-    }, 1000)
+    // this.targetSystem.room.broadcast(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, {id: this.id})
+    // this.movementCountdown = setTimeout(()=>{
+    //   this.clearTimers()
+    //   this.targetSystem.deleteTarget(this.id)
+    // }, 1000)
+    this.targetSystem.deleteTarget(this.id)
   }
 
 

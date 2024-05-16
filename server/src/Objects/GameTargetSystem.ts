@@ -6,11 +6,11 @@ let startAmount:number = 4
 
 let tierRarity:any[] = [
     {multiplier: 0, rarity:0},
-    {multiplier: 1, rarity:0.9},
-    {multiplier: 2, rarity:0.04},
-    {multiplier: 3, rarity:0.03},
-    {multiplier: 4, rarity:0.02},
-    {multiplier: 5, rarity:0.01},
+    {multiplier: 1, rarity:0.85},
+    {multiplier: 2, rarity:0.05},
+    {multiplier: 3, rarity:0.05},
+    {multiplier: 4, rarity:0.03},
+    {multiplier: 5, rarity:0.02},
 ]
 
 export class TargetSystem extends Schema {

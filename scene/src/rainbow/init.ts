@@ -13,6 +13,7 @@ import { createTests } from "./tests";
 import { createPhysics } from "./cannon";
 import { createLightShows } from "./components/lightshow";
 import { checkTime } from "./systems/Time";
+import { AudioCompleteSystem } from "./components/sounds";
 
 export async function init(){
 
@@ -21,6 +22,7 @@ export async function init(){
   await createLightShows()
   await createEnvironment()
   await checkTime()
+  engine.addSystem(AudioCompleteSystem)
 
   // createTests()
 

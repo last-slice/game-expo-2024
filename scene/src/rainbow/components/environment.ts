@@ -331,23 +331,23 @@ function createRainbows(){
     Transform.create(mainRainbow,{ position: Vector3.create(32, 53, 32)})
     addRainbowAnimations(mainRainbow)
     
-    // rainbowTransforms.forEach(({ position, rotation, scale }, i:number) => {
-    //     const rainbowEntity = engine.addEntity();
-    //     GltfContainer.create(rainbowEntity, {
-    //         src: resources.models.directory + resources.models.rainbow, 
-    //         // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
-    //     })
-    //     Transform.create(rainbowEntity, {
-    //         position: position, 
-    //         rotation: Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z),
-    //         scale: scale
-    //     })
+    rainbowTransforms.forEach(({ position, rotation, scale }, i:number) => {
+        const rainbowEntity = engine.addEntity();
+        GltfContainer.create(rainbowEntity, {
+            src: resources.models.directory + resources.models.rainbow, 
+            // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+        })
+        Transform.create(rainbowEntity, {
+            position: position, 
+            rotation: Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z),
+            scale: scale
+        })
 
-    //     addRainbowAnimations(rainbowEntity)
-    //     GroundRainbowComponent.create(rainbowEntity, {time: getRandomIntInclusive(100, 300) / 1000})
+        addRainbowAnimations(rainbowEntity)
+        GroundRainbowComponent.create(rainbowEntity, {time: getRandomIntInclusive(100, 300) / 1000})
 
-    //     createRandomLightShows(rainbowEntity)
-    // })
+        createRandomLightShows(rainbowEntity)
+    })
 }
 
 function addRainbowAnimations(entity:Entity){
