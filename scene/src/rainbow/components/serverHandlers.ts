@@ -9,38 +9,45 @@ import { displayReservationUI, updateReservationCounter } from "../ui/reservatio
 import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
 import { createBall } from "../cannon";
-import { mainRainbow, resetPodLock } from "./environment";
+import { mainRainbow, onGround, resetPodLock } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { AudioSource, engine } from "@dcl/sdk/ecs";
 import { playSound } from "@dcl-sdk/utils";
-import { turnOnRainbow, turnOnRainbowBand } from "./animations";
+import { playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
+import { playGameSound } from "./sounds";
+import { playRainbowLightShow } from "../systems/Lightshow";
 
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
-        console.log(SERVER_MESSAGE_TYPES.POD_COUNTDOWN + " received", info)
+        // console.log(SERVER_MESSAGE_TYPES.POD_COUNTDOWN + " received", info)
     })
 
     room.onMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, (info:any)=>{
-        console.log(SERVER_MESSAGE_TYPES.CREATE_BALL + " received", info)
+        // console.log(SERVER_MESSAGE_TYPES.CREATE_BALL + " received", info)
         createBall(info)
     })
 
     room.onMessage(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, (info:any)=>{
-        console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
+        // console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
         explodeTarget(info.id)
     })
 
     room.state.listen("gameCountdown", (c:any, p:any)=>{
         // console.log('game countodown', p, c)
         if(p !== undefined && (c !== -500 || c !== 0)){
-            displayGamingCountdown(true)
-            levelCountdownTimer.setNumber(c)
-            playSound("sounds/countdown.mp3", false)
+            if(!onGround){
+                displayGamingCountdown(true)
+                levelCountdownTimer.setNumber(c)
+                playSound("sounds/countdown.mp3", false)
+            }else{
+                displayGamingCountdown(false)
+            }
 
             if(c < 9 && c >= 0){
                 turnOnRainbowBand(mainRainbow, 8 - c)
             }
+
         }
 
         if(c === -500){
@@ -50,8 +57,12 @@ export function createServerHandlers(room:Room){
 
     room.state.listen("startingSoon", (c:any, p:any)=>{
         console.log('starting soon variable', p, c)//
-        if(c === true){
+        if(c){
             prepGame()
+        }else{
+            if(!gameRoom.state.started && !gameRoom.state.ended && gameRoom.state.reset){
+                playGameSound('playAgain')
+            }
         }
     })
 
@@ -77,9 +88,21 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.listen("winner", (c:any, p:any)=>{
-        console.log('winner variable', p, c)
         if(c !== ""){
             displayWinnerUI(true)
+            if(gameRoom.state.winnerId === localPlayer.userId){
+                playGameSound("winner")
+            }else{
+                playGameSound("gameOver")
+            }
+
+            turnOffRainbow(mainRainbow)
+
+            gameRoom.state.pods.forEach((pod:any, key:number)=>{
+                if(pod.id === gameRoom.state.winnerId){
+                    playWinner(key, false)
+                }
+            })
         }else{
             displayWinnerUI(false)
         }
@@ -90,6 +113,7 @@ export function createServerHandlers(room:Room){
 
         if(!gameRoom.state.started && pod.locked){
             lockPod({pod:key, name:pod.name})
+            playSound("sounds/8bit_select.mp3", false)
         }
 
         pod.listen("score", (c:any, p:any)=>{
@@ -109,14 +133,18 @@ export function createServerHandlers(room:Room){
             if(pod.id === localPlayer.userId){
                 playSound("sounds/ui_click_go.mp3", false)
             }
+
+            // if(!onGround){
+               
+            // }
+
+            
         })
 
         pod.listen("locked", (c:any, p:any)=>{
             // console.log('pod locked changed', p, c)
             if(c && p !== undefined){
-                lockPod({pod:key, name:pod.name})
-
-                turnOnRainbowBand(mainRainbow, pod.index)
+                lockPod({pod:key, name:pod.name, index:pod.index})
 
                 if(!gameRoom.state.started){
                     displayStartingSoonUI(true, "WAITING ON MORE PLAYERS")
@@ -158,7 +186,7 @@ export function createServerHandlers(room:Room){
                 setRacingRotation(key, 0)
             }
         })
-    })//
+    })
 
     room.state.players.onAdd((player:any, key:any) => {
         if(player.address === localPlayer.userId){

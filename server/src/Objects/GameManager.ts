@@ -22,7 +22,7 @@ export class GameManager {
     countdownBase:number = 10
     countdownTime:number = this.countdownBase
 
-    gameTimeBase:number = 300
+    gameTimeBase:number = 15
     gameResetTimeBase:number = 10
 
     targetSystem:TargetSystem
@@ -177,6 +177,7 @@ export class GameManager {
     determineWinner(){
         let highscore = 0
         let winner = ""
+        let winnerId = ""
         this.room.state.pods.forEach((pod, i:number)=>{
             if(pod.locked){
                 if(pod.score === highscore){
@@ -184,10 +185,12 @@ export class GameManager {
                 }else{
                     highscore = pod.score
                     winner = pod.name
+                    winnerId = pod.id
                 }
             }
         })
         this.room.state.winner = winner
+        this.room.state.winnerId = winnerId
     }
 
     resetPlayers(){
@@ -201,12 +204,17 @@ export class GameManager {
         this.resetPlayers()
         this.numPlayers = 0
         this.haveMinPlayers = false
-        this.room.state.started = false
-        this.room.state.ended = false
-        this.room.state.startingSoon = false
         this.room.state.reset = true
         this.room.state.winner = ""
-        console.log('resetting a game')
+        this.room.state.winnerId = ""
+
+        this.countdownTime = this.gameResetTimeBase
+        this.countdownTimer = setTimeout(()=>{
+            this.clearCountdown()
+            this.room.state.started = false
+            this.room.state.ended = false
+            this.room.state.startingSoon = false
+          }, 1000 * this.countdownTime)
     }
 
     isGameLive(){

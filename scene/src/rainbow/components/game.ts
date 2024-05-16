@@ -11,10 +11,15 @@ import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
 import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
-import resources, { colors } from "../helpers/resources";
+import resources, { colors, sounds } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { setForwardVector } from "../systems/Physics";
-import { turnOffRainbow, turnOnRainbowBand } from "./animations";
+import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
+import { playSound } from "@dcl-sdk/utils";
+import { getRandomIntInclusive } from "../helpers/functions";
+import { playRainbowLightShow } from "../systems/Lightshow";
+import { testobject } from "../tests";
+import { playGameSound } from "./sounds";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -43,7 +48,13 @@ export function lockPod(info:any){
         transform.position = Vector3.create(0, 0, 0)
         transform.scale = Vector3.create(1,4,1)
     }
+
+    turnOnRainbowBand(mainRainbow, info.index)
+    playSound("sounds/8bit_select.mp3", false)
+    playSound("sounds/locked_in_f.mp3", false)
 }
+
+
 
 export function initGame(){
     //reset ui
@@ -61,13 +72,16 @@ export function prepGame(){
 
     turnOffRainbow(mainRainbow)
 
+    let random = getRandomIntInclusive(0, sounds.starting.length - 1)
+    playSound(sounds.starting[random], false)
+
     // gameRoom.state.pods.forEach((pod:any, i:number) => {
     //     addPodTarget(pod, i)
     // });
 }
 
 export function addPodTarget(info:any){
-    console.log('adding pod target', info)
+    // console.log('adding pod target', info)
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
@@ -129,6 +143,7 @@ export function removeTargetObjects(gameTarget:any){
 export function startGame(){
     displayLeaderboardUI(true)
     displayStartingSoonUI(false, "")
+    playGameSound("gameStart")
 
     // gameTargets.forEach((objects:any)=>{
     //     if(objects.userId === localPlayer.userId){
@@ -137,7 +152,6 @@ export function startGame(){
     // })
 
     addInputSystem()
-
     turnOffRainbow(mainRainbow)
 
     gameRoom.state.pods.forEach((pod:any, i:number)=>{
@@ -159,6 +173,7 @@ export function resetGame(testing?:boolean){
     resetRacingObjects()
     if(testing){}
     else{
+        playGameResetAnimation(mainRainbow)
         displayLeaderboardUI(false)
     }
 }

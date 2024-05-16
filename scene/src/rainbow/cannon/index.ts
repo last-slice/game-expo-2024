@@ -84,5 +84,5 @@ export function createBall(info:any){
     // syncEntity(entity, [Transform.componentId], ballCount)
     ballCount++
 
-    AudioSource.createOrReplace(entity, {audioClipUrl:"sounds/plunger.mp3", playing:true})
+    AudioSource.createOrReplace(entity, {audioClipUrl:"sounds/8bit_jump.mp3", playing:true, volume:.2})
 }

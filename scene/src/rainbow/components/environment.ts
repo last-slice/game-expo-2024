@@ -9,8 +9,8 @@ import resources, { colors } from "../helpers/resources"
 import { podPositions } from "./game"
 import { addPigTrainSystem, removePigTrainSystem } from "../systems/PigTrain"
 import { createSound, startAudioFader } from "./sounds"
-import { RainbowLightshowSystem, createRandomLightShows } from "../systems/Lightshow"
-import { stopAllRainbows } from "./animations"
+import { createRandomLightShows } from "../systems/Lightshow"
+import { stopAllGroundRainbows, turnOffAllGroundRainbows } from "./animations"
 import { activeLightShows } from "./lightshow"
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
@@ -51,13 +51,11 @@ const carouselPositions = [
     Vector3.create(50, 1, 14)
 ];
 
-export function createEnvironment(){
-    createBase()
-
-    createSound()
-
-    createObjects()
-    createsStartPods()
+export async function createEnvironment(){
+    await createBase()
+    await createSound()
+    await createObjects()
+    await createsStartPods()
 }
 
 function createBase(){
@@ -208,8 +206,7 @@ const sceneEntity = engine.addEntity()
             removePigTrainSystem()
 
             activeLightShows.clear()
-            engine.removeSystem(RainbowLightshowSystem)
-            stopAllRainbows()
+            stopAllGroundRainbows()
 
             startAudioFader("sounds/playing_bg_loop.mp3", 0)//
         },
@@ -222,7 +219,7 @@ const sceneEntity = engine.addEntity()
             startAudioFader("sounds/ground_bg_loop.mp3", 1)
             addPigTrainSystem()
 
-            engine.addSystem(RainbowLightshowSystem)
+            turnOffAllGroundRainbows()
 
             for (const [entity] of engine.getEntitiesWith(GroundRainbowComponent)) {
                 createRandomLightShows(entity)
@@ -334,23 +331,23 @@ function createRainbows(){
     Transform.create(mainRainbow,{ position: Vector3.create(32, 53, 32)})
     addRainbowAnimations(mainRainbow)
     
-    rainbowTransforms.forEach(({ position, rotation, scale }, i:number) => {
-        const rainbowEntity = engine.addEntity();
-        GltfContainer.create(rainbowEntity, {
-            src: resources.models.directory + resources.models.rainbow, 
-            // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
-        })
-        Transform.create(rainbowEntity, {
-            position: position, 
-            rotation: Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z),
-            scale: scale
-        })
+    // rainbowTransforms.forEach(({ position, rotation, scale }, i:number) => {
+    //     const rainbowEntity = engine.addEntity();
+    //     GltfContainer.create(rainbowEntity, {
+    //         src: resources.models.directory + resources.models.rainbow, 
+    //         // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+    //     })
+    //     Transform.create(rainbowEntity, {
+    //         position: position, 
+    //         rotation: Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z),
+    //         scale: scale
+    //     })
 
-        addRainbowAnimations(rainbowEntity)
-        GroundRainbowComponent.create(rainbowEntity, {time: getRandomIntInclusive(100, 300) / 1000})
+    //     addRainbowAnimations(rainbowEntity)
+    //     GroundRainbowComponent.create(rainbowEntity, {time: getRandomIntInclusive(100, 300) / 1000})
 
-        createRandomLightShows(rainbowEntity)
-    })
+    //     createRandomLightShows(rainbowEntity)
+    // })
 }
 
 function addRainbowAnimations(entity:Entity){
@@ -414,13 +411,13 @@ export function createPigTrain(){
 }
 
 export function resetPodLock(index:number){
-    console.log('resetting pod', index)
+    // console.log('resetting pod', index)
     let pod = activationPods[index]
     if(pod && pod.lockedModel){
         VisibilityComponent.createOrReplace(pod.lockedModel, {visible:false})
-        console.log('pod to reset is found')
+        // console.log('pod to reset is found')
         if(Tween.has(pod.lockedModel)){
-            console.log('found pod lock tweent')
+            // console.log('found pod lock tweent')
             let tween = Tween.getMutable(pod.lockedModel)
             tween.playing = false
             Tween.deleteFrom(pod.lockedModel)
@@ -428,7 +425,7 @@ export function resetPodLock(index:number){
             
         let transform = Transform.getMutableOrNull(pod.lockedModel)
         if(transform){
-            console.log('found transform pod to reset')
+            // console.log('found transform pod to reset')
             transform.position = Vector3.create(0,-2,0)
             transform.scale = Vector3.create(1,0,1)
         }

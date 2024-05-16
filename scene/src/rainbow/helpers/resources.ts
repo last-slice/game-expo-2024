@@ -26,9 +26,49 @@ export let colors:Color4[] = [
     Color4.create(253/255, 108/255, 225/255, .5),
 ]
 
+export let sounds:any = {
+    starting:[
+        "sounds/starting_soon.mp3",
+        "sounds/game_starting.mp3",
+        "sounds/get_ready.mp3",
+    ],
+    encouragement:[
+        "sounds/great_job.mp3",
+        "sounds/you_got_this.mp3",
+    ],
+    leader:[
+        "sounds/in_lead_2.mp3",
+        "sounds/in_lead.mp3"
+    ],
+    lostLead:[
+        "sounds/lost_lead.mp3"
+    ],
+    winner:[
+        "sounds/you_won.mp3"
+    ],
+    gameOver:[
+        "sounds/great_game.mp3",
+        "sounds/game_over_almost.mp3",
+        "sounds/great_job.mp3",
+        "sounds/nice_job.mp3",
+        "sounds/game_over_rocked.mp3",
+    ],
+    ui:[
+        "sounds/ui_click_go.mp3"
+    ],
+    gameStart:[
+        "sounds/8bit_beam.mp3"
+    ],
+    playAgain:[
+        "sounds/lets_play_again.mp3",
+        "sounds/new_game_sure.mp3",
+        "sounds/who_wants_to_play.mp3",
+    ]
+}
+
 export default {
     DEBUG: true,
-    noServer: true,
+    noServer: false,
 
     slug:"game::jam::2024",
     multiplayerRoom: 'game-expo',

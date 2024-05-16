@@ -4,6 +4,8 @@ import { sizeFont } from './ui'
 import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
+import { localPlayer } from '../components/player'
+import { playGameSound } from '../components/sounds'
 
 export let show = false
 
@@ -48,8 +50,14 @@ export function displayLeaderboardUI(value: boolean) {
 }
 
 export function updateLeaderboard(){
+    let lastLeader = visibleItems.length > 0 ? visibleItems[0].id : ""
     visibleItems.length = 0
     visibleItems = [...gameRoom.state.pods].sort((a,b) => b.score - a.score)
+
+    let currentLeader = visibleItems[0].id
+    if(lastLeader !== currentLeader && currentLeader === localPlayer.userId){
+        playGameSound("leader")
+    }
 }
 
 export function LeaderboardUI() {

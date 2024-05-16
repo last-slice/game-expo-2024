@@ -1,5 +1,8 @@
 import { AudioSource, Entity, Transform, engine } from "@dcl/sdk/ecs"
 import { utils } from "../helpers/libraries"
+import { getRandomIntInclusive } from "../helpers/functions"
+import { sounds } from "../helpers/resources"
+import { playSound } from "@dcl-sdk/utils"
 
 export let groundFaderInterval:any
 let faderCount = 0
@@ -23,7 +26,7 @@ export function startAudioFader(toPlay:string, direction:number){
         }else{
             console.log('done fading music, need to start playing top music')
             endFader()
-            playSound(toPlay)
+            playBGSound(toPlay)
         }
     }, 100)
 }
@@ -33,12 +36,17 @@ export function endFader(){
     faderCount = 0
 }
 
-export function playSound(file:string, ){
+export function playBGSound(file:string, ){
     let audio = AudioSource.getMutableOrNull(bgMusicEntity)
     if(audio){
         audio.playing = false
     }
     AudioSource.createOrReplace(bgMusicEntity, {audioClipUrl:"" + file, playing:true, loop:true, volume:0.05})
+}
+
+export function playGameSound(key:string, force?:number){
+    let index = force ? force : getRandomIntInclusive(0, sounds[key].length -1)
+    playSound(sounds[key][index])
 }
 
 

@@ -3,6 +3,8 @@ import { turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } 
 import { activeLightShows, allOff, lightShows, presets } from "../components/lightshow"
 import { utils } from "../helpers/libraries"
 import { getRandomIntInclusive, getRandomString } from "../helpers/functions"
+import { GroundRainbowComponent } from "../components/environment"
+import { playGameSound } from "../components/sounds"
 
 export const LightshowComponent = engine.defineComponent("game::expo::rainbow::lightshow::component", {
     show:Schemas.String,
@@ -11,9 +13,7 @@ export const LightshowComponent = engine.defineComponent("game::expo::rainbow::l
 })
 
 export function createRandomLightShows(entity:Entity){
-    console.log('presets are ', presets)
     activeLightShows.delete(entity)
-    // console.log('creating light show for entity', entity)
     let numPresets = getRandomIntInclusive(1, presets.length)
     let sets:any[] = []
 
@@ -24,35 +24,55 @@ export function createRandomLightShows(entity:Entity){
     }
 
     playRainbowLightShow(entity, getRandomString(7), {index:0, presets:[...sets], newRandom:true})
-
 }
 
 export function playRainbowLightShow(entity:Entity, name:string, data?:any){
-    // console.log('show is', name, data)
+    // if(activeLightShows.has(entity)){
+    //     activeLightShows.delete(entity)
+    //     console.log('entity already has light show running')
+    // }
 
-    let show:any
+    activeLightShows.delete(entity)
 
-    if(lightShows.has(name)){
-        show = {...lightShows.get(name)}
+    let show:any = {}
+
+    let lightshow:any = {...lightShows.find(show => show.name === name)}
+
+    console.log('data is', lightshow)
+
+    if(lightshow.hasOwnProperty("index")){
+        console.log('found lightshow template')
+        show.index = lightshow.index
+        show.presets = []
+        lightshow.presets.forEach((preset:any)=>{
+            show.presets.push({...preset})
+        })
     }else{
-        show = {...data}
+        console.log('no light show template')
+        show.index = data.index
+        show.presets = []
+        data.presets.forEach((preset:any)=>{
+            show.presets.push({...preset})
+        })
     }
-    activeLightShows.set(entity, {...show})
+    console.log('show is', name, show)
+    activeLightShows.set(entity, show)
 }
 
 export function RainbowLightshowSystem(dt:number){
     activeLightShows.forEach((show:any, entity:Entity)=>{
+        console.log('show is', show)
         if(show.index >= show.presets.length){
-            // console.log('show is over')
+            console.log('show is over')
             activeLightShows.delete(entity)
             if(show.newRandom){
                 createRandomLightShows(entity)
-                // console.log('need new random show', entity)
+                // console.log('need new random show', entity)//
             }
         }
         else{
             let preset:any = show.presets[show.index]
-            // console.log('preset is', preset)
+            console.log('preset is', preset)
             if(preset.index >= preset.animations.length){
                 show.index++
             }
@@ -60,31 +80,41 @@ export function RainbowLightshowSystem(dt:number){
                 if(preset.timer > 0){
                     preset.timer -= dt
                 }else{
-                    let animation = preset.animations[preset.index]
-                    if(animation.light){
-                        if(animation.index){
-                            if(animation.index < 0){
-                                turnOnRainbow(entity)
-                            }else{
-                                turnOnRainbowBand(entity, animation.index)
-                            }
-                        }
-                    }else{
-                        if(animation.index){
-                            if(animation.index < 0){
-                                turnOffRainbow(entity)
-                            }else{
-                                turnOffRainbowBand(entity, animation.index)
-                            }
-                        }
+                    if(preset.delay){
+                        preset.index = 500
                     }
-                    preset.timer = (animation.time ? animation.time : 100) / 1000
-                    preset.index += 1
+                    else{
+                        let animation = preset.animations[preset.index]
+                        if(animation.sound){
+                            playGameSound(animation.sound)
+                        }
+                        if(animation.light){
+                            if(animation.index){
+                                if(animation.index < 0){
+                                    turnOnRainbow(entity)
+                                }else{
+                                    turnOnRainbowBand(entity, animation.index)
+                                }
+                            }
+                        }else{
+                            if(animation.index){
+                                if(animation.index < 0){
+                                    turnOffRainbow(entity)
+                                }else{
+                                    turnOffRainbowBand(entity, animation.index)
+                                }
+                            }
+                        }
+                        preset.timer = (animation.time ? animation.time : 100) / 1000
+                        preset.index += 1
+                    }
                 }
             }
         }
     })
 }
+
+//
 
 // export function RainbowLightshowSystem(dt:number){//
 //     for (const [entity] of engine.getEntitiesWith(RainbowLightshowComponent)) {

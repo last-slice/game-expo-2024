@@ -1,8 +1,10 @@
 import { engine, MeshRenderer, MeshCollider, Transform, pointerEventsSystem, InputAction, Material, GltfContainer, Animator, ColliderLayer, AudioSource, Entity } from "@dcl/sdk/ecs"
 
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
-import { rainbows, turnOnRainbowBand } from "../components/animations"
+import { playGameResetAnimation, playWinner, rainbows, turnOnRainbowBand } from "../components/animations"
 import { playRainbowLightShow } from "../systems/Lightshow"
+import { activeLightShows, allOff, lightShows } from "../components/lightshow"
+import { getRandomIntInclusive, getRandomString } from "../helpers/functions"
 
 export let testobject:Entity
 
@@ -53,7 +55,8 @@ export function createTests(){
 
         // startcountdown()
         // playWinner(6, true)
-        playRainbowLightShow(testobject, "reset")
-
+        playGameResetAnimation(testobject)
+        // playRainbowLightShow(testobject, "reset")
+        // playRainbowLightShow(testobject, "reset")
     })
 }

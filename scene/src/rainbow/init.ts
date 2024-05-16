@@ -13,11 +13,12 @@ import { createTests } from "./tests";
 import { createPhysics } from "./cannon";
 import { createLightShows } from "./components/lightshow";
 
-export function init(){
+export async function init(){
 
   //setup ui
   setupUi()
-  createLightShows()
+  await createLightShows()
+  await createEnvironment()
 
   // createTests()
 
@@ -26,7 +27,6 @@ export function init(){
     if(playerData){
       executeTask(async ()=>{
         await addLocalPlayer(playerData)
-        createEnvironment()
 
         if(resources.noServer){
           return
