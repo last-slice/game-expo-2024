@@ -37,6 +37,8 @@ export let podPositions:any[] = [
 
 export let gameTargets:any[] = []
 
+export let pointerLocked:boolean = false
+
 export function lockPod(pod:any){
     console.log('locking pod', pod)
     let nameEntity = activationPods[pod.index].nameEntity
@@ -155,6 +157,7 @@ export function hideStartPods(resetName?:boolean){
 
 export function resetPods(){
     activationPods.forEach((info, index:number)=>{
+        TextShape.getMutable(info.nameEntity).text = ""
         Animator.playSingleAnimation(activationPods[index].podModel, "play", true)
         VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:true})
     })
@@ -193,10 +196,13 @@ export function startGame(){
     //     }
     // })
     let player = gameRoom.state.players.get(localPlayer.userId)
+    console.log('game started, player is', player)
     if(player && player.playing){
         addInputSystem()
         engine.addSystem(EncouragementTimeSystem)
     }
+
+
 
     turnOffRainbow(mainRainbow)
 

@@ -12,6 +12,8 @@ export class Player extends Schema {
   @type("boolean") podCountingDown:boolean
   @type("number") podCountdown:number = 3
   @type("number") pod:number = -500
+  @type("boolean") playing:boolean = false
+
 
   playFabData:any
   dclData:any
@@ -30,8 +32,6 @@ export class Player extends Schema {
   podLocked:boolean = false
 
   scoreFactor:number = .5
-
-  playing:boolean
 
   constructor(room:GameRoom, client:Client){
     super()
@@ -127,6 +127,7 @@ export class Player extends Schema {
     this.podCountingDown = false
     this.podLocked = false
     this.pod = -500
+    this.playing = false
   }
 
   clearTimeouts(resetPod?:boolean){

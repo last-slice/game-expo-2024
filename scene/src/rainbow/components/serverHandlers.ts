@@ -12,7 +12,7 @@ import { createBall } from "../cannon";
 import { mainRainbow, onGround, resetPodLock } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { playSound } from "@dcl-sdk/utils";
-import { playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
+import { attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
 
 export function createServerHandlers(room:Room){
@@ -105,6 +105,7 @@ export function createServerHandlers(room:Room){
             if(gameRoom.state.winner !== "tie"){
                 gameRoom.state.pods.forEach((pod:any, key:number)=>{
                     if(pod.id === gameRoom.state.winnerId){
+                        attachWinnerAnimation(gameRoom.state.winnerId)
                         playWinner(key, false)
                     }
                 })   

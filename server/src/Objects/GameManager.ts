@@ -43,10 +43,8 @@ export class GameManager {
 
     removePlayer(player:Player){
         if(this.room.state.started){
-            console.log('removing player')
             let pod = this.room.state.pods[player.pod]
             if(pod){
-                console.log('found pod')
                 pod.resetPod()
             }
             this.checkRemainingPlayers()
@@ -177,9 +175,11 @@ export class GameManager {
                 if(pod.score === highscore){
                     winner = "tie"
                 }else{
-                    highscore = pod.score
-                    winner = pod.name
-                    winnerId = pod.id
+                    if(pod.score > highscore){
+                        highscore = pod.score
+                        winner = pod.name
+                        winnerId = pod.id
+                    }
                 }
             }
         })

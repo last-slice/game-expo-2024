@@ -1,10 +1,13 @@
-import { Animator, Entity, engine } from "@dcl/sdk/ecs"
+import { Animator, AvatarAnchorPointType, AvatarAttach, Entity, GltfContainer, Transform, engine } from "@dcl/sdk/ecs"
 import { testobject } from "../tests"
 import { GroundRainbowComponent, mainRainbow } from "./environment"
 import { utils } from "../helpers/libraries"
 import { activeLightShows, allOff, lightShows, presets, winningAnimation } from "./lightshow"
 import { getRandomString } from "../helpers/functions"
 import { playRainbowLightShow } from "../systems/Lightshow"
+import resources from "../helpers/resources"
+import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel"
+import { Vector3 } from "@dcl/sdk/math"
 
 
 export let rainbows:any[] = [
@@ -68,7 +71,6 @@ export function turnOffAllGroundRainbows(){
         turnOffRainbow(entity)
     }
 }
-
 
 export function removeGroundLightShows(){
     for (const [entity] of engine.getEntitiesWith(GroundRainbowComponent)) {
@@ -137,93 +139,17 @@ export function playGameResetAnimation(entity:Entity){
 
 }
 
-// export function PlayWinnerSystem(dt:number){
-//     if(count < 10){
-//         if(time > 0){
-//             time -= dt
-//         }else{
-//             if(status === "off"){
-//                 status = "on"
-//                 turnOnRainbowBand(rainbow, index)
-//                 time = 300 / 1000
-//             }else{
-//                 status =  "off"
-//                 turnOffRainbowBand(rainbow, index)
-//                 time = 150 / 1000
-//             }
-//             count++
-//         }
-//     }else{
-//         engine.removeSystem(PlayWinnerSystem)
-//         playResetLightshow(1)
-//     }
-// }
+export function attachWinnerAnimation(winner:string){
+    let ent = engine.addEntity()
+    Transform.create(ent, {scale:Vector3.create(.1,.1,.1)})
+    GltfContainer.create(ent, {src: resources.models.directory + resources.models.winningAnimation})
 
-// export function playResetLightshow(direction:number){
-//     turnOffRainbow(rainbow)
+    AvatarAttach.create(ent, {
+        avatarId: '' + winner,
+        anchorPointId: AvatarAnchorPointType.AAPT_POSITION,
+    })
 
-//     crecendo = direction
-//     ctime = 100 / 1000
-
-//     if(direction < 2){
-//         switch(crecendo){
-//             case 0:
-//                 position = 0
-//                 engine.addSystem(RainbowCrecendoSystem)
-//                 break;
-    
-//             case 1:
-//                 position = 8
-//                 engine.addSystem(RainbowCrecendoSystem)
-//                 break;
-//         }
-//     }else{
-//         // console.log('done rainbow system')
-//     }
-
-// }
-
-
-// let crecendo:number = 0
-// let position:number = 0
-// let ctime:number = 100 / 1000
-
-// export function RainbowCrecendoSystem(dt:number){
-//     // console.log(crecendo, position, ctime)
-//     if(crecendo < 2){
-//         if(ctime > 0){
-//             ctime -= dt
-//         }else{
-//             // console.log('inside system')
-//             ctime = 100 / 1000
-//             switch(crecendo){
-//                 case 0:
-//                     if(position < 8){
-//                         turnOnRainbowBand(rainbow, position)
-//                         position++
-//                     }else{
-//                         engine.removeSystem(RainbowCrecendoSystem)
-//                         playResetLightshow(1)
-//                     }
-//                     break;
-        
-//                 case 1:
-//                     if(position >= 0){
-//                         turnOnRainbowBand(rainbow, 8 - position)
-//                         position--
-//                     }else{
-//                         engine.removeSystem(RainbowCrecendoSystem)
-//                         playResetLightshow(2)
-//                     }
-//                     break;
-        
-//                 default:
-//                     console.log('done')
-//                     break;
-//             }
-//         }
-//     }
-//     else{
-//         engine.removeSystem(RainbowCrecendoSystem)
-//     }
-// }
+    utils.timers.setTimeout(()=>{
+        engine.removeEntity(ent)
+    }, 1000 * 5000)
+}

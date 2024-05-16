@@ -56,6 +56,7 @@ export let sounds:any = {
         "sounds/you_got_this.mp3",
         "sounds/keep_it_up.mp3",
         "sounds/almost_there.mp3",
+        "sounds/you_on_roll.mp3",
     ],
     leader:[
         "sounds/in_lead_2.mp3",
@@ -123,6 +124,7 @@ export default {
         base: "scene.glb",
         rainbow:"rainbowAnimations/fullRainbowAnimation.glb",
         carousel:"carousel.glb",
+        winningAnimation: 'winVFX.glb',
         pigs:[
             "redPig.glb",
             "orangePig.glb",

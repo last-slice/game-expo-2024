@@ -91,8 +91,8 @@ export class GameRacerObject extends Schema{
 
   resetObject(){
     this.y = -22
-    this.rz = 360
-    this.targetTick = 0
+    this.rz = 0
+    this.targetTick = -500
   }
 
   setInitialPosition(id:number){
@@ -113,7 +113,6 @@ export class GamePod extends Schema{
   @type(GameRacerObject) racingObject: GameRacerObject = new GameRacerObject()
 
   resetPod(){
-    console.log('resetting pod')
     this.name = ""
     this.id = ""
     this.score = 0

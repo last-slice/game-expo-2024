@@ -1,4 +1,4 @@
-import { InputAction, PointerEventType, Transform, engine, inputSystem } from "@dcl/sdk/ecs"
+import { InputAction, PointerEventType, PointerLock, Transform, engine, inputSystem } from "@dcl/sdk/ecs"
 import { createBall, velocity } from "../cannon"
 import { sendServerMessage } from "../components/server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
@@ -9,6 +9,8 @@ export let added = false
 export let factor = 10
 export let time = 0
 export let started = false
+
+export let pointerLocked:boolean = false
 
 export function addInputSystem(){
     if(!added){
@@ -27,17 +29,24 @@ export function removeInputSystem(){
 }
 
 export function InputListenSystem(){
-    if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
-        const result = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
-        // console.log('result is', result)//
-        clicked = true
-        started = true
-    }
 
-    if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_UP)) {
-        const result = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
-        // console.log('result is', result)
+    pointerLocked = PointerLock.get(engine.CameraEntity).isPointerLocked
+
+    if(!pointerLocked){
         clicked = false
+    }else{
+        if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+            const result = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+            // console.log('result is', result)//
+            clicked = true
+            started = true
+        }
+    
+        if (inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_UP)) {
+            const result = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+            // console.log('result is', result)
+            clicked = false
+        }
     }
 }
 
