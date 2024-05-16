@@ -1,6 +1,6 @@
 import { Room } from "colyseus.js";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
-import { addPodTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, setPodPosition, startGame } from "./game";
+import { addPodTarget, animateTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, setPodPosition, startGame } from "./game";
 import { displayGamingCountdown, levelCountdownTimer } from "../ui/gamingCountdown";
 import { setRacingPosition, setRacingRotation } from "./objects";
 import { displayWinnerUI } from "../ui/winnerUI";
@@ -31,6 +31,11 @@ export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, (info:any)=>{
         // console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
         explodeTarget(info.id)
+    })
+
+    room.onMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, (info:any)=>{
+        // console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
+        animateTarget(info)
     })
 
     room.state.listen("gameCountdown", (c:any, p:any)=>{

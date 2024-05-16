@@ -5,6 +5,7 @@ import { playGameResetAnimation, playWinner, rainbows, turnOnRainbowBand } from 
 import { playRainbowLightShow } from "../systems/Lightshow"
 import { activeLightShows, allOff, lightShows } from "../components/lightshow"
 import { getRandomIntInclusive, getRandomString } from "../helpers/functions"
+import { displayLeaderboardUI, updateLeaderboard } from "../ui/leaderboardUI"
 
 export let testobject:Entity
 
@@ -57,6 +58,9 @@ export function createTests(){
         // playWinner(6, true)
         playGameResetAnimation(testobject)
         // playRainbowLightShow(testobject, "reset")
-        // playRainbowLightShow(testobject, "reset")
+        // playRainbowLightShow(testobject, "reset")//
     })
+
+
+    displayLeaderboardUI(true, true)
 }

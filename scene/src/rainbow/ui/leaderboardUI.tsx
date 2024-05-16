@@ -1,6 +1,6 @@
 import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity, Position, UiBackgroundProps } from '@dcl/sdk/react-ecs'
 import resources from '../helpers/resources'
-import { sizeFont } from './ui'
+import { getImageAtlasMapping, sizeFont } from './ui'
 import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
@@ -9,34 +9,36 @@ import { playGameSound } from '../components/sounds'
 
 export let show = false
 
+let counterSize:number = 20
+
 export let positionCounters:any[] = [
-    new CustomCounter( 4, 4, 75, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 70, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 65, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 60, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 55, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 50, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 45, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 40, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
 ]
 
 export let scoreCounters:any[] = [
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, 20, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
+    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
 ]
 
 export let visibleItems:any[] = []
 
-export function displayLeaderboardUI(value: boolean) {
+export function displayLeaderboardUI(value: boolean, test?:boolean) {
     show = value
 
-    updateLeaderboard()
+    updateLeaderboard(test)
 
     if(!value){
         positionCounters.forEach((counter)=>{
@@ -49,14 +51,29 @@ export function displayLeaderboardUI(value: boolean) {
     }
 }
 
-export function updateLeaderboard(){
-    let lastLeader = visibleItems.length > 0 ? visibleItems[0].id : ""
-    visibleItems.length = 0
-    visibleItems = [...gameRoom.state.pods].sort((a,b) => b.score - a.score)
-
-    let currentLeader = visibleItems[0].id
-    if(lastLeader !== currentLeader && currentLeader === localPlayer.userId){
-        playGameSound("leader")
+export function updateLeaderboard(test?:boolean){
+    if(test){
+        visibleItems.length = 0
+        visibleItems = [
+            {name:"Test Name 1", score: 90, locked:true},
+            {name:"Test Name 2", score: 80, locked:true},
+            {name:"Test Name 3", score: 70, locked:true},
+            {name:"Test Name 4", score: 60, locked:true},
+            {name:"Test Name 5", score: 50, locked:true},
+            {name:"Test Name 6", score: 40, locked:true},
+            {name:"Test Name 7", score: 30, locked:true},
+            {name:"Test Name 8", score: 20, locked:true},
+        ]
+    }
+    else{
+        let lastLeader = visibleItems.length > 0 ? visibleItems[0].id : ""
+        visibleItems.length = 0
+        visibleItems = [...gameRoom.state.pods].sort((a,b) => b.score - a.score)
+    
+        let currentLeader = visibleItems[0].id
+        if(lastLeader !== currentLeader && currentLeader === localPlayer.userId){
+            playGameSound("leader")
+        }
     }
 }
 
@@ -68,16 +85,32 @@ export function LeaderboardUI() {
                 display: show ? "flex" : "none",
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'flex-start',
+                justifyContent: 'center',
                 width: '15%',
                 height: '40%',
                 positionType: 'absolute',
                 position:{bottom:'1%', right:'1%'},
             }}
-            // uiBackground={{color:Color4.Teal()}}
+            uiBackground={{
+                textureMode:'stretch',
+                texture: {
+                  src: "images/leaderboard.jpeg"
+                },
+            }}
         >
 
-            {gameRoom && gameRoom.state.started && generateRows()}
+            <UiEntity
+                uiTransform={{
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                    width: '90%',
+                    height: '60%',
+                }}
+            >
+
+            {generateRows()}
+            </UiEntity>
 
 
         </UiEntity>
@@ -141,7 +174,7 @@ function LeaderboardRow(data:any){
             height: '100%',
         }}
         // uiBackground={{color:Color4.Red()}}
-        uiText={{value:"Name: " + data.item.name, fontSize:sizeFont(30,20), textAlign:'middle-center', color:Color4.White()}}
+        uiText={{value:"" + data.item.name, fontSize:sizeFont(30,20), textAlign:'middle-center', color:Color4.White()}}
         />
 
         <UiEntity

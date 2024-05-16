@@ -22,7 +22,7 @@ export class GameManager {
     countdownBase:number = 10
     countdownTime:number = this.countdownBase
 
-    gameTimeBase:number = 10
+    gameTimeBase:number = 60
     gameResetTimeBase:number = 12
 
     targetSystem:TargetSystem
@@ -140,13 +140,7 @@ export class GameManager {
         })
 
         this.targetSystem.moveInitTargets()
-
-        this.countdownTime = this.gameTimeBase
-        this.countdownTimer = setTimeout(()=>{
-            this.room.state.gameCountdown = -500
-            this.clearCountdown()
-            this.endGame()
-          }, 1000 * this.countdownTime)
+        this.startForceEndTimer()
     }
 
     async endGame(){
@@ -222,6 +216,20 @@ export class GameManager {
         return this.room.state.started && !this.room.state.ended
     }
 
+    startForceEndTimer(){
+        this.countdownTime = this.gameTimeBase
+        this.countdownTimer = setTimeout(()=>{
+            this.room.state.gameCountdown = -500
+            this.clearCountdown()
+            this.endGame()
+          }, 1000 * this.countdownTime)
+    }
+
+    resetForceEndTimer(){
+        this.clearCountdown()
+        this.startForceEndTimer()
+    }
+
     attemptScore(client:Client, info:any){
         // console.log('player is', client.userData.userId)//
         if(this.isGameLive()){
@@ -231,8 +239,11 @@ export class GameManager {
                 if(player && player.playing){
                     let pod = this.room.state.pods.find(pod => pod.id === player.dclData.userId)
                     if(pod){
+                        this.resetForceEndTimer()
+
                         console.log('adding score ', (pod.factor * target.multiplier))
                         pod.score += (pod.factor * target.multiplier)
+                        this.room.broadcast(SERVER_MESSAGE_TYPES.HIT_TARGET, target.id)
                         this.advanceObject(pod)
                     }else{
                         console.log('couldnt find pod')

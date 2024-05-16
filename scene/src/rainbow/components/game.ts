@@ -1,4 +1,4 @@
-import { EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { Animator, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
 import { activationPods, mainRainbow, resetPodLock, sceneParent, sceneYPosition } from "./environment";
@@ -16,7 +16,7 @@ import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { setForwardVector } from "../systems/Physics";
 import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
 import { playSound } from "@dcl-sdk/utils";
-import { getRandomIntInclusive } from "../helpers/functions";
+import { getRandomIntInclusive, playAnimation } from "../helpers/functions";
 import { playRainbowLightShow } from "../systems/Lightshow";
 import { testobject } from "../tests";
 import { playGameSound } from "./sounds";
@@ -80,8 +80,15 @@ export function prepGame(){
     // });
 }
 
+export function animateTarget(id:string){
+    let target = gameTargets.find(t => t.id === id)
+    if(target){
+        playAnimation(target.target, "play",)
+    }
+}
+
 export function addPodTarget(info:any){
-    console.log('adding pod target', info)
+    // console.log('adding pod target', info)
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
@@ -95,7 +102,10 @@ export function addPodTarget(info:any){
         // let pos = Transform.get(activationPods[i].pod).position
         Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z), rotation:Quaternion.fromEulerDegrees(0, info.ry, 0)})
         GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + targets[info.multiplier]})
-
+        Animator.create(target,{states:[
+            {clip:'play', playing: false, loop:false}
+        ]})
+        
         pTarget = new CANNON.Body({
             mass: 0,
             shape: new CANNON.Box(new CANNON.Vec3(1,1,1)),

@@ -12,6 +12,7 @@ import { createSound, startAudioFader } from "./sounds"
 import { createRandomLightShows } from "../systems/Lightshow"
 import { stopAllGroundRainbows, turnOffAllGroundRainbows } from "./animations"
 import { activeLightShows } from "./lightshow"
+import { createLeaderboard } from "./leaderboards"
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
 
@@ -53,6 +54,8 @@ const carouselPositions = [
 
 export async function createEnvironment(){
     await createBase()
+    await createLeaderboard("High Score")
+    await createLeaderboard("Fastest Time")
     await createSound()
     await createObjects()
     await createsStartPods()
