@@ -90,6 +90,7 @@ export function createServerHandlers(room:Room){
     room.state.listen("winner", (c:any, p:any)=>{
         if(c !== ""){
             displayWinnerUI(true)
+
             if(gameRoom.state.winnerId === localPlayer.userId){
                 playGameSound("winner")
             }else{
@@ -98,11 +99,13 @@ export function createServerHandlers(room:Room){
 
             turnOffRainbow(mainRainbow)
 
-            gameRoom.state.pods.forEach((pod:any, key:number)=>{
-                if(pod.id === gameRoom.state.winnerId){
-                    playWinner(key, false)
-                }
-            })
+            if(gameRoom.state.winner !== "tie"){
+                gameRoom.state.pods.forEach((pod:any, key:number)=>{
+                    if(pod.id === gameRoom.state.winnerId){
+                        playWinner(key, false)
+                    }
+                })   
+            }
         }else{
             displayWinnerUI(false)
         }

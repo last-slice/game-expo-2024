@@ -95,7 +95,7 @@ export function addPodTarget(info:any){
         // let pos = Transform.get(activationPods[i].pod).position
         Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z)})
         // Material.setPbrMaterial(target, {albedoColor: colors[i], emissiveColor: colors[i], emissiveIntensity:2})
-        GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.balloons[1]})
+        GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + resources.models.targets["1"]})
 
         pTarget = new CANNON.Body({
             mass: 0,
@@ -211,10 +211,6 @@ export function moveTarget(id:number){
     }
 }
 
-export function animateLightShow(){
-
-}
-
 export function sendScore(entity:Entity, target:any){
     removeBall(entity)
     sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target})
@@ -223,6 +219,6 @@ export function sendScore(entity:Entity, target:any){
 export function explodeTarget(id:string){
     let index = gameTargets.findIndex(target => target.id === id)
     if(index >= 0){
-        console.log('play target explode animation')
+        // console.log('play target explode animation')
     }
 }

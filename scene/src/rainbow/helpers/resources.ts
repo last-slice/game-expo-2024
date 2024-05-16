@@ -52,6 +52,7 @@ export let sounds:any = {
         "sounds/great_job.mp3",
         "sounds/nice_job.mp3",
         "sounds/game_over_rocked.mp3",
+        "sounds/look_points.mp3",
     ],
     ui:[
         "sounds/ui_click_go.mp3"
@@ -63,6 +64,13 @@ export let sounds:any = {
         "sounds/lets_play_again.mp3",
         "sounds/new_game_sure.mp3",
         "sounds/who_wants_to_play.mp3",
+    ],
+    inNightMode:[
+        "sounds/night_mode_best.mp3",
+        "sounds/look_colors.mp3",
+    ],
+    suggestNightMode:[
+        "sounds/night_mode.mp3",
     ]
 }
 
@@ -100,6 +108,9 @@ export default {
             "violetBalloon.glb",
             "pinkBalloon.glb",
         ],
+        targets:{
+            1: "pinkBalloon.glb"
+        }
     },
 
 

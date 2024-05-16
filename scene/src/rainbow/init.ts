@@ -12,6 +12,7 @@ import resources from "./helpers/resources";
 import { createTests } from "./tests";
 import { createPhysics } from "./cannon";
 import { createLightShows } from "./components/lightshow";
+import { checkTime } from "./systems/Time";
 
 export async function init(){
 
@@ -19,6 +20,7 @@ export async function init(){
   setupUi()
   await createLightShows()
   await createEnvironment()
+  await checkTime()
 
   // createTests()
 

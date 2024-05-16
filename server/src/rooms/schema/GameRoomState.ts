@@ -22,7 +22,7 @@ export class GameTarget extends Schema{
   @type("number") y:number
   @type("number") z:number
   @type("number") targetTick:number = -500
-  @type("number") multiplier:number = 1
+  @type("number") multiplier:number
   @type("boolean") move:boolean = false
   @type("boolean") enabled:boolean = false
 
