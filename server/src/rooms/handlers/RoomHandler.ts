@@ -32,8 +32,8 @@ export class RoomHandler {
             }
         })
 
-        room.onMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, async(client, info)=>{
-            // console.log(SERVER_MESSAGE_TYPES.HIT_TARGET + " message", info)
+        room.onMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, (client, info)=>{
+            // console.log(SERVER_MESSAGE_TYPES.HIT_TARGET + " message", client.userData.userId, info)
             this.room.state.gameManager.attemptScore(client, info)
         })
 
@@ -42,6 +42,7 @@ export class RoomHandler {
             let player:Player = this.room.state.players.get(client.userData.userId)
             if(player && player.playing && this.room.state.started){
                 info.id = player.pod
+                info.userId = player.dclData.userId
                 this.room.state.gameManager.createBall(player, info)
             }
         })

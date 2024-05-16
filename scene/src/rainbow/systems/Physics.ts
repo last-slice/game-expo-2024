@@ -26,10 +26,10 @@ export function PhysicsUpdateSystem(dt: number): void {
         // let gameTargetIndex = gameTargets.findIndex((gt => gt.userId === localPlayer.userId))
         // if(gameTargetIndex >= 0 && checkOverlap(object.pBody, gameTargets[gameTargetIndex].pTarget)){
         //     sendScore(entity, gameTargets[gameTargetIndex].id)
-        // }//
+        // }
 
         gameTargets.forEach((target)=>{
-          if(checkOverlap(object.pBody, target.pTarget)){
+          if(checkOverlap(object.pBody, target.pTarget) && object.userId === localPlayer.userId){
             console.log('target is', target.id)
             sendScore(entity, target.id)
           }

@@ -42,7 +42,7 @@ export function WinnerUI() {
             width: '100%',
             height: '30%',
         }}
-        uiText={{value:'WINNER IS\n' + (gameRoom && gameRoom.state.winner), fontSize:sizeFont(80,50), textAlign:'middle-center'}}
+        uiText={{value:'' + (gameRoom && gameRoom.state.winner === "tie" ? "GAME TIED" : 'WINNER IS\n' + (gameRoom && gameRoom.state.winner)), fontSize:sizeFont(80,50), textAlign:'middle-center'}}
         />
 
         {/* <UICounter customCounter={scoreUI} /> */}

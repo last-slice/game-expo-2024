@@ -8,7 +8,7 @@ import { createServerHandlers } from "./serverHandlers"
 export let realm: string = ""
 export let connected: boolean = false
 export let sessionId: any
-export let gameRoom: Room
+export let gameRoom:Room
 export let client:Client
 
 
@@ -67,7 +67,7 @@ export async function connect(roomName: string, userData: any, token: string, wo
         return await client.joinOrCreate(roomName, options);
 
     } catch (e) {
-        log('error connecting colyseus', e)//
+        log('error connecting colyseus', e)
         throw e;
     }
 }

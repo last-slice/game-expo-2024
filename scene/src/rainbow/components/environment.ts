@@ -5,10 +5,10 @@ import { gameRoom, sendServerMessage } from "./server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
 import { getRandomIntInclusive } from "../helpers/functions"
 import { createObjects } from "./objects"
-import resources, { colors } from "../helpers/resources"
+import resources, { colors, podAnimations } from "../helpers/resources"
 import { podPositions } from "./game"
 import { addPigTrainSystem, removePigTrainSystem } from "../systems/PigTrain"
-import { createSound, startAudioFader } from "./sounds"
+import { createSound, playGameSound, startAudioFader } from "./sounds"
 import { createRandomLightShows } from "../systems/Lightshow"
 import { stopAllGroundRainbows, turnOffAllGroundRainbows } from "./animations"
 import { activeLightShows } from "./lightshow"
@@ -20,11 +20,8 @@ export const GroundRainbowComponent = engine.defineComponent("game::expo::ground
     time:Schemas.Number
 })
 
-const spacing:number = 2
-const zPosition:number = 24
-let xPosition:number = 39
-let ground:Entity
 
+let ground:Entity
 
 export let sceneYPosition:number = 27
 export let activationPods:any[] = []
@@ -281,16 +278,27 @@ const sceneEntity = engine.addEntity()
 
 function createsStartPods(){
     // enableBuilderHUD(true)
+    let speed = 0.5
+
     for(let i = 0; i < podPositions.length; i++){
         let pod = engine.addEntity()
         let pos = podPositions[i]
         Transform.create(pod, {position: Vector3.create(pos.x, 0, pos.z), parent:sceneParent})
         // addBuilderHUDAsset(pod, 'pod-' + i)
 
+
         let podModel = engine.addEntity()
-        Transform.create(podModel, {parent:pod, scale:Vector3.create(1,.1,1)})
-        MeshRenderer.setBox(podModel)
-        xPosition -= spacing
+        Transform.create(podModel, {position: sceneCenter})
+        GltfContainer.create(podModel, {src: resources.models.directory + "activationPods/" + podAnimations[i]})
+        Animator.create(podModel, {states: [
+            {
+                clip: 'play',
+                playing: true, 
+                loop:true,
+                speed: speed
+                
+            }
+        ]})
 
         utils.triggers.addTrigger(
             pod, utils.NO_LAYERS, utils.LAYER_1,
@@ -303,6 +311,7 @@ function createsStartPods(){
                             sendServerMessage(SERVER_MESSAGE_TYPES.ENTERED_POD, {pod:i})
                         }else{
                             console.log('pod occupied')
+                            playGameSound("choosePod")
                         }
                     }else{
                         console.log('game not started')
@@ -331,108 +340,10 @@ function createsStartPods(){
         VisibilityComponent.createOrReplace(nameEntity, {visible:false})
         Billboard.create(nameEntity, {billboardMode: BillboardMode.BM_Y})
 
-        activationPods.push({pod:pod, nameEntity:nameEntity, lockedEntity:lockedEntity, lockedModel:lockedModel})
+        activationPods.push({pod:pod, podModel:podModel, nameEntity:nameEntity, lockedEntity:lockedEntity, lockedModel:lockedModel})
 
-     
+        speed -= 0.05
     }
-
-       // activation pod animations:
-       const yellowPod = engine.addEntity()
-       GltfContainer.create(yellowPod, {src: 'models/activationPods/yellowPod.glb'})
-       Transform.create(yellowPod, {position: sceneCenter})
-       Animator.create(yellowPod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.5
-               
-           }
-       ]})
-
-       const greenPod = engine.addEntity()
-       GltfContainer.create(greenPod, {src: 'models/activationPods/greenPod.glb'})
-       Transform.create(greenPod, {position: sceneCenter})
-       Animator.create(greenPod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.45
-               
-           }
-       ]})
-
-
-       const bluePod = engine.addEntity()
-       GltfContainer.create(bluePod, {src: 'models/activationPods/bluePod.glb'})
-       Transform.create(bluePod, {position: sceneCenter})
-       Animator.create(bluePod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.4
-               
-           }
-       ]})
-
-       const indigoPod = engine.addEntity()
-       GltfContainer.create(indigoPod, {src: 'models/activationPods/indigoPod.glb'})
-       Transform.create(indigoPod, {position: sceneCenter})
-       Animator.create(indigoPod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.35
-               
-           }
-       ]})
-
-       const violetPod = engine.addEntity()
-       GltfContainer.create(violetPod, {src: 'models/activationPods/violetPod.glb'})
-       Transform.create(violetPod, {position: sceneCenter})
-       Animator.create(violetPod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.3
-               
-           }
-       ]})
-
-       const pinkPod = engine.addEntity()
-       GltfContainer.create(pinkPod, {src: 'models/activationPods/pinkPod.glb'})
-       Transform.create(pinkPod, {position: sceneCenter})
-       Animator.create(pinkPod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.35
-               
-           }
-       ]})
-
-       const redPod = engine.addEntity()
-       GltfContainer.create(redPod, {src: 'models/activationPods/redPod.glb'})
-       Transform.create(redPod, {position: sceneCenter})
-       Animator.create(redPod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.4
-               
-           }
-       ]})
-
-       const orangePod = engine.addEntity()
-       GltfContainer.create(orangePod, {src: 'models/activationPods/orangePod.glb'})
-       Transform.create(orangePod, {position: sceneCenter})
-       Animator.create(orangePod, {states: [
-           {
-               clip: 'play',
-               playing: true, 
-               speed: 0.45
-               
-           }
-       ]})
 }
 
 function createCarousels(){

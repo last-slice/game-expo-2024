@@ -22,7 +22,7 @@ export class GameManager {
     countdownBase:number = 10
     countdownTime:number = this.countdownBase
 
-    gameTimeBase:number = 60
+    gameTimeBase:number = 20
     gameResetTimeBase:number = 12
 
     targetSystem:TargetSystem
@@ -230,26 +230,27 @@ export class GameManager {
         this.startForceEndTimer()
     }
 
-    attemptScore(client:Client, info:any){
-        // console.log('player is', client.userData.userId)//
+    attemptScore(client:any, info:any){
+        // console.log('player is', client.userData.userId)
         if(this.isGameLive()){
             let target = this.room.state.targets.find(target => target.id === info.id)
             if(target && target.enabled){
                 let player:Player = this.room.state.players.get(client.userData.userId)
                 if(player && player.playing){
-                    let pod = this.room.state.pods.find(pod => pod.id === player.dclData.userId)
+                    let pod = this.room.state.pods.find(pod => pod.id === client.userData.userId)
                     if(pod){
                         this.resetForceEndTimer()
 
-                        console.log('adding score ', (pod.factor * target.multiplier))
+                        // console.log('adding score ', (pod.factor * target.multiplier))
                         pod.score += (pod.factor * target.multiplier)
+
                         this.room.broadcast(SERVER_MESSAGE_TYPES.HIT_TARGET, target.id)
                         this.advanceObject(pod)
                     }else{
-                        console.log('couldnt find pod')
+                        // console.log('couldnt find pod')
                     }
                 }else{
-                    console.log('player is not playing, cheating?', client.userData.userId)
+                    // console.log('player is not playing, cheating?', client.userData.userId)
                 }
             }
             // else{

@@ -69,7 +69,7 @@ export function createBall(info:any){
     ballBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
 
     world.addBody(ballBody)
-    ballBodies.set(entity, {pBody:ballBody, userId: localPlayer.userId})
+    ballBodies.set(entity, {pBody:ballBody, userId: info.userId})
 
     ballBody.velocity.set(direction.x * velocity, direction.y * velocity, direction.z * velocity)
 

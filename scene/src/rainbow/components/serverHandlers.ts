@@ -1,6 +1,6 @@
 import { Room } from "colyseus.js";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
-import { addPodTarget, animateTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, setPodPosition, startGame } from "./game";
+import { addPodTarget, animateTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, resetPods, setPodPosition, startGame } from "./game";
 import { displayGamingCountdown, levelCountdownTimer } from "../ui/gamingCountdown";
 import { setRacingPosition, setRacingRotation } from "./objects";
 import { displayWinnerUI } from "../ui/winnerUI";
@@ -11,12 +11,9 @@ import { gameRoom } from "./server";
 import { createBall } from "../cannon";
 import { mainRainbow, onGround, resetPodLock } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
-import { AudioSource, engine } from "@dcl/sdk/ecs";
 import { playSound } from "@dcl-sdk/utils";
 import { playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
-import { playRainbowLightShow } from "../systems/Lightshow";
-
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
@@ -52,7 +49,6 @@ export function createServerHandlers(room:Room){
             if(c < 9 && c >= 0){
                 turnOnRainbowBand(mainRainbow, 8 - c)
             }
-
         }
 
         if(c === -500){
@@ -61,12 +57,13 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.listen("startingSoon", (c:any, p:any)=>{
-        console.log('starting soon variable', p, c)//
+        console.log('starting soon variable', p, c)
         if(c){
             prepGame()
         }else{
             if(!gameRoom.state.started && !gameRoom.state.ended && gameRoom.state.reset){
                 playGameSound('playAgain')
+                resetPods()
             }
         }
     })
@@ -121,7 +118,7 @@ export function createServerHandlers(room:Room){
         // console.log('pod added', key, pod)
 
         if(!gameRoom.state.started && pod.locked){
-            lockPod({pod:key, name:pod.name})
+            lockPod(pod)
             playSound("sounds/8bit_select.mp3", false)
         }
 
@@ -145,15 +142,13 @@ export function createServerHandlers(room:Room){
 
             // if(!onGround){
                
-            // }
-
-            
+            // }            
         })
 
         pod.listen("locked", (c:any, p:any)=>{
             // console.log('pod locked changed', p, c)
             if(c && p !== undefined){
-                lockPod({pod:key, name:pod.name, index:pod.index})
+                lockPod(pod)
 
                 if(!gameRoom.state.started){
                     displayStartingSoonUI(true, "WAITING ON MORE PLAYERS")
@@ -219,9 +214,9 @@ export function createServerHandlers(room:Room){
 
     room.state.targets.onAdd((target:any, key:any) => {
         addPodTarget(target)
-        // if(gameRoom.state.started && target.multiplier > 1){
-        //     playGameSound("multiplier")
-        // }
+        if(gameRoom.state.started && target.multiplier > 1){
+            playGameSound("powerup")
+        }
     })
 
     room.state.targets.onRemove((target:any, key:any) => {

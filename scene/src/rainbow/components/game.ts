@@ -1,7 +1,7 @@
 import { Animator, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
-import { activationPods, mainRainbow, resetPodLock, sceneParent, sceneYPosition } from "./environment";
+import { activationPods, mainRainbow, onGround, resetPodLock, sceneParent, sceneYPosition } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
@@ -20,6 +20,7 @@ import { getRandomIntInclusive, playAnimation } from "../helpers/functions";
 import { playRainbowLightShow } from "../systems/Lightshow";
 import { testobject } from "../tests";
 import { playGameSound } from "./sounds";
+import { EncouragementTimeSystem } from "../systems/EncouragementTimer";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -36,12 +37,16 @@ export let podPositions:any[] = [
 
 export let gameTargets:any[] = []
 
-export function lockPod(info:any){
-    let nameEntity = activationPods[info.pod].nameEntity
-    TextShape.getMutable(nameEntity).text = info.name
+export function lockPod(pod:any){
+    console.log('locking pod', pod)
+    let nameEntity = activationPods[pod.index].nameEntity
+    TextShape.getMutable(nameEntity).text = pod.name
     VisibilityComponent.createOrReplace(nameEntity, {visible:true})
 
-    let lockedModel = activationPods[info.pod].lockedModel
+    Animator.stopAllAnimations( activationPods[pod.index].podModel, true)
+    VisibilityComponent.createOrReplace(activationPods[pod.index].podModel, {visible:false})
+
+    let lockedModel = activationPods[pod.index].lockedModel
     let transform = Transform.getMutableOrNull(lockedModel)
     if(transform){
         console.log('we found transform to lock pod')
@@ -49,26 +54,32 @@ export function lockPod(info:any){
         transform.scale = Vector3.create(1,4,1)
     }
 
-    turnOnRainbowBand(mainRainbow, info.index)
-    playSound("sounds/8bit_select.mp3", false)
-    playSound("sounds/locked_in_f.mp3", false)
+    turnOnRainbowBand(mainRainbow, pod.index)
+
+    if(!onGround){
+        playSound("sounds/8bit_select.mp3", false)
+    }
+
+    if(pod.id === localPlayer.userId){
+        playSound("sounds/locked_in_f.mp3", false)
+    }else{
+        // playSound("sounds/locked_in_f.mp3", false)//
+    }
+   
 }
 
 
 
 export function initGame(){
-    //reset ui
     resetAllGamingUI()
     displayGamingBorderUI(true)
-
-    //display ui//
 }
 
 export function prepGame(){
     setForwardVector()
     // resetTargets()
     hideStartPods()
-    displayStartingSoonUI(true, 'GAME STARTING SOON')
+    // displayStartingSoonUI(true, 'GAME STARTING SOON')
 
     turnOffRainbow(mainRainbow)
 
@@ -136,6 +147,16 @@ export function hideStartPods(resetName?:boolean){
     activationPods.forEach((info, index:number)=>{
         resetName ? TextShape.getMutable(info.nameEntity).text = "" : null
         resetPodLock(index)
+
+        Animator.stopAllAnimations(activationPods[index].podModel, true)
+        VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:false})
+    })
+}
+
+export function resetPods(){
+    activationPods.forEach((info, index:number)=>{
+        Animator.playSingleAnimation(activationPods[index].podModel, "play", true)
+        VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:true})
     })
 }
 
@@ -171,14 +192,20 @@ export function startGame(){
     //         addInputSystem()
     //     }
     // })
+    let player = gameRoom.state.players.get(localPlayer.userId)
+    if(player && player.playing){
+        addInputSystem()
+        engine.addSystem(EncouragementTimeSystem)
+    }
 
-    addInputSystem()
     turnOffRainbow(mainRainbow)
 
     gameRoom.state.pods.forEach((pod:any, i:number)=>{
         if(pod.locked){
             turnOnRainbowBand(mainRainbow, i)
         }
+
+        Animator.stopAllAnimations(activationPods[pod.index].podModel, true)
     })
     //add systems
     //do other things
@@ -186,8 +213,7 @@ export function startGame(){
 
 export function endGame(){
     removeInputSystem()
-    // resetTargets()
-    hideStartPods(true)//
+    engine.removeSystem(EncouragementTimeSystem)
 }
 
 export function resetGame(testing?:boolean){
@@ -233,13 +259,13 @@ export function moveTarget(id:number){
 }
 
 export function sendScore(entity:Entity, target:any){
-    removeBall(entity)
-    sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target})
+    removeBall(entity)//
+    sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target, user:localPlayer.userId})
 }
 
 export function explodeTarget(id:string){
     let index = gameTargets.findIndex(target => target.id === id)
     if(index >= 0){
-        // console.log('play target explode animation')
+        // console.log('play target explode animation')//
     }
 }

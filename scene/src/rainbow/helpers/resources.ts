@@ -29,10 +29,21 @@ export let colors:Color4[] = [
 export let targets:any = {
     1: "pinkBalloon.glb",
     2: "yellowBalloon.glb",
-    3: "yellowBalloon.glb",
-    4: "yellowBalloon.glb",
-    5: "yellowBalloon.glb",
+    3: "blueBalloon.glb",
+    4: "redBalloon.glb",
+    5: "greenBalloon.glb",
 }
+
+export let podAnimations:any[] = [
+    "redPod.glb",
+    "orangePod.glb",
+    "yellowPod.glb",
+    "greenPod.glb",
+    "bluePod.glb",
+    "inidgoPod.glb",
+    "violetPod.glb",
+    "pinkPod.glb",
+]
 
 export let sounds:any = {
     starting:[
@@ -43,6 +54,8 @@ export let sounds:any = {
     encouragement:[
         "sounds/great_job.mp3",
         "sounds/you_got_this.mp3",
+        "sounds/keep_it_up.mp3",
+        "sounds/almost_there.mp3",
     ],
     leader:[
         "sounds/in_lead_2.mp3",
@@ -89,12 +102,16 @@ export let sounds:any = {
     ],
     winSongs:[
         "sounds/win_synth.mp3"
-    ]
+    ],
+    choosePod:[
+        "sounds_choose_other_pod.mp3",
+        "sounds/already_taken.mp3"
+    ],
 }
 
 export default {
     DEBUG: true,
-    noServer: false,
+    noServer: false,//
 
     slug:"game::jam::2024",
     multiplayerRoom: 'game-expo',

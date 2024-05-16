@@ -7,7 +7,7 @@ import { initGame } from "./components/game"
 import { setupUi } from "./ui/ui"
 import { getPreview } from "./helpers/functions"
 import { joinServer, realm, updateRealm } from "./components/server";
-import { addLocalPlayer, addPlayer } from "./components/player";
+import { addLocalPlayer } from "./components/player";
 import resources from "./helpers/resources";
 import { createTests } from "./tests";
 import { createPhysics } from "./cannon";

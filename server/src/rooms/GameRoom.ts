@@ -11,17 +11,18 @@ import { addGameRoom, gameRooms, removeGameRoom } from "../Objects/Admin";
 export class GameRoom extends Room<GameRoomState> {
 
     async onAuth(client: Client, options: any, req: any) {
+        console.log('optiosn are ', options)
         //check if player or ip is already added
 
         const ipAddress = req.headers['x-forwarded-for'] || req.socket.address().address;
 
         let ipAccounts = Object.values(this.state.players.toJSON()).filter((player:any) => player.ip === ipAddress).length
-        if(ipAccounts > 3){
+        if(ipAccounts > 1){
             console.log('too many ip logged in')
             return false
         }
 
-        if(this.state.players.has(options.userId)){
+        if(this.state.players.has(options.userData.userId)){
             console.log('user already connected')
             return false
         }
@@ -92,18 +93,6 @@ export class GameRoom extends Room<GameRoomState> {
     }
 
     async getPlayerInfo(client: Client, options: any) {
-        // client.send(SERVER_MESSAGE_TYPES.INIT, {
-        //     catalog: itemManager.items,
-        //     realmAssets: this.state.realmAssets,
-        //     styles: iwbManager.styles,
-        //     worlds: iwbManager.worlds,
-        //     iwb: {v: iwbManager.version, updates:iwbManager.versionUpdates},
-        //     tutorials: {
-        //         videos: iwbManager.tutorials,
-        //         cid: iwbManager.tutorialsCID
-        //     }
-        // })
-
         let player = new Player(this, client)
         this.state.players.set(options.userData.userId, player)
 
