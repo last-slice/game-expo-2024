@@ -46,6 +46,7 @@ export function playRainbowLightShow(entity:Entity, name:string, data?:any){
         lightshow.presets.forEach((preset:any)=>{
             show.presets.push({...preset})
         })
+        show.newRandom = lightshow.newRandom
     }else{
         // console.log('no light show template')
         show.index = data.index
@@ -53,6 +54,7 @@ export function playRainbowLightShow(entity:Entity, name:string, data?:any){
         data.presets.forEach((preset:any)=>{
             show.presets.push({...preset})
         })
+        show.newRandom = data.newRandom
     }
     // console.log('show is', name, show)
     activeLightShows.set(entity, show)
