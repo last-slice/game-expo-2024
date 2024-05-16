@@ -46,10 +46,10 @@ const rainbowTransforms = [
 ]
 
 const carouselPositions = [
-    Vector3.create(14, 1, 14),
-    Vector3.create(50, 1, 50),
-    Vector3.create(14, 1, 50),
-    Vector3.create(50, 1, 14)
+    Vector3.create(13, 1, 13),
+    Vector3.create(51, 1, 51),
+    Vector3.create(13, 1, 51),
+    Vector3.create(51, 1, 13)
 ];
 
 export async function createEnvironment(){
@@ -122,7 +122,7 @@ function createClouds(){
             {
                 clip: 'play',
                 playing: true,
-                speed: 0.15
+                speed: 0.1
             }
         ]
     })
@@ -148,10 +148,27 @@ function createClouds(){
             {
                 clip: 'play',
                 playing: true,
-                speed: 0.15
+                speed: 0.05
             }
         ]
     })
+
+    //elevator cloud
+    const elevatorCloud = engine.addEntity()
+    GltfContainer.create(elevatorCloud, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(elevatorCloud, {position: Vector3.create(40, 14, 30), rotation: Quaternion.fromEulerDegrees(0, 50, 0), scale: Vector3.create(0.8, 0.4, 0.6)})
+    Animator.create(elevatorCloud, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.25
+            }
+        ]
+    })
+
+
+
 }
 
 function createElevator(){
@@ -231,6 +248,35 @@ const sceneEntity = engine.addEntity()
 
         }, Color4.Teal()
     )
+
+    // create ground arrows
+    const arrowModel = 'models/animatedArrow.glb'
+
+    const arrow1 = engine.addEntity()
+    GltfContainer.create(arrow1, {src: arrowModel})
+    Transform.create(arrow1, {position: Vector3.create(32, 3, 52)})
+    Animator.create(arrow1, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                
+            }
+        ]
+    })
+
+    const arrow2 = engine.addEntity()
+    GltfContainer.create(arrow2, {src: arrowModel})
+    Transform.create(arrow2, {position: Vector3.create(32, 15, 52)})
+    Animator.create(arrow2, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                
+            }
+        ]
+    })
 }
 
 function createsStartPods(){
@@ -286,10 +332,166 @@ function createsStartPods(){
         Billboard.create(nameEntity, {billboardMode: BillboardMode.BM_Y})
 
         activationPods.push({pod:pod, nameEntity:nameEntity, lockedEntity:lockedEntity, lockedModel:lockedModel})
+
+     
     }
+
+       // activation pod animations:
+       const yellowPod = engine.addEntity()
+       GltfContainer.create(yellowPod, {src: 'models/activationPods/yellowPod.glb'})
+       Transform.create(yellowPod, {position: sceneCenter})
+       Animator.create(yellowPod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.5
+               
+           }
+       ]})
+
+       const greenPod = engine.addEntity()
+       GltfContainer.create(greenPod, {src: 'models/activationPods/greenPod.glb'})
+       Transform.create(greenPod, {position: sceneCenter})
+       Animator.create(greenPod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.45
+               
+           }
+       ]})
+
+
+       const bluePod = engine.addEntity()
+       GltfContainer.create(bluePod, {src: 'models/activationPods/bluePod.glb'})
+       Transform.create(bluePod, {position: sceneCenter})
+       Animator.create(bluePod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.4
+               
+           }
+       ]})
+
+       const indigoPod = engine.addEntity()
+       GltfContainer.create(indigoPod, {src: 'models/activationPods/indigoPod.glb'})
+       Transform.create(indigoPod, {position: sceneCenter})
+       Animator.create(indigoPod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.35
+               
+           }
+       ]})
+
+       const violetPod = engine.addEntity()
+       GltfContainer.create(violetPod, {src: 'models/activationPods/violetPod.glb'})
+       Transform.create(violetPod, {position: sceneCenter})
+       Animator.create(violetPod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.3
+               
+           }
+       ]})
+
+       const pinkPod = engine.addEntity()
+       GltfContainer.create(pinkPod, {src: 'models/activationPods/pinkPod.glb'})
+       Transform.create(pinkPod, {position: sceneCenter})
+       Animator.create(pinkPod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.35
+               
+           }
+       ]})
+
+       const redPod = engine.addEntity()
+       GltfContainer.create(redPod, {src: 'models/activationPods/redPod.glb'})
+       Transform.create(redPod, {position: sceneCenter})
+       Animator.create(redPod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.4
+               
+           }
+       ]})
+
+       const orangePod = engine.addEntity()
+       GltfContainer.create(orangePod, {src: 'models/activationPods/orangePod.glb'})
+       Transform.create(orangePod, {position: sceneCenter})
+       Animator.create(orangePod, {states: [
+           {
+               clip: 'play',
+               playing: true, 
+               speed: 0.45
+               
+           }
+       ]})
 }
 
 function createCarousels(){
+
+
+        //carousel clouds -- could we pull these out at game time for performance?
+        const carouselCloud1 = engine.addEntity()
+        GltfContainer.create(carouselCloud1, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        Transform.create(carouselCloud1, {position: Vector3.create(13, -3, 5), rotation: Quaternion.fromEulerDegrees(0, 45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Animator.create(carouselCloud1, {
+            states: [
+                {
+                    clip: 'play',
+                    playing: true,
+                    speed: 0.3
+                }
+            ]
+        })
+
+        const carouselCloud2 = engine.addEntity()
+        GltfContainer.create(carouselCloud2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        Transform.create(carouselCloud2, {position: Vector3.create(58, -3, 52), rotation: Quaternion.fromEulerDegrees(0, -45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Animator.create(carouselCloud2, {
+            states: [
+                {
+                    clip: 'play',
+                    playing: true,
+                    speed: 0.5
+                }
+            ]
+        })
+    
+        const carouselCloud3 = engine.addEntity()
+        GltfContainer.create(carouselCloud3, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        Transform.create(carouselCloud3, {position: Vector3.create(8, -3, 46), rotation: Quaternion.fromEulerDegrees(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Animator.create(carouselCloud3, {
+            states: [
+                {
+                    clip: 'play',
+                    playing: true,
+                    speed: 0.4
+                }
+            ]
+        })
+
+        const carouselCloud4 = engine.addEntity()
+        GltfContainer.create(carouselCloud4, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        Transform.create(carouselCloud4, {position: Vector3.create(56, -3, 18), rotation: Quaternion.fromEulerDegrees(0, -90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Animator.create(carouselCloud4, {
+            states: [
+                {
+                    clip: 'play',
+                    playing: true,
+                    speed: 0.2
+                }
+            ]
+        })
+   
+    
     carouselPositions.forEach(position => {
         const carouselEntity = engine.addEntity();
         GltfContainer.create(carouselEntity, {
