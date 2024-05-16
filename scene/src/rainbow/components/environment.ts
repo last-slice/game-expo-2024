@@ -3,14 +3,15 @@ import { Color4, Vector3, Quaternion } from "@dcl/sdk/math"
 import { utils } from "../helpers/libraries"
 import { gameRoom, sendServerMessage } from "./server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
-import { localPlayer } from "./player"
-import { getRandomIntInclusive, log } from "../helpers/functions"
+import { getRandomIntInclusive } from "../helpers/functions"
 import { createObjects } from "./objects"
 import resources, { colors } from "../helpers/resources"
 import { podPositions } from "./game"
 import { addPigTrainSystem, removePigTrainSystem } from "../systems/PigTrain"
 import { createSound, startAudioFader } from "./sounds"
-import { RainbowLightSystem } from "../systems/RainbowSystem"
+import { RainbowLightshowSystem, createRandomLightShows } from "../systems/Lightshow"
+import { stopAllRainbows } from "./animations"
+import { activeLightShows } from "./lightshow"
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
 
@@ -192,7 +193,7 @@ function createGround(){
 const sceneEntity = engine.addEntity()
     GltfContainer.create(sceneEntity, {
         src: resources.models.directory + resources.models.base,
-        visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+        // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
     })
     Transform.create(sceneEntity, {
         position: Vector3.create(32, 0, 32)
@@ -206,7 +207,11 @@ const sceneEntity = engine.addEntity()
             onGround = false
             removePigTrainSystem()
 
-            startAudioFader("sounds/playing_bg_loop.mp3", 0)
+            activeLightShows.clear()
+            engine.removeSystem(RainbowLightshowSystem)
+            stopAllRainbows()
+
+            startAudioFader("sounds/playing_bg_loop.mp3", 0)//
         },
         ()=>{
             onGround = true
@@ -216,6 +221,12 @@ const sceneEntity = engine.addEntity()
 
             startAudioFader("sounds/ground_bg_loop.mp3", 1)
             addPigTrainSystem()
+
+            engine.addSystem(RainbowLightshowSystem)
+
+            for (const [entity] of engine.getEntitiesWith(GroundRainbowComponent)) {
+                createRandomLightShows(entity)
+            }
 
 
         }, Color4.Teal()
@@ -318,16 +329,16 @@ function createRainbows(){
     mainRainbow = engine.addEntity();
     GltfContainer.create(mainRainbow, {
         src: resources.models.directory + resources.models.rainbow, 
-        visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+        // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
     })
     Transform.create(mainRainbow,{ position: Vector3.create(32, 53, 32)})
     addRainbowAnimations(mainRainbow)
     
-    rainbowTransforms.forEach(({ position, rotation, scale }) => {
+    rainbowTransforms.forEach(({ position, rotation, scale }, i:number) => {
         const rainbowEntity = engine.addEntity();
         GltfContainer.create(rainbowEntity, {
             src: resources.models.directory + resources.models.rainbow, 
-            visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+            // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
         })
         Transform.create(rainbowEntity, {
             position: position, 
@@ -337,8 +348,9 @@ function createRainbows(){
 
         addRainbowAnimations(rainbowEntity)
         GroundRainbowComponent.create(rainbowEntity, {time: getRandomIntInclusive(100, 300) / 1000})
+
+        createRandomLightShows(rainbowEntity)
     })
-    engine.addSystem(RainbowLightSystem)
 }
 
 function addRainbowAnimations(entity:Entity){
@@ -439,3 +451,4 @@ export function expandPodLock(index:number, amount:number){
         }
     }
 }
+

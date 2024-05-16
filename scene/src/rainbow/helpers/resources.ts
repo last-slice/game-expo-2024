@@ -28,7 +28,7 @@ export let colors:Color4[] = [
 
 export default {
     DEBUG: true,
-    noServer: false,
+    noServer: true,
 
     slug:"game::jam::2024",
     multiplayerRoom: 'game-expo',

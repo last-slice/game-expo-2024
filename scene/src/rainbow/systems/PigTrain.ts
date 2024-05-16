@@ -18,6 +18,10 @@ export function removePigTrainSystem(){
     engine.removeSystem(PigTrainSystem)
     engine.removeSystem(PigRemovalSystem)
     added = false
+
+    for (const [entity] of engine.getEntitiesWith(PigTrainComponent)) {
+        engine.removeEntity(entity)
+    }
 }
 
 export function PigTrainSystem(dt:number){

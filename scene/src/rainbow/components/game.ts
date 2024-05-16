@@ -13,12 +13,10 @@ import { removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import resources, { colors } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
-import { forwardVector, setForwardVector } from "../systems/Physics";
-import { turnOffAllRainbows, turnOffRainbow, turnOnRainbow } from "./animations";
+import { setForwardVector } from "../systems/Physics";
+import { turnOffRainbow, turnOnRainbowBand } from "./animations";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
-
-
 
 export let podPositions:any[] = [
     {x:45.1, y:28, z:40.1},
@@ -144,7 +142,7 @@ export function startGame(){
 
     gameRoom.state.pods.forEach((pod:any, i:number)=>{
         if(pod.locked){
-            turnOnRainbow(mainRainbow, i)
+            turnOnRainbowBand(mainRainbow, i)
         }
     })
     //add systems

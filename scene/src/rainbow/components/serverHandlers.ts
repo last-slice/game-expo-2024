@@ -13,7 +13,7 @@ import { mainRainbow, resetPodLock } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { AudioSource, engine } from "@dcl/sdk/ecs";
 import { playSound } from "@dcl-sdk/utils";
-import { turnOnRainbow } from "./animations";
+import { turnOnRainbow, turnOnRainbowBand } from "./animations";
 
 
 export function createServerHandlers(room:Room){
@@ -39,7 +39,7 @@ export function createServerHandlers(room:Room){
             playSound("sounds/countdown.mp3", false)
 
             if(c < 9 && c >= 0){
-                turnOnRainbow(mainRainbow, 8 - c)
+                turnOnRainbowBand(mainRainbow, 8 - c)
             }
         }
 
@@ -116,7 +116,7 @@ export function createServerHandlers(room:Room){
             if(c && p !== undefined){
                 lockPod({pod:key, name:pod.name})
 
-                turnOnRainbow(mainRainbow, pod.index)
+                turnOnRainbowBand(mainRainbow, pod.index)
 
                 if(!gameRoom.state.started){
                     displayStartingSoonUI(true, "WAITING ON MORE PLAYERS")

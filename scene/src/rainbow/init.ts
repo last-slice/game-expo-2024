@@ -11,13 +11,15 @@ import { addLocalPlayer, addPlayer } from "./components/player";
 import resources from "./helpers/resources";
 import { createTests } from "./tests";
 import { createPhysics } from "./cannon";
+import { createLightShows } from "./components/lightshow";
 
 export function init(){
 
   //setup ui
   setupUi()
+  createLightShows()
 
-  createTests()
+  // createTests()
 
   getPreview().then(()=>{
     const playerData = getPlayer()

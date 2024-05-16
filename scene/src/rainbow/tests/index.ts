@@ -1,9 +1,8 @@
 import { engine, MeshRenderer, MeshCollider, Transform, pointerEventsSystem, InputAction, Material, GltfContainer, Animator, ColliderLayer, AudioSource, Entity } from "@dcl/sdk/ecs"
 
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
-import { rainbows, turnOnRainbow } from "../components/animations"
-import { getRandomIntInclusive } from "../helpers/functions"
-import { utils } from "../helpers/libraries"
+import { rainbows, turnOnRainbowBand } from "../components/animations"
+import { playRainbowLightShow } from "../systems/Lightshow"
 
 export let testobject:Entity
 
@@ -52,20 +51,9 @@ export function createTests(){
         opts:{hoverText:"Run Test", button:InputAction.IA_POINTER, maxDistance:20}
     },()=>{
 
-        startcountdown()
+        // startcountdown()
+        // playWinner(6, true)
+        playRainbowLightShow(testobject, "reset")
 
     })
-}
-
-function startcountdown(){
-    let time = 9
-    let counter = utils.timers.setInterval(()=>{
-        time--
-        if(time > 0){
-            console.log('time is', time)
-            turnOnRainbow(testobject, 8 - time)
-        }else{
-            utils.timers.clearInterval(counter)
-        }
-    }, 1000)
 }
