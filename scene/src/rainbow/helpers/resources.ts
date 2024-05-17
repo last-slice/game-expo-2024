@@ -40,7 +40,7 @@ export let podAnimations:any[] = [
     "yellowPod.glb",
     "greenPod.glb",
     "bluePod.glb",
-    "inidgoPod.glb",
+    "indigoPod.glb",
     "violetPod.glb",
     "pinkPod.glb",
 ]
@@ -112,7 +112,7 @@ export let sounds:any = {
 
 export default {
     DEBUG: true,
-    noServer: false,//
+    noServer: true,//
 
     slug:"game::jam::2024",
     multiplayerRoom: 'game-expo',

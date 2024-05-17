@@ -151,5 +151,5 @@ export function attachWinnerAnimation(winner:string){
 
     utils.timers.setTimeout(()=>{
         engine.removeEntity(ent)
-    }, 1000 * 5)
+    }, 1000 * 10)
 }

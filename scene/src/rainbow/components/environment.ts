@@ -13,6 +13,7 @@ import { createRandomLightShows } from "../systems/Lightshow"
 import { stopAllGroundRainbows, turnOffAllGroundRainbows } from "./animations"
 import { activeLightShows } from "./lightshow"
 import { createLeaderboard } from "./leaderboards"
+import { createTutorial, disableTutorial, enableTutorial } from "./tutorial"
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
 
@@ -43,7 +44,7 @@ const rainbowTransforms = [
 ]
 
 const carouselPositions = [
-    Vector3.create(13, 1.3, 13),
+    // Vector3.create(13, 1.3, 13),
     Vector3.create(51, 1.3, 51),
     Vector3.create(13, 1.3, 51),
     Vector3.create(51, 1.3, 13)
@@ -66,6 +67,7 @@ function createBase(){
     createGround()
     createCarousels()
     createRainbows()
+    createTutorial()
 
     addPigTrainSystem()
 
@@ -219,30 +221,10 @@ const sceneEntity = engine.addEntity()
         [{type: 'box', position: {x: 0, y: 40, z: 0}, scale:{x:64, y:60,z:64}}],
 
         ()=>{
-            onGround = false
-            removePigTrainSystem()
-
-            activeLightShows.clear()
-            stopAllGroundRainbows()
-
-            startAudioFader("sounds/playing_bg_loop.mp3", 0)//
+            disableGround()
         },
         ()=>{
-            onGround = true
-            console.log('left playing area')
-            // playGroundSound()
-            // endGroundAudioFader()//
-
-            startAudioFader("sounds/ground_bg_loop.mp3", 1)
-            addPigTrainSystem()
-
-            turnOffAllGroundRainbows()
-
-            for (const [entity] of engine.getEntitiesWith(GroundRainbowComponent)) {
-                createRandomLightShows(entity)
-            }
-
-
+            enableGround()
         }, Color4.Teal()
     )
 
@@ -347,21 +329,19 @@ function createsStartPods(){
 }
 
 function createCarousels(){
-
-
         //carousel clouds -- could we pull these out at game time for performance?
-        const carouselCloud1 = engine.addEntity()
-        GltfContainer.create(carouselCloud1, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-        Transform.create(carouselCloud1, {position: Vector3.create(13, -2.7, 5), rotation: Quaternion.fromEulerDegrees(0, 45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
-        Animator.create(carouselCloud1, {
-            states: [
-                {
-                    clip: 'play',
-                    playing: true,
-                    speed: 0.3
-                }
-            ]
-        })
+        // const carouselCloud1 = engine.addEntity()
+        // GltfContainer.create(carouselCloud1, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        // Transform.create(carouselCloud1, {position: Vector3.create(13, -2.7, 5), rotation: Quaternion.fromEulerDegrees(0, 45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        // Animator.create(carouselCloud1, {
+        //     states: [
+        //         {
+        //             clip: 'play',
+        //             playing: true,
+        //             speed: 0.3
+        //         }
+        //     ]
+        // })
 
         const carouselCloud2 = engine.addEntity()
         GltfContainer.create(carouselCloud2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
@@ -565,3 +545,32 @@ export function expandPodLock(index:number, amount:number){
     }
 }
 
+function disableGround(){
+    onGround = false
+    removePigTrainSystem()
+
+    activeLightShows.clear()
+    stopAllGroundRainbows()
+
+    startAudioFader("sounds/playing_bg_loop.mp3", 0)
+
+    disableTutorial()
+}
+
+function enableGround(){
+    onGround = true
+    console.log('left playing area')
+    // playGroundSound()
+    // endGroundAudioFader()//
+
+    startAudioFader("sounds/ground_bg_loop.mp3", 1)
+    addPigTrainSystem()
+
+    turnOffAllGroundRainbows()
+
+    for (const [entity] of engine.getEntitiesWith(GroundRainbowComponent)) {
+        createRandomLightShows(entity)
+    }
+
+    enableTutorial()
+}
