@@ -172,7 +172,7 @@ function createElevator(){
     let elevator = engine.addEntity()
     MeshCollider.setCylinder(elevator)
     MeshRenderer.setCylinder(elevator)
-    Transform.create(elevator, {position: Vector3.create(32,1,51), scale: Vector3.create(10,.1,10), rotation: Quaternion.fromEulerDegrees(0,0,0)})
+    Transform.create(elevator, {position: Vector3.create(32,2,51), scale: Vector3.create(10,.1,10), rotation: Quaternion.fromEulerDegrees(0,0,0)})
 
 
     utils.triggers.addTrigger(
@@ -183,7 +183,7 @@ function createElevator(){
             MeshCollider.deleteFrom(ground)
             Tween.createOrReplace(elevator, {
                 mode: Tween.Mode.Move({
-                  start: Vector3.create(32,0,51),
+                  start: Vector3.create(32,2,51),
                   end: Vector3.create(32,27,51),
                 }),
                 duration: 4000,
@@ -196,7 +196,7 @@ function createElevator(){
             MeshCollider.setPlane(ground)
             Tween.deleteFrom(elevator)
             utils.timers.setTimeout(()=>{
-                Transform.getMutable(elevator).position = Vector3.create(32,0,51)
+                Transform.getMutable(elevator).position = Vector3.create(32,2,51)
             }, 1000 * 2)
 
             // endGroundAudioFader()
@@ -325,14 +325,14 @@ function createsStartPods(){
             }, Color4.Teal()
         )
 
-        let lockedEntity = engine.addEntity()
-        Transform.create(lockedEntity, {position: Vector3.create(0, 2,0), parent:pod})
-        VisibilityComponent.createOrReplace(lockedEntity, {visible:false})
+        // let lockedEntity = engine.addEntity()
+        // Transform.create(lockedEntity, {position: Vector3.create(0, 2,0), parent:pod})
+        // VisibilityComponent.createOrReplace(lockedEntity, {visible:false})
 
-        let lockedModel = engine.addEntity()
-        Transform.create(lockedModel, {position: Vector3.create(0, -2,0), parent:lockedEntity, scale: Vector3.create(1,0,1)})
-        MeshRenderer.setCylinder(lockedModel)
-        Material.setPbrMaterial(lockedModel, {albedoColor: colors[i]})
+        // let lockedModel = engine.addEntity()
+        // Transform.create(lockedModel, {position: Vector3.create(0, -2,0), parent:lockedEntity, scale: Vector3.create(1,0,1)})
+        // MeshRenderer.setCylinder(lockedModel)
+        // Material.setPbrMaterial(lockedModel, {albedoColor: colors[i]})
 
         let nameEntity = engine.addEntity()
         Transform.create(nameEntity, {position: Vector3.create(0,3,0), parent:pod})
@@ -340,7 +340,7 @@ function createsStartPods(){
         VisibilityComponent.createOrReplace(nameEntity, {visible:false})
         Billboard.create(nameEntity, {billboardMode: BillboardMode.BM_Y})
 
-        activationPods.push({pod:pod, podModel:podModel, nameEntity:nameEntity, lockedEntity:lockedEntity, lockedModel:lockedModel})
+        activationPods.push({pod:pod, podModel:podModel, nameEntity:nameEntity})//, lockedEntity:lockedEntity, lockedModel:lockedModel})
 
         speed -= 0.05
     }
@@ -528,24 +528,24 @@ export function createPigTrain(){
 
 export function resetPodLock(index:number){
     // console.log('resetting pod', index)
-    let pod = activationPods[index]
-    if(pod && pod.lockedModel){
-        VisibilityComponent.createOrReplace(pod.lockedModel, {visible:false})
-        // console.log('pod to reset is found')
-        if(Tween.has(pod.lockedModel)){
-            // console.log('found pod lock tweent')
-            let tween = Tween.getMutable(pod.lockedModel)
-            tween.playing = false
-            Tween.deleteFrom(pod.lockedModel)
-        }
+    // let pod = activationPods[index]
+    // if(pod && pod.lockedModel){
+    //     VisibilityComponent.createOrReplace(pod.lockedModel, {visible:false})
+    //     // console.log('pod to reset is found')
+    //     if(Tween.has(pod.lockedModel)){
+    //         // console.log('found pod lock tweent')
+    //         let tween = Tween.getMutable(pod.lockedModel)
+    //         tween.playing = false
+    //         Tween.deleteFrom(pod.lockedModel)
+    //     }
             
-        let transform = Transform.getMutableOrNull(pod.lockedModel)
-        if(transform){
-            // console.log('found transform pod to reset')
-            transform.position = Vector3.create(0,-2,0)
-            transform.scale = Vector3.create(1,0,1)
-        }
-    }
+    //     let transform = Transform.getMutableOrNull(pod.lockedModel)
+    //     if(transform){
+    //         // console.log('found transform pod to reset')
+    //         transform.position = Vector3.create(0,-2,0)
+    //         transform.scale = Vector3.create(1,0,1)
+    //     }
+    // }
 }
 
 export function expandPodLock(index:number, amount:number){

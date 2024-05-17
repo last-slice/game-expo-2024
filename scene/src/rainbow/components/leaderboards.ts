@@ -9,7 +9,7 @@ export let selectedBoard:string = "High Score"
 
 export function createLeaderboard(name:string){
 
-    enableBuilderHUD(true)
+    // enableBuilderHUD(true)
 
     let parent = engine.addEntity()
     Transform.create(parent, {position: Vector3.create(20.3, 7.5, 43), rotation: Quaternion.fromEulerDegrees(0, 315,0)})

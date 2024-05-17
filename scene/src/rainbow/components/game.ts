@@ -48,13 +48,13 @@ export function lockPod(pod:any){
     Animator.stopAllAnimations( activationPods[pod.index].podModel, true)
     VisibilityComponent.createOrReplace(activationPods[pod.index].podModel, {visible:false})
 
-    let lockedModel = activationPods[pod.index].lockedModel
-    let transform = Transform.getMutableOrNull(lockedModel)
-    if(transform){
-        console.log('we found transform to lock pod')
-        transform.position = Vector3.create(0, 0, 0)
-        transform.scale = Vector3.create(1,4,1)
-    }
+    // let lockedModel = activationPods[pod.index].lockedModel
+    // let transform = Transform.getMutableOrNull(lockedModel)
+    // if(transform){
+    //     console.log('we found transform to lock pod')
+    //     transform.position = Vector3.create(0, 0, 0)
+    //     transform.scale = Vector3.create(1,4,1)
+    // }
 
     turnOnRainbowBand(mainRainbow, pod.index)
 

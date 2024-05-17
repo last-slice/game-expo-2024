@@ -141,7 +141,7 @@ export function playGameResetAnimation(entity:Entity){
 
 export function attachWinnerAnimation(winner:string){
     let ent = engine.addEntity()
-    Transform.create(ent, {scale:Vector3.create(.1,.1,.1)})
+    Transform.create(ent, {scale:Vector3.create(.05,.05,.05), position: Vector3.create(0,-6,0)})
     GltfContainer.create(ent, {src: resources.models.directory + resources.models.winningAnimation})
 
     AvatarAttach.create(ent, {
@@ -151,5 +151,5 @@ export function attachWinnerAnimation(winner:string){
 
     utils.timers.setTimeout(()=>{
         engine.removeEntity(ent)
-    }, 1000 * 5000)
+    }, 1000 * 5)
 }

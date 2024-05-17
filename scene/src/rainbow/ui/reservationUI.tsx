@@ -21,9 +21,9 @@ export function displayReservationUI(index:number, value: boolean) {
 export function updateReservationCounter(index:number, value:number){
     counter.setNumber(value)
 
-    if(value > 0){
-        expandPodLock(index, value)
-    }
+    // if(value > 0){
+    //     expandPodLock(index, value)
+    // }//
 }
 
 
