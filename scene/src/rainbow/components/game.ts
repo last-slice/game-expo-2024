@@ -1,11 +1,11 @@
 import { Animator, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
-import { activationPods, mainRainbow, onGround, resetPodLock, sceneParent, sceneYPosition } from "./environment";
+import { activationPods, mainRainbow, onGround, sceneParent, sceneYPosition } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
-import { resetRacingObjects } from "./objects";
+import { racingObjects, resetRacingObjects } from "./objects";
 import { displayLeaderboardUI } from "../ui/leaderboardUI";
 import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
@@ -17,8 +17,6 @@ import { setForwardVector } from "../systems/Physics";
 import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
 import { playSound } from "@dcl-sdk/utils";
 import { getRandomIntInclusive, playAnimation } from "../helpers/functions";
-import { playRainbowLightShow } from "../systems/Lightshow";
-import { testobject } from "../tests";
 import { playGameSound } from "./sounds";
 import { EncouragementTimeSystem } from "../systems/EncouragementTimer";
 
@@ -48,14 +46,6 @@ export function lockPod(pod:any){
     Animator.stopAllAnimations( activationPods[pod.index].podModel, true)
     VisibilityComponent.createOrReplace(activationPods[pod.index].podModel, {visible:false})
 
-    // let lockedModel = activationPods[pod.index].lockedModel
-    // let transform = Transform.getMutableOrNull(lockedModel)
-    // if(transform){
-    //     console.log('we found transform to lock pod')
-    //     transform.position = Vector3.create(0, 0, 0)
-    //     transform.scale = Vector3.create(1,4,1)
-    // }
-
     turnOnRainbowBand(mainRainbow, pod.index)
 
     if(!onGround){
@@ -64,10 +54,9 @@ export function lockPod(pod:any){
 
     if(pod.id === localPlayer.userId){
         playSound("sounds/locked_in_f.mp3", false)
-    }else{
-        // playSound("sounds/locked_in_f.mp3", false)//
+        Animator.playSingleAnimation(racingObjects[pod.index].object, "Fly", true)
+        Animator.playSingleAnimation(racingObjects[pod.index].object2, "Fly", true)
     }
-   
 }
 
 
@@ -79,7 +68,6 @@ export function initGame(){
 
 export function prepGame(){
     setForwardVector()
-    // resetTargets()
     hideStartPods()
     // displayStartingSoonUI(true, 'GAME STARTING SOON')
 
@@ -87,10 +75,6 @@ export function prepGame(){
 
     let random = getRandomIntInclusive(0, sounds.starting.length - 1)
     playSound(sounds.starting[random], false)
-
-    // gameRoom.state.pods.forEach((pod:any, i:number) => {
-    //     addPodTarget(pod, i)
-    // });
 }
 
 export function animateTarget(id:string){
@@ -148,7 +132,7 @@ export function addPodTarget(info:any){
 export function hideStartPods(resetName?:boolean){
     activationPods.forEach((info, index:number)=>{
         resetName ? TextShape.getMutable(info.nameEntity).text = "" : null
-        resetPodLock(index)
+
 
         Animator.stopAllAnimations(activationPods[index].podModel, true)
         VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:false})
@@ -178,23 +162,11 @@ export function removeTargetObjects(gameTarget:any){
     }
 }
 
-// export function resetTargets(){
-//     gameTargets.forEach((gameTarget:any)=>{
-//         removeTargetObjects(gameTarget)
-//     })
-//     gameTargets.length = 0
-// }
-
 export function startGame(){
     displayLeaderboardUI(true)
     displayStartingSoonUI(false, "")
     playGameSound("gameStart")
 
-    // gameTargets.forEach((objects:any)=>{
-    //     if(objects.userId === localPlayer.userId){
-    //         addInputSystem()
-    //     }
-    // })
     let player = gameRoom.state.players.get(localPlayer.userId)
     console.log('game started, player is', player)
     if(player && player.playing){
@@ -202,19 +174,14 @@ export function startGame(){
         engine.addSystem(EncouragementTimeSystem)
     }
 
-
-
     turnOffRainbow(mainRainbow)
 
     gameRoom.state.pods.forEach((pod:any, i:number)=>{
         if(pod.locked){
             turnOnRainbowBand(mainRainbow, i)
         }
-
         Animator.stopAllAnimations(activationPods[pod.index].podModel, true)
     })
-    //add systems
-    //do other things
 }
 
 export function endGame(){
@@ -265,7 +232,7 @@ export function moveTarget(id:number){
 }
 
 export function sendScore(entity:Entity, target:any){
-    removeBall(entity)//
+    removeBall(entity)
     sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target, user:localPlayer.userId})
 }
 

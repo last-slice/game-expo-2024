@@ -7,7 +7,7 @@ import { CustomCounter, UICounter } from '../../ui_components/UICounter'
 import { localPlayer } from '../components/player'
 import { playGameSound } from '../components/sounds'
 
-export let show = false
+export let show = true
 
 let counterSize:number = 20
 

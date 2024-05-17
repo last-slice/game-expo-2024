@@ -1,4 +1,4 @@
-import { Entity, GltfContainer, MeshCollider, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Animator, Entity, GltfContainer, MeshCollider, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { sceneParent } from "./environment";
 import { podPositions } from "./game";
@@ -10,7 +10,14 @@ let initialX = -26.2; // Initial x position for the first object
 const spacing = 1.65; // Spacing of 1 meter between each object////
 
 export let racingObjects:any[] = []
-// export let parent:Entity
+
+let animationStates:any[] = [
+    {clip:"Win", playing:false, loop:false},
+    {clip:"Lose", playing:false, loop:false},
+    {clip:"Fly", playing:false, loop:true},
+    {clip:"Idle", playing:true, loop:true},
+
+]
 
 export function createObjects(){
     for(let i = 0; i < podPositions.length; i++){ 
@@ -21,10 +28,16 @@ export function createObjects(){
         let ent = engine.addEntity()
         GltfContainer.create(ent, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[i]})
         Transform.createOrReplace(ent, {position: Vector3.create(initialX, -22, -4.5), rotation: Quaternion.fromEulerDegrees(0,180,0), scale: Vector3.create(0.5, 0.5, 0.5), parent: parent})
+        Animator.create(ent, {
+            states: animationStates
+        })
 
         let ent2 = engine.addEntity()
         GltfContainer.create(ent2, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[i]})
         Transform.createOrReplace(ent2, {position: Vector3.create(initialX, -22, 5), scale: Vector3.create(0.5,0.5,0.5), parent: parent})
+        Animator.create(ent2, {
+            states: animationStates
+        })
 
         racingObjects.push({object:ent, object2:ent2, r:radius, parent:parent, stage:1})
         initialX += spacing
@@ -173,7 +186,7 @@ export function setRacingRotation(index:number, amount:number){
 }
 
 export function resetRacingObjects(){
-    racingObjects.forEach((object)=>{
+    racingObjects.forEach((object, i:number)=>{
         object.stage = 1
 
         let parent = object.parent
@@ -193,5 +206,8 @@ export function resetRacingObjects(){
         let objectRotation2 = Quaternion.toEulerAngles(objectTransform2.rotation)
         objectRotation2.z = -Quaternion.toEulerAngles(transform.rotation).z
         objectTransform2.rotation = Quaternion.fromEulerDegrees(objectRotation2.x, objectRotation2.y, objectRotation2.z)
+
+        Animator.playSingleAnimation(racingObjects[i].object, "Idle", true)
+        Animator.playSingleAnimation(racingObjects[i].object2, "Idle", true)
     })
 }

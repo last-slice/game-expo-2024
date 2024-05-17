@@ -2,18 +2,19 @@ import { Room } from "colyseus.js";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
 import { addPodTarget, animateTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, resetPods, setPodPosition, startGame } from "./game";
 import { displayGamingCountdown, levelCountdownTimer } from "../ui/gamingCountdown";
-import { setRacingPosition, setRacingRotation } from "./objects";
+import { racingObjects, setRacingPosition, setRacingRotation } from "./objects";
 import { displayWinnerUI } from "../ui/winnerUI";
 import { localPlayer } from "./player";
 import { displayReservationUI, updateReservationCounter } from "../ui/reservationUI";
 import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
 import { createBall } from "../cannon";
-import { mainRainbow, onGround, resetPodLock } from "./environment";
+import { mainRainbow, onGround } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { playSound } from "@dcl-sdk/utils";
 import { attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
+import { Animator } from "@dcl/sdk/ecs";
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
@@ -95,7 +96,7 @@ export function createServerHandlers(room:Room){
 
             if(gameRoom.state.winnerId === localPlayer.userId){
                 playGameSound("winner")
-                playGameSound("winSongs")
+                playGameSound("winSongs")//
             }else{
                 playGameSound("gameOver")
             }
@@ -107,6 +108,11 @@ export function createServerHandlers(room:Room){
                     if(pod.id === gameRoom.state.winnerId){
                         attachWinnerAnimation(gameRoom.state.winnerId)
                         playWinner(key, false)
+                        Animator.playSingleAnimation(racingObjects[key].object, "Win", true)
+                        Animator.playSingleAnimation(racingObjects[key].object2, "Win", true)
+                    }else{
+                        Animator.playSingleAnimation(racingObjects[key].object, "Lose", true)
+                        Animator.playSingleAnimation(racingObjects[key].object2, "Lose", true)
                     }
                 })   
             }
@@ -198,12 +204,6 @@ export function createServerHandlers(room:Room){
             player.listen("podCountingDown", (c:any, p:any)=>{
                 console.log('podCountingDown changed', p, c)
                 displayReservationUI(player.pod, c)
-            })
-
-            player.listen("pod", (c:any, p:any)=>{
-                if(c === -500 && p !== undefined){
-                    resetPodLock(p)
-                }
             })
 
             player.listen("podCountdown", (c:any, p:any)=>{

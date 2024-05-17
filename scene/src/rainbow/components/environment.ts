@@ -75,7 +75,7 @@ function createBase(){
 }
 
 function createClouds(){
-    /*
+    
     const cloudEntity = engine.addEntity()
     GltfContainer.create(cloudEntity, {src: animatedCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
     Transform.create(cloudEntity, { position: sceneCenter})
@@ -152,33 +152,27 @@ function createClouds(){
             }
         ]
     })
-    */
-
-    /*
+    
     //elevator cloud
-    const elevatorCloud = engine.addEntity()
-    GltfContainer.create(elevatorCloud, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-    Transform.create(elevatorCloud, {position: Vector3.create(40, 14, 30), rotation: Quaternion.fromEulerDegrees(0, 50, 0), scale: Vector3.create(0.8, 0.4, 0.6)})
-    Animator.create(elevatorCloud, {
-        states: [
-            {
-                clip: 'play',
-                playing: true,
-                speed: 0.25
-            }
-        ]
-    })
-    */
-
-
-
+    // const elevatorCloud = engine.addEntity()
+    // GltfContainer.create(elevatorCloud, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    // Transform.create(elevatorCloud, {position: Vector3.create(40, 14, 30), rotation: Quaternion.fromEulerDegrees(0, 50, 0), scale: Vector3.create(0.8, 0.4, 0.6)})
+    // Animator.create(elevatorCloud, {
+    //     states: [
+    //         {
+    //             clip: 'play',
+    //             playing: true,
+    //             speed: 0.25
+    //         }
+    //     ]
+    // })
 }
 
 function createElevator(){
     let elevator = engine.addEntity()
     MeshCollider.setCylinder(elevator)
     MeshRenderer.setCylinder(elevator)
-    Transform.create(elevator, {position: Vector3.create(32,2,51), scale: Vector3.create(10,.1,10), rotation: Quaternion.fromEulerDegrees(0,0,0)})
+    Transform.create(elevator, {position: Vector3.create(32,0,51), scale: Vector3.create(10,.1,10), rotation: Quaternion.fromEulerDegrees(0,0,0)})
 
 
     utils.triggers.addTrigger(
@@ -189,7 +183,7 @@ function createElevator(){
             MeshCollider.deleteFrom(ground)
             Tween.createOrReplace(elevator, {
                 mode: Tween.Mode.Move({
-                  start: Vector3.create(32,2,51),
+                  start: Vector3.create(32,0,51),
                   end: Vector3.create(32,27,51),
                 }),
                 duration: 4000,
@@ -202,8 +196,8 @@ function createElevator(){
             MeshCollider.setPlane(ground)
             Tween.deleteFrom(elevator)
             utils.timers.setTimeout(()=>{
-                Transform.getMutable(elevator).position = Vector3.create(32,2,51)
-            }, 1000 * 2)
+                Transform.getMutable(elevator).position = Vector3.create(32,0,51)
+            }, 500)
 
             // endGroundAudioFader()
         }, Color4.Teal()
@@ -214,7 +208,6 @@ function createGround(){
 const sceneEntity = engine.addEntity()
     GltfContainer.create(sceneEntity, {
         src: resources.models.directory + resources.models.base,
-        // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
     })
     Transform.create(sceneEntity, {
         position: Vector3.create(32, 0, 32)
@@ -311,15 +304,6 @@ function createsStartPods(){
             }, Color4.Teal()
         )
 
-        // let lockedEntity = engine.addEntity()
-        // Transform.create(lockedEntity, {position: Vector3.create(0, 2,0), parent:pod})
-        // VisibilityComponent.createOrReplace(lockedEntity, {visible:false})
-
-        // let lockedModel = engine.addEntity()
-        // Transform.create(lockedModel, {position: Vector3.create(0, -2,0), parent:lockedEntity, scale: Vector3.create(1,0,1)})
-        // MeshRenderer.setCylinder(lockedModel)
-        // Material.setPbrMaterial(lockedModel, {albedoColor: colors[i]})
-
         let nameEntity = engine.addEntity()
         Transform.create(nameEntity, {position: Vector3.create(0,3,0), parent:pod})
         TextShape.createOrReplace(nameEntity, {text:"Name " + i, fontSize:3})
@@ -333,20 +317,6 @@ function createsStartPods(){
 }
 
 function createCarousels(){
-        //carousel clouds -- could we pull these out at game time for performance?
-        // const carouselCloud1 = engine.addEntity()
-        // GltfContainer.create(carouselCloud1, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-        // Transform.create(carouselCloud1, {position: Vector3.create(13, -2.7, 5), rotation: Quaternion.fromEulerDegrees(0, 45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
-        // Animator.create(carouselCloud1, {
-        //     states: [
-        //         {
-        //             clip: 'play',
-        //             playing: true,
-        //             speed: 0.3
-        //         }
-        //     ]
-        // })
-
         const carouselCloud2 = engine.addEntity()
         GltfContainer.create(carouselCloud2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
         Transform.create(carouselCloud2, {position: Vector3.create(58, -2.7, 52), rotation: Quaternion.fromEulerDegrees(0, -45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
@@ -426,7 +396,6 @@ function createRainbows(){
     mainRainbow = engine.addEntity();
     GltfContainer.create(mainRainbow, {
         src: resources.models.directory + resources.models.rainbow, 
-        // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
     })
     Transform.create(mainRainbow,{ position: Vector3.create(32, 53, 32)})
     addRainbowAnimations(mainRainbow)
@@ -435,7 +404,6 @@ function createRainbows(){
         const rainbowEntity = engine.addEntity();
         GltfContainer.create(rainbowEntity, {
             src: resources.models.directory + resources.models.rainbow, 
-            // visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
         })
         Transform.create(rainbowEntity, {
             position: position, 
@@ -478,7 +446,7 @@ function addRainbowAnimations(entity:Entity){
 }
 
 export function createPigTrain(){
-    let random = getRandomIntInclusive(0,resources.models.pigs.length-1)//
+    let random = getRandomIntInclusive(0,resources.models.pigs.length-1)
 
     let parent = engine.addEntity()
     Transform.create(parent, {position: Vector3.create(32, 1, 0)})
@@ -510,44 +478,6 @@ export function createPigTrain(){
       PigTrainComponent.createOrReplace(parent)
 }
 
-export function resetPodLock(index:number){
-    // console.log('resetting pod', index)
-    // let pod = activationPods[index]
-    // if(pod && pod.lockedModel){
-    //     VisibilityComponent.createOrReplace(pod.lockedModel, {visible:false})
-    //     // console.log('pod to reset is found')
-    //     if(Tween.has(pod.lockedModel)){
-    //         // console.log('found pod lock tweent')
-    //         let tween = Tween.getMutable(pod.lockedModel)
-    //         tween.playing = false
-    //         Tween.deleteFrom(pod.lockedModel)
-    //     }
-            
-    //     let transform = Transform.getMutableOrNull(pod.lockedModel)
-    //     if(transform){
-    //         // console.log('found transform pod to reset')
-    //         transform.position = Vector3.create(0,-2,0)
-    //         transform.scale = Vector3.create(1,0,1)
-    //     }
-    // }
-}
-
-export function expandPodLock(index:number, amount:number){
-    let pod = activationPods[index]
-    if(pod && pod.lockedModel){
-        VisibilityComponent.createOrReplace(pod.lockedModel, {visible:true})
-        if(!Tween.has(pod.lockedModel)){
-            Tween.createOrReplace(pod.lockedModel, {
-                mode: Tween.Mode.Scale({
-                  start: Vector3.create(1, 0,1),
-                  end: Vector3.create(1, 7, 1),
-                }),
-                duration: 1000 * 2,
-                easingFunction: EasingFunction.EF_LINEAR,
-              })
-        }
-    }
-}
 
 function disableGround(){
     onGround = false

@@ -4,7 +4,6 @@ import { dimensions, sizeFont } from './ui'
 import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
-import { activationPods, expandPodLock, resetPodLock } from '../components/environment'
 
 export let show = false
 

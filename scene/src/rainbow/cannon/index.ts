@@ -1,5 +1,5 @@
 
-import { AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
+import { Animator, AudioSource, Entity, GltfContainer, Material, MeshRenderer, Transform, engine } from '@dcl/sdk/ecs';
 import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math';
 import * as CANNON from 'cannon/build/cannon'
 import { ballPhysicsMaterial, loadPhysicsWorld } from './world';
@@ -84,5 +84,6 @@ export function createBall(info:any){
     // syncEntity(entity, [Transform.componentId], ballCount)
     ballCount++
 
-    AudioSource.createOrReplace(entity, {audioClipUrl:"sounds/8bit_jump.mp3", playing:true, volume:.2})
+    AudioSource.createOrReplace(entity, {audioClipUrl:"sounds/8bit_jump.mp3", playing:true, volume:.05})
+    Animator.create(entity, {states: [{clip:"Fly", playing:true, loop:true}]})
 }

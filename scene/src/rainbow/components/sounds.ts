@@ -3,6 +3,7 @@ import { utils } from "../helpers/libraries"
 import { getRandomIntInclusive } from "../helpers/functions"
 import { sounds } from "../helpers/resources"
 import { playSound } from "@dcl-sdk/utils"
+import { onGround } from "./environment"
 
 export const GameSoundComponent = engine.defineComponent("game::expo::game::sound::component", {})
 
@@ -19,7 +20,7 @@ export function startAudioFader(toPlay:string, direction:number){
         audio.playing = false
     }
 
-    playBGSound(toPlay)
+    playBGSound(toPlay, onGround ? 0.05 : 0.1)
 
     // groundFaderInterval = utils.timers.setInterval(()=>{
     //     if(faderCount <= 1){
@@ -45,12 +46,12 @@ export function endFader(){
     faderCount = 0
 }
 
-export function playBGSound(file:string, ){
+export function playBGSound(file:string, volume?:number){
     let audio = AudioSource.getMutableOrNull(bgMusicEntity)
     if(audio){
         audio.playing = false
     }
-    AudioSource.createOrReplace(bgMusicEntity, {audioClipUrl:"" + file, playing:true, loop:true, volume:0.05})
+    AudioSource.createOrReplace(bgMusicEntity, {audioClipUrl:"" + file, playing:true, loop:true, volume: volume? volume : 0.05})
 }
 
 export function playGameSound(key:string, force?:number){
