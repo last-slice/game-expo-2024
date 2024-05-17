@@ -418,7 +418,7 @@ function createRainbows(){
     })
 }
 
-function addRainbowAnimations(entity:Entity){
+export function addRainbowAnimations(entity:Entity){
     Animator.create(entity, {
         states:[
             {clip:"RedOff", playing:true,  loop:true, weight:0.0555},

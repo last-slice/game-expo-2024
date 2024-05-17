@@ -9,7 +9,7 @@ import { racingObjects, resetRacingObjects } from "./objects";
 import { displayLeaderboardUI } from "../ui/leaderboardUI";
 import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
-import { removeBall, world } from "../cannon";
+import { ballBodies, removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import resources, { colors, sounds, targets } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
@@ -90,41 +90,33 @@ export function addPodTarget(info:any){
     let pTarget:any
     let userId:any
 
-
-    // if(pod.locked && pod.id === localPlayer.userId){
-        // console.log('adding target for pod', i)
-        // MeshRenderer.setBox(target)
-        // MeshCollider.setBox(target)
+    Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z), rotation:Quaternion.fromEulerDegrees(0, info.ry, 0)})
+    GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + targets[info.multiplier]})
+    Animator.create(target,{states:[
+        {clip:'play', playing: false, loop:false}
+    ]})
     
-        // let pos = Transform.get(activationPods[i].pod).position
-        Transform.createOrReplace(target, {position: Vector3.create(info.x, info.y, info.z), rotation:Quaternion.fromEulerDegrees(0, info.ry, 0)})
-        GltfContainer.createOrReplace(target, {src: resources.models.directory + resources.models.balloonDirectory + targets[info.multiplier]})
-        Animator.create(target,{states:[
-            {clip:'play', playing: false, loop:false}
-        ]})
-        
-        pTarget = new CANNON.Body({
-            mass: 0,
-            shape: new CANNON.Box(new CANNON.Vec3(1,1,1)),
-            position: new CANNON.Vec3(info.x, info.y, info.z),
-            collisionFilterGroup:2,
-            collisionFilterMask:0
-          })
-          world.addBody(pTarget)
-          userId = localPlayer.userId
-    // }
+    pTarget = new CANNON.Body({
+        mass: 0,
+        shape: new CANNON.Box(new CANNON.Vec3(1,1,1)),
+        position: new CANNON.Vec3(info.x, info.y, info.z),
+        collisionFilterGroup:2,
+        collisionFilterMask:0
+        })
+        world.addBody(pTarget)
+        userId = localPlayer.userId
 
-          let pos = Vector3.create(info.x, info.y, info.z)
+        let pos = Vector3.create(info.x, info.y, info.z)
 
-      Tween.create(target, {
+    Tween.create(target, {
         mode: Tween.Mode.Move({
-          start: Vector3.create(pos.x, pos.y + .5, pos.z),
-          end: Vector3.create(pos.x, pos.y - .5, pos.z),
+            start: Vector3.create(pos.x, pos.y + .5, pos.z),
+            end: Vector3.create(pos.x, pos.y - .5, pos.z),
         }),
         duration: 500,
         easingFunction: EasingFunction.EF_LINEAR,
-      })
-      TweenSequence.create(target, { sequence: [], loop: TweenLoop.TL_YOYO })
+    })
+    TweenSequence.create(target, { sequence: [], loop: TweenLoop.TL_YOYO })
 
     gameTargets.push({id:info.id, target:target, pTarget:pTarget, userId: userId})
 }
@@ -132,7 +124,6 @@ export function addPodTarget(info:any){
 export function hideStartPods(resetName?:boolean){
     activationPods.forEach((info, index:number)=>{
         resetName ? TextShape.getMutable(info.nameEntity).text = "" : null
-
 
         Animator.stopAllAnimations(activationPods[index].podModel, true)
         VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:false})
@@ -187,6 +178,13 @@ export function startGame(){
 export function endGame(){
     removeInputSystem()
     engine.removeSystem(EncouragementTimeSystem)
+    removePhysicsObjects()
+}
+
+function removePhysicsObjects(){
+    ballBodies.forEach((object:any, entity:Entity)=>{
+        removeBall(entity)
+    })
 }
 
 export function resetGame(testing?:boolean){
