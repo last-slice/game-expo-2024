@@ -26,9 +26,10 @@
   },
   "dependencies": {
     "@dcl-sdk/utils": "^1.1.2",
-    "core-js": "^3.31.0",
     "@types/cannon": "latest",
     "cannon": "latest",
-    "colyseus.js": "^0.15.10"
+    "colyseus.js": "^0.15.10",
+    "core-js": "^3.31.0",
+    "dcl-npc-toolkit": "^1.2.2"
   }
 }

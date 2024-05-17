@@ -8,6 +8,7 @@ import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity } from '@dcl/sdk/re
 import { createGamingUI } from './createGamingUI'
 import { createBuilderHud } from '../../dcl-builder-hud'
 import { createBuilderHUDPanel } from '../../dcl-builder-hud/ui/builderpanel'
+import { NpcUtilsUi } from 'dcl-npc-toolkit'
 export function setupUi() {
   ReactEcsRenderer.setUiRenderer(uiComponent)
   engine.addSystem(uiSizer)
@@ -15,8 +16,15 @@ export function setupUi() {
 
 const uiComponent = () => [
   createGamingUI(),
+  NPCUI(),
   createBuilderHUDPanel("game::expo::2024")
 ]
+
+function NPCUI(){
+  return(
+    <NpcUtilsUi />
+  )
+}
 
 
 export function hideAllPanels(){
