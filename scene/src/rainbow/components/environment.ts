@@ -504,6 +504,10 @@ export function createPigTrain(){
       })
       TweenSequence.create(pig, { sequence: [], loop: TweenLoop.TL_YOYO })
 
+      utils.timers.setTimeout(()=>{
+        engine.removeEntity(parent)
+      }, 1000 * 7)
+
 
       PigTrainComponent.createOrReplace(parent)
 }

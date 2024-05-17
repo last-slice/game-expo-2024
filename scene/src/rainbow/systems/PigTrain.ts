@@ -28,7 +28,7 @@ export function PigTrainSystem(dt:number){
     if(time > 0){
         time -= dt
     }else{
-        // createPigTrain()
+        createPigTrain()
         time = 1
     }
 }
