@@ -4,16 +4,22 @@ import { dimensions, sizeFont } from './ui'
 import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
+import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
 
 export let show = false
 
 export let counter = new CustomCounter( 4, 4, 75, 'center', "images/customCounter/number_sheet.png")
+export let customText = new CustomUIText(8,8, 75, 'center', "images/customCounter/alpha_sheet.png")
+customText.setText("Reserving Spot")
 
 export function displayReservationUI(index:number, value: boolean) {
     show = value
 
     if(!value){
+        customText.hide()
         counter.hide()
+    }else{
+        customText.show()
     }
 }
 
@@ -43,18 +49,7 @@ export function ReservationUI() {
             // uiBackground={{color:Color4.Green()}}
         >
 
-        <UiEntity
-        uiTransform={{
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '15%',
-            margin:{bottom:'2%'}
-        }}
-        // uiBackground={{color:Color4.Red()}}
-        uiText={{value:"Reserving Spot", fontSize:sizeFont(65,35), textAlign:'middle-center', color:Color4.White()}}
-        />
+        <UISpriteText customText={customText} />
 
         {gameRoom && getDisplay()}
 
@@ -75,6 +70,7 @@ function getDisplay(){
             justifyContent: 'center',
             width: '30%',
             height: '30%',
+            margin:{top:"5%"}
         }}
         >
             <UICounter customCounter={counter} />

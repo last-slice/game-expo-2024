@@ -3,13 +3,23 @@ import resources from '../helpers/resources'
 import { dimensions, sizeFont } from './ui'
 import { gameRoom } from '../components/server'
 import { Color4 } from '@dcl/sdk/math'
+import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
 
 export let show = false
-let message = "WAITING ON OTHER PLAYERS"
+
+export let customText = new CustomUIText(8,8, 75, 'center', "images/customCounter/alpha_sheet.png")
+customText.setText("WAITING ON OTHER PLAYERS")
 
 export function displayStartingSoonUI(value: boolean, text:string) {
     show = value
-    message = text
+    customText.setText(text)
+
+    if(value){
+        customText.show()
+    }else{
+        customText.hide()
+    }
+    
 }
 
 export function StartingSoonUI() {
@@ -29,18 +39,7 @@ export function StartingSoonUI() {
             // uiBackground={{color:Color4.Green()}}
         >
 
-        <UiEntity
-        uiTransform={{
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            height: '15%',
-            margin:{bottom:'2%'}
-        }}
-        // uiBackground={{color:Color4.Red()}}
-        uiText={{value:"" + message, fontSize:sizeFont(65,35), textAlign:'middle-center', color:Color4.White()}}
-        />
+            <UISpriteText customText={customText} />
 
         </UiEntity>
        

@@ -215,7 +215,7 @@ export function createServerHandlers(room:Room){
 
     room.state.targets.onAdd((target:any, key:any) => {
         addPodTarget(target)
-        if(gameRoom.state.started && target.multiplier > 1){
+        if(gameRoom.state.started && target.multiplier > 1 && !onGround){
             playGameSound("powerup")
         }
     })

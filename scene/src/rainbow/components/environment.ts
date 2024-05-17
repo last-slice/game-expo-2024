@@ -340,7 +340,7 @@ function createsStartPods(){
         VisibilityComponent.createOrReplace(nameEntity, {visible:false})
         Billboard.create(nameEntity, {billboardMode: BillboardMode.BM_Y})
 
-        activationPods.push({pod:pod, podModel:podModel, nameEntity:nameEntity})//, lockedEntity:lockedEntity, lockedModel:lockedModel})
+        activationPods.push({pod:pod, podModel:podModel, nameEntity:nameEntity, })//, lockedEntity:lockedEntity, lockedModel:lockedModel})
 
         speed -= 0.05
     }

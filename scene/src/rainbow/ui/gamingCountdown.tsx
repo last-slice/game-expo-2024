@@ -1,6 +1,7 @@
 import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity, Position, UiBackgroundProps } from '@dcl/sdk/react-ecs'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
 import { displayStartingSoonUI } from './startingSoonUI'
+import resources from '../helpers/resources'
 
 export let showGamingCountdown = false
 export let levelCountdownTimer = new CustomCounter( 4, 4, 150, 'center', "images/customCounter/number_sheet.png")
@@ -24,7 +25,7 @@ export function displayGamingCountdown(value: boolean, reset?:number) {
 export function GamingCountdown() {
     return (
         <UiEntity
-            key={"iwbgamingcountdown"}
+            key={"" + resources.slug + "game-countdown-ui"}
             uiTransform={{
                 display: showGamingCountdown ? "flex" : "none",
                 flexDirection: 'column',

@@ -1,4 +1,4 @@
-import { Animator, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { Animator, AvatarAnchorPointType, AvatarAttach, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
 import { activationPods, mainRainbow, onGround, sceneParent, sceneYPosition } from "./environment";
@@ -57,6 +57,20 @@ export function lockPod(pod:any){
         Animator.playSingleAnimation(racingObjects[pod.index].object, "Fly", true)
         Animator.playSingleAnimation(racingObjects[pod.index].object2, "Fly", true)
     }
+
+    let parent = engine.addEntity()
+    AvatarAttach.create(parent, {
+        avatarId: '' + pod.id,
+        anchorPointId: AvatarAnchorPointType.AAPT_POSITION,
+    })
+
+    let backpack = engine.addEntity()
+    Transform.create(backpack, {parent:parent, position: Vector3.create(0,2,0)})
+    MeshRenderer.setBox(backpack)
+    Material.setPbrMaterial(backpack, {albedoColor: colors[pod.index], emissiveColor: colors[pod.index], emissiveIntensity: 2})
+    // GltfContainer.create(backpack, {src: resources.models.directory + resources.models.winningAnimation})
+    activationPods[pod.index].backpack = parent
+
 }
 
 
@@ -179,6 +193,10 @@ export function endGame(){
     removeInputSystem()
     engine.removeSystem(EncouragementTimeSystem)
     removePhysicsObjects()
+
+    activationPods.forEach((pod:any)=>{
+        engine.removeEntity(pod.backpack)
+    })
 }
 
 function removePhysicsObjects(){

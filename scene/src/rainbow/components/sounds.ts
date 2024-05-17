@@ -21,24 +21,6 @@ export function startAudioFader(toPlay:string, direction:number){
     }
 
     playBGSound(toPlay, onGround ? 0.05 : 0.1)
-
-    // groundFaderInterval = utils.timers.setInterval(()=>{
-    //     if(faderCount <= 1){
-    //         faderCount += .1
-    //         let audio = AudioSource.getMutableOrNull(bgMusicEntity)
-    //         if(audio && audio.volume){
-    //             if(direction === 1){
-    //                 audio.volume += .005
-    //             }else{
-    //                 audio.volume -= .005
-    //             }
-    //         }
-    //     }else{
-    //         console.log('done fading music, need to start playing top music')
-    //         endFader()
-    //         playBGSound(toPlay)
-    //     }
-    // }, 100)
 }
 
 export function endFader(){
@@ -57,17 +39,9 @@ export function playBGSound(file:string, volume?:number){
 export function playGameSound(key:string, force?:number){
     let index = force ? force : getRandomIntInclusive(0, sounds[key].length -1)
     playSound(sounds[key][index])
-    // let ent = engine.addEntity()
-    // Transform.create(ent, {parent: engine.PlayerEntity})
-    // AudioSource.createOrReplace(ent, {audioClipUrl:"" + sounds[key][index], playing:true, loop:false, volume:0.5})
-    // GameSoundComponent.create(ent)
 }
 
 export function AudioCompleteSystem(){
-    // for (const [entity] of engine.getEntitiesWith(GameSoundComponent)) {
-    // let audio = AudioSource.get(entity)
-    // console.log('current time is', audio.playing)
-    // }
 }
 
 export function createSound(){//

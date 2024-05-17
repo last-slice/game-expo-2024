@@ -112,7 +112,7 @@ export let sounds:any = {
 
 export default {
     DEBUG: true,
-    noServer: true,
+    noServer: false,
 
     slug:"game::jam::2024",
     multiplayerRoom: 'game-expo',
