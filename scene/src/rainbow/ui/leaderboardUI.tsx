@@ -77,6 +77,9 @@ export function updateLeaderboard(test?:boolean){
     }
 }
 
+const leaderboardPic = "images/leaderboard.jpeg"
+const newLeaderboardPic = "images/leaderboard.png"
+
 export function LeaderboardUI() {
     return (
         <UiEntity
@@ -94,7 +97,7 @@ export function LeaderboardUI() {
             uiBackground={{
                 textureMode:'stretch',
                 texture: {
-                  src: "images/leaderboard.jpeg"
+                  src: newLeaderboardPic
                 },
             }}
         >

@@ -75,6 +75,7 @@ function createBase(){
 }
 
 function createClouds(){
+    /*
     const cloudEntity = engine.addEntity()
     GltfContainer.create(cloudEntity, {src: animatedCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
     Transform.create(cloudEntity, { position: sceneCenter})
@@ -151,7 +152,9 @@ function createClouds(){
             }
         ]
     })
+    */
 
+    /*
     //elevator cloud
     const elevatorCloud = engine.addEntity()
     GltfContainer.create(elevatorCloud, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
@@ -165,6 +168,7 @@ function createClouds(){
             }
         ]
     })
+    */
 
 
 
