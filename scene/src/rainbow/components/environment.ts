@@ -183,19 +183,7 @@ function createClouds(){
         ]
     })
     
-    //elevator cloud
-    // const elevatorCloud = engine.addEntity()
-    // GltfContainer.create(elevatorCloud, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-    // Transform.create(elevatorCloud, {position: Vector3.create(40, 14, 30), rotation: Quaternion.fromEulerDegrees(0, 50, 0), scale: Vector3.create(0.8, 0.4, 0.6)})
-    // Animator.create(elevatorCloud, {
-    //     states: [
-    //         {
-    //             clip: 'play',
-    //             playing: true,
-    //             speed: 0.25
-    //         }
-    //     ]
-    // })
+
 }
 
 function createElevator(){
@@ -233,6 +221,7 @@ function createElevator(){
         }, Color4.Teal()
     )
 }
+//
 
 function createGround(){
 const sceneEntity = engine.addEntity()
