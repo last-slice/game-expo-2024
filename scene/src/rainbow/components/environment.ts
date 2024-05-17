@@ -75,10 +75,40 @@ function createBase(){
 }
 
 function createClouds(){
+
+    //horizontal cloud for players to jump on
+    const horizontalCloud = 'models/cloudHorizontalElevator.glb'
+
+    const hCloud1 = engine.addEntity()
+    GltfContainer.create(hCloud1, {src: horizontalCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(hCloud1, {position: Vector3.create(32, 38, 6)})
+    Animator.create(hCloud1, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.09
+            }
+        ]
+    })
+
+    const hCloud2 = engine.addEntity()
+    GltfContainer.create(hCloud2, {src: horizontalCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(hCloud2, {position: Vector3.create(32, 38, 56)})
+    Animator.create(hCloud2, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.05
+            }
+        ]
+    })
+
     
     const cloudEntity = engine.addEntity()
     GltfContainer.create(cloudEntity, {src: animatedCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-    Transform.create(cloudEntity, { position: sceneCenter})
+    Transform.create(cloudEntity, { position: Vector3.create(32, 0, 32)})
     Animator.create(cloudEntity, {
         states: [
             {

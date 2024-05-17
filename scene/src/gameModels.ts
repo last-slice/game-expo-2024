@@ -51,6 +51,7 @@ const animatedClouds = 'models/cloudHover.glb'
 
 export function createGameModels() {
 
+    /*
     const cloudEntity = engine.addEntity()
     GltfContainer.create(cloudEntity, {src: animatedCloud, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
     Transform.create(cloudEntity, { position: sceneCenter})
@@ -127,5 +128,6 @@ export function createGameModels() {
             }
         ]
     })
+    */
 
 }
