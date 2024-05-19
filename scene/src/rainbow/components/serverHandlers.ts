@@ -15,6 +15,7 @@ import { playSound } from "@dcl-sdk/utils";
 import { attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
 import { Animator } from "@dcl/sdk/ecs";
+import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
@@ -80,6 +81,13 @@ export function createServerHandlers(room:Room){
         // console.log('ended variable', p, c)//
         if(c && (p === undefined || !p)){
             endGame()
+        }
+    })
+
+    room.state.listen("frozen", (c:any, p:any)=>{
+        // console.log('ended variable', p, c)//
+        if(c && !onGround){
+            playGameSound('frozen')
         }
     })
 
@@ -210,13 +218,25 @@ export function createServerHandlers(room:Room){
                 console.log('countdown is', p, c, player.pod)
                 updateReservationCounter(player.pod, c)
             })
+
+            player.listen("frozen", (c:any, p:any)=>{
+                console.log('frozen is', p, c, player.pod)
+                if(c){
+                    removeInputSystem()
+                    playGameSound('frozenYou')
+                }
+
+                if(!c && p){
+                    addInputSystem()
+                }
+            })
         }
     })
 
     room.state.targets.onAdd((target:any, key:any) => {
         addPodTarget(target)
         if(gameRoom.state.started && target.multiplier > 1 && !onGround){
-            playGameSound("powerup")
+            // playGameSound("powerup")//
         }
     })
 

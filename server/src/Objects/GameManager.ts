@@ -29,6 +29,10 @@ export class GameManager {
 
     haveMinPlayers:boolean = false
 
+    freezeTimer:any
+    freezeTimeBase:number = 5
+    freezeTime:number = this.freezeTimeBase
+
     constructor(gameRoom:GameRoom){
         this.room = gameRoom
 
@@ -107,6 +111,8 @@ export class GameManager {
     clearCountdown(){
         clearTimeout(this.countdownTimer)
         clearInterval(this.countdownInterval)
+
+        clearTimeout(this.freezeTimer)
     }
 
     startGameCountdown(){
@@ -235,17 +241,26 @@ export class GameManager {
         if(this.isGameLive()){
             let target = this.room.state.targets.find(target => target.id === info.id)
             if(target && target.enabled){
+                if(target.multiplier === 6){
+                    target.enabled = false
+                }
+
                 let player:Player = this.room.state.players.get(client.userData.userId)
                 if(player && player.playing){
                     let pod = this.room.state.pods.find(pod => pod.id === client.userData.userId)
                     if(pod){
                         this.resetForceEndTimer()
 
+                        if(target.multiplier === 6){
+                            target.startDelete()
+                            this.enableFreeze(player)
+                        }else{
                         // console.log('adding score ', (pod.factor * target.multiplier))
                         pod.score += (pod.factor * target.multiplier)
 
                         this.room.broadcast(SERVER_MESSAGE_TYPES.HIT_TARGET, target.id)
                         this.advanceObject(pod)
+                        }
                     }else{
                         // console.log('couldnt find pod')
                     }
@@ -261,13 +276,6 @@ export class GameManager {
             console.log('game isnt live')
         }
     }
-
-    // checkPodWin(pod:GamePod){
-    //     if(pod.stage === 4 &&  pod.racingObject.y >= ){
-    //         console.log('we have a winner, end game')
-    //         this.endGame()
-    //     }
-    // }
 
     advanceObject(pod:GamePod){
         // console.log('advancing object')
@@ -348,5 +356,29 @@ export class GameManager {
 
     createBall(player:Player, info:any){
         this.room.broadcast(SERVER_MESSAGE_TYPES.CREATE_BALL, info)
+    }
+
+    enableFreeze(player:Player){
+        this.room.state.frozen = true
+        this.room.state.pods.forEach((pod:GamePod, key:number)=>{
+            if(pod.locked && pod.id !== player.dclData.userId){
+                player.frozen = true
+            }
+        })
+
+        this.freezeTimer = setTimeout(()=>{
+            clearTimeout(this.freezeTimer)
+            this.disableFreeze()
+        }, 1000 * this.freezeTime)
+    }
+
+    disableFreeze(){
+        this.room.state.frozen = false
+        this.room.state.pods.forEach((pod:GamePod, key:number)=>{
+            if(pod.locked){
+                let player = this.room.state.players.get(pod.id)
+                    player.frozen = false
+            }
+        })
     }
 }

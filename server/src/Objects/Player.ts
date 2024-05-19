@@ -13,6 +13,7 @@ export class Player extends Schema {
   @type("number") podCountdown:number = 3
   @type("number") pod:number = -500
   @type("boolean") playing:boolean = false
+  @type("boolean") frozen:boolean = false
 
 
   playFabData:any
@@ -59,6 +60,7 @@ export class Player extends Schema {
       if(this.enteredPod){
         this.podLocked = true
         this.podCountingDown = false
+        this.frozen = false
         this.room.state.gameManager.lockPod(this.pod, this.dclData)
       }
     }, 1000 * this.podCountdown)

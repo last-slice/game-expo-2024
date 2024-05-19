@@ -32,6 +32,7 @@ export let targets:any = {
     3: "blueBalloon.glb",
     4: "redBalloon.glb",
     5: "greenBalloon.glb",
+    6: "indigoBalloon.glb",
 }
 
 export let podAnimations:any[] = [
@@ -105,9 +106,17 @@ export let sounds:any = {
         "sounds/win_synth.mp3"
     ],
     choosePod:[
-        "sounds_choose_other_pod.mp3",
+        "sounds/choose_other_pod.mp3",
         "sounds/already_taken.mp3"
     ],
+
+    frozenYou:[
+        "sounds/emp.mp3"
+    ],
+
+    frozen:[
+        "sounds/unequip.mp3"
+    ]
 }
 //
 export default {

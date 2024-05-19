@@ -99,7 +99,7 @@ export function animateTarget(id:string){
 }
 
 export function addPodTarget(info:any){
-    // console.log('adding pod target', info)
+    // console.log('adding pod target', info)//
     let target = engine.addEntity()
     let pTarget:any
     let userId:any

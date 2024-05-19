@@ -8,7 +8,7 @@ import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
 
 export let show = false
 
-export let counter = new CustomCounter( 4, 4, 75, 'center', "images/customCounter/number_sheet.png")
+export let counter = new CustomCounter(4, 4, 75, 'center', "images/customCounter/number_sheet.png")
 export let customText = new CustomUIText(8,8, 75, 'center', "images/customCounter/alpha_sheet.png")
 customText.setText("Reserving Spot")
 

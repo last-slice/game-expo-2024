@@ -55,18 +55,13 @@ export class GameTarget extends Schema{
 
   startCountdown(time:number){
     this.movementCountdown = setTimeout(()=>{
-      this.clearTimers()
       this.startDelete()
     }, 1000 * time)
   }
 
   startDelete(){
     this.enabled = false
-    // this.targetSystem.room.broadcast(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, {id: this.id})
-    // this.movementCountdown = setTimeout(()=>{
-    //   this.clearTimers()
-    //   this.targetSystem.deleteTarget(this.id)
-    // }, 1000)
+    this.clearTimers()
     this.targetSystem.deleteTarget(this.id)
   }
 
@@ -129,6 +124,7 @@ export class GameRoomState extends Schema {
   @type("boolean") started:boolean = false
   @type("boolean") ended:boolean = false
   @type("boolean") reset:boolean = false
+  @type("boolean") frozen:boolean = false
   @type("string") winner:string = ""
   @type("string") winnerId:string = ""
 
