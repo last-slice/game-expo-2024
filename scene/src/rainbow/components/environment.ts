@@ -203,7 +203,7 @@ function createElevator(){
             Tween.createOrReplace(elevator, {
                 mode: Tween.Mode.Move({
                   start: Vector3.create(32,0,32),
-                  end: Vector3.create(32,24,32),
+                  end: Vector3.create(32,24.25,32),
                 }),
                 duration: 4000,
                 easingFunction: EasingFunction.EF_EASEOUTQUAD,
@@ -222,7 +222,6 @@ function createElevator(){
         }, Color4.Teal()
         
     )
-    utils.triggers.enableDebugDraw(true)
 }
 //
 
