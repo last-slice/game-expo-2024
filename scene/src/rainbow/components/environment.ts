@@ -185,24 +185,25 @@ function createClouds(){
     
 
 }
-
+const elevatorShape = 'models/elevator.glb'
 function createElevator(){
     let elevator = engine.addEntity()
-    MeshCollider.setCylinder(elevator)
-    MeshRenderer.setCylinder(elevator)
-    Transform.create(elevator, {position: Vector3.create(32,0,51), scale: Vector3.create(10,.1,10), rotation: Quaternion.fromEulerDegrees(0,0,0)})
+    GltfContainer.create(elevator, {src: elevatorShape, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    //MeshCollider.setCylinder(elevator)
+    //MeshRenderer.setCylinder(elevator)
+    Transform.create(elevator, {position: Vector3.create(32,0,32), scale: Vector3.create(1, 1, 1), rotation: Quaternion.fromEulerDegrees(0,0,0)})
 
 
     utils.triggers.addTrigger(
         elevator, utils.NO_LAYERS, utils.LAYER_1,
-        [{type: 'box', position: {x: 0, y: 0, z: -1.5}, scale:{x:3, y:5,z:3}}],
+        [{type: 'box', position: {x: 0, y: 4, z: 19}, scale:{x:5, y:5,z:5}}],
 
         ()=>{
             MeshCollider.deleteFrom(ground)
             Tween.createOrReplace(elevator, {
                 mode: Tween.Mode.Move({
-                  start: Vector3.create(32,0,51),
-                  end: Vector3.create(32,27,51),
+                  start: Vector3.create(32,0,32),
+                  end: Vector3.create(32,24,32),
                 }),
                 duration: 4000,
                 easingFunction: EasingFunction.EF_EASEOUTQUAD,
@@ -214,12 +215,14 @@ function createElevator(){
             MeshCollider.setPlane(ground)
             Tween.deleteFrom(elevator)
             utils.timers.setTimeout(()=>{
-                Transform.getMutable(elevator).position = Vector3.create(32,0,51)
+                Transform.getMutable(elevator).position = Vector3.create(32,0,32)
             }, 500)
 
             // endGroundAudioFader()
         }, Color4.Teal()
+        
     )
+    utils.triggers.enableDebugDraw(true)
 }
 //
 
