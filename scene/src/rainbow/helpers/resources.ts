@@ -46,6 +46,19 @@ export let podAnimations:any[] = [
     "pinkPod.glb",
 ]
 
+export let cannonBackpacks:any[] = [
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",
+    "cannon.glb",//
+]
+
+
 export let sounds:any = {
     starting:[
         "sounds/starting_soon.mp3",

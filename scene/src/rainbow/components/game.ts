@@ -11,7 +11,7 @@ import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
 import { ballBodies, removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
-import resources, { colors, sounds, targets } from "../helpers/resources";
+import resources, { cannonBackpacks, colors, sounds, targets } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { setForwardVector } from "../systems/Physics";
 import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
@@ -65,10 +65,8 @@ export function lockPod(pod:any){
     })
 
     let backpack = engine.addEntity()
-    Transform.create(backpack, {parent:parent, position: Vector3.create(0,2,0)})
-    MeshRenderer.setBox(backpack)
-    Material.setPbrMaterial(backpack, {albedoColor: colors[pod.index], emissiveColor: colors[pod.index], emissiveIntensity: 2})
-    // GltfContainer.create(backpack, {src: resources.models.directory + resources.models.winningAnimation})
+    Transform.create(backpack, {parent:parent, position: Vector3.create(0,.8,0)})
+    GltfContainer.create(backpack, {src: resources.models.directory + cannonBackpacks[pod.index]})
     activationPods[pod.index].backpack = parent
 
 }
