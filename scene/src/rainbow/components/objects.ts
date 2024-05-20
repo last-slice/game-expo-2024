@@ -12,11 +12,10 @@ const spacing = 1.65; // Spacing of 1 meter between each object////
 export let racingObjects:any[] = []
 
 let animationStates:any[] = [
-    {clip:"Win", playing:false, loop:false},
+    {clip:"Win", playing:false, loop:true},
     {clip:"Lose", playing:false, loop:false},
     {clip:"Fly", playing:false, loop:true},
     {clip:"Idle", playing:true, loop:true},
-
 ]
 
 export function createObjects(){

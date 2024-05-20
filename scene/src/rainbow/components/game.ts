@@ -1,4 +1,4 @@
-import { Animator, AvatarAnchorPointType, AvatarAttach, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
+import { Animator, AudioSource, AvatarAnchorPointType, AvatarAttach, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
 import { activationPods, mainRainbow, onGround, sceneParent, sceneYPosition } from "./environment";
@@ -130,7 +130,11 @@ export function addPodTarget(info:any){
         duration: 500,
         easingFunction: EasingFunction.EF_LINEAR,
     })
-    TweenSequence.create(target, { sequence: [], loop: TweenLoop.TL_YOYO })
+    TweenSequence.create(target, { sequence: [], loop: TweenLoop.TL_YOYO })//
+
+    if(gameRoom.state.started && info.multiplier > 1 && !onGround){
+        AudioSource.create(target, {audioClipUrl:sounds.powerup[getRandomIntInclusive(0, sounds.powerup.length - 1)], playing:true, loop:false})
+    }
 
     gameTargets.push({id:info.id, target:target, pTarget:pTarget, userId: userId})
 }

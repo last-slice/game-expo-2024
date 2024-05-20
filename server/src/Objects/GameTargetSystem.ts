@@ -2,7 +2,7 @@ import { Schema, MapSchema,ArraySchema, type } from "@colyseus/schema";
 import { GameRoom } from "../rooms/GameRoom";
 import { GameTarget } from "../rooms/schema/GameRoomState";
 
-let startAmount:number = 4
+let startAmount:number = 8
 
 let tierRarity:any[] = [
     {multiplier: 0, rarity:0},

@@ -278,6 +278,7 @@ const sceneEntity = engine.addEntity()
 
 function createsStartPods(){
     // enableBuilderHUD(true)
+    // utils.triggers.enableDebugDraw(true)
     let speed = 0.5
 
     for(let i = 0; i < podPositions.length; i++){
@@ -302,7 +303,7 @@ function createsStartPods(){
 
         utils.triggers.addTrigger(
             pod, utils.NO_LAYERS, utils.LAYER_1,
-            [{type: 'box', position: {x: 0, y: 2, z: 0}, scale:{x:1, y:4,z:1 }}],
+            [{type: 'box', position: {x: 0, y: 2, z: 0}, scale:{x:3, y:4,z:3 }}],
 
             ()=>{
                 if(gameRoom){
