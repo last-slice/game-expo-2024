@@ -37,17 +37,17 @@ const sceneCenter = Vector3.create(32, 0, 32)
 const animatedClouds = 'models/cloudHover.glb'
 
 const rainbowTransforms = [
-    { position: Vector3.create(32, 8, 61), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25)},
-    { position: Vector3.create(3.5, 8, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.5) },
-    { position: Vector3.create(32, 8, 4), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
-    { position: Vector3.create(61, 8, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
+    { position: Vector3.create(32, 6.75, 61), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25)},
+    { position: Vector3.create(3.5, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.5) },
+    { position: Vector3.create(32, 6.75, 4), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
+    { position: Vector3.create(61, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
 ]
 
 const carouselPositions = [
     // Vector3.create(13, 1.3, 13),
-    Vector3.create(51, 1.3, 51),
-    Vector3.create(13, 1.3, 51),
-    Vector3.create(51, 1.3, 13)
+    Vector3.create(51, 1.3, 50),
+    Vector3.create(13, 1.3, 50),
+    Vector3.create(50, 1.3, 15)
 ];
 
 export async function createEnvironment(){
@@ -340,7 +340,7 @@ function createsStartPods(){
 function createCarousels(){
         const carouselCloud2 = engine.addEntity()
         GltfContainer.create(carouselCloud2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-        Transform.create(carouselCloud2, {position: Vector3.create(58, -2.7, 52), rotation: Quaternion.fromEulerDegrees(0, -45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Transform.create(carouselCloud2, {position: Vector3.create(58, -2.7, 50), rotation: Quaternion.fromEulerDegrees(0, -45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
         Animator.create(carouselCloud2, {
             states: [
                 {
@@ -353,7 +353,7 @@ function createCarousels(){
     
         const carouselCloud3 = engine.addEntity()
         GltfContainer.create(carouselCloud3, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-        Transform.create(carouselCloud3, {position: Vector3.create(8, -2.7, 46), rotation: Quaternion.fromEulerDegrees(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Transform.create(carouselCloud3, {position: Vector3.create(8, -2.7, 45), rotation: Quaternion.fromEulerDegrees(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
         Animator.create(carouselCloud3, {
             states: [
                 {
@@ -366,7 +366,7 @@ function createCarousels(){
 
         const carouselCloud4 = engine.addEntity()
         GltfContainer.create(carouselCloud4, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
-        Transform.create(carouselCloud4, {position: Vector3.create(56, -2.7, 18), rotation: Quaternion.fromEulerDegrees(0, -90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+        Transform.create(carouselCloud4, {position: Vector3.create(55, -2.7, 19.5), rotation: Quaternion.fromEulerDegrees(0, -90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
         Animator.create(carouselCloud4, {
             states: [
                 {
