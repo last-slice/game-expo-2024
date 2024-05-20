@@ -8,6 +8,7 @@ import { playRainbowLightShow } from "../systems/Lightshow"
 import resources from "../helpers/resources"
 import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel"
 import { Vector3 } from "@dcl/sdk/math"
+import { displayFrozenUI } from "../ui/frozenUI"
 
 
 export let rainbows:any[] = [
@@ -152,4 +153,20 @@ export function attachWinnerAnimation(winner:string){
     utils.timers.setTimeout(()=>{
         engine.removeEntity(ent)
     }, 1000 * 10)
+}
+
+export function attachFrozenAnimation(player:string){
+    let ent = engine.addEntity()
+    Transform.create(ent, {scale:Vector3.create(.05,.05,.05), position: Vector3.create(0,-6,0)})
+    GltfContainer.create(ent, {src: resources.models.directory + resources.models.frozenAnimation})
+
+    AvatarAttach.create(ent, {
+        avatarId: '' + player,
+        anchorPointId: AvatarAnchorPointType.AAPT_POSITION,
+    })
+
+    utils.timers.setTimeout(()=>{
+        engine.removeEntity(ent)
+        displayFrozenUI(false)
+    }, 1000 * 5)
 }

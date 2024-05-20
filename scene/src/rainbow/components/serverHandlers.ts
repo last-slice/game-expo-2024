@@ -12,10 +12,11 @@ import { createBall } from "../cannon";
 import { mainRainbow, onGround } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { playSound } from "@dcl-sdk/utils";
-import { attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
+import { attachFrozenAnimation, attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
 import { Animator } from "@dcl/sdk/ecs";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
+import { displayFrozenUI } from "../ui/frozenUI";
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
@@ -85,7 +86,6 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.listen("frozen", (c:any, p:any)=>{
-        // console.log('ended variable', p, c)//
         if(c && !onGround){
             playGameSound('frozen')
         }
@@ -104,7 +104,7 @@ export function createServerHandlers(room:Room){
 
             if(gameRoom.state.winnerId === localPlayer.userId){
                 playGameSound("winner")
-                playGameSound("winSongs")//
+                playGameSound("winSongs")
             }else{
                 playGameSound("gameOver")
             }
@@ -130,24 +130,13 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.pods.onAdd((pod:any, key:any) => {
-        // console.log('pod added', key, pod)
-
-        if(!gameRoom.state.started && pod.locked){
+         if(!gameRoom.state.started && pod.locked){
             lockPod(pod)
             playSound("sounds/8bit_select.mp3", false)
         }
 
         pod.listen("score", (c:any, p:any)=>{
-            // console.log('pod score changed', p, c)
-            // if(c < 180){//
-            //     rotateRacingObject(key, (c - (p === undefined ? 0 : p)))//
-            // }else if(c >= 180){
-            //     console.log('greater thamn 180')
-            //     rotateRacingObject(key, 180)
-            // }//////
             if(!room.state.reset && p !== undefined){
-                // rotateRacingObject(key, (c - (p === undefined ? 0 : p)))
-                // advanceObject(key, pod.factor)
                 updateLeaderboard()
             }
 
@@ -161,7 +150,6 @@ export function createServerHandlers(room:Room){
         })
 
         pod.listen("locked", (c:any, p:any)=>{
-            // console.log('pod locked changed', p, c)
             if(c && p !== undefined){
                 lockPod(pod)
 
@@ -175,23 +163,13 @@ export function createServerHandlers(room:Room){
             }
         })
 
-        // pod.target.listen("targetTick", (c:any, p:any)=>{
-        //     // console.log('pod target tick changed', key, p, c)
-        //     if(gameRoom.state.started && c !== -500){
-        //         setPodPosition(pod, key)
-        //     }
-        // })
-
         pod.racingObject.listen("y", (c:any, p:any)=>{
-            // console.log('pod target y changed', key, p, c)
             if(gameRoom.state.started && p !== undefined && pod.stage === 1 || pod.stage === 3 || pod.stage === 4){
-                // console.log('need to set pod y position')
                 setRacingPosition(key, pod.racingObject.y)
             }
         })
 
         pod.racingObject.listen("rz", (c:any, p:any)=>{
-            // console.log('pod target y changed', key, p, c)//
             if(gameRoom.state.started && p !== undefined && pod.stage === 2){
                 console.log('need to set pod rz position')
                 setRacingRotation(key, pod.racingObject.rz)
@@ -208,6 +186,25 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.players.onAdd((player:any, key:any) => {
+
+        player.listen("frozen", (c:any, p:any)=>{
+            console.log('frozen is', p, c, player)
+            if(c){
+                if(player.playing && player.address === localPlayer.userId){
+                    displayFrozenUI(true)
+                    removeInputSystem()
+                    playGameSound('frozenYou')
+                }
+                attachFrozenAnimation(player.address)
+            }
+
+            if(!c && p){
+                if(player.playing && player.address === localPlayer.userId){
+                    addInputSystem()
+                }
+            }
+        })
+
         if(player.address === localPlayer.userId){
             player.listen("podCountingDown", (c:any, p:any)=>{
                 console.log('podCountingDown changed', p, c)
@@ -218,25 +215,13 @@ export function createServerHandlers(room:Room){
                 console.log('countdown is', p, c, player.pod)
                 updateReservationCounter(player.pod, c)
             })
-
-            player.listen("frozen", (c:any, p:any)=>{
-                console.log('frozen is', p, c, player.pod)
-                if(c){
-                    removeInputSystem()
-                    playGameSound('frozenYou')
-                }
-
-                if(!c && p){
-                    addInputSystem()
-                }
-            })
         }
     })
 
     room.state.targets.onAdd((target:any, key:any) => {
         addPodTarget(target)
         if(gameRoom.state.started && target.multiplier > 1 && !onGround){
-            // playGameSound("powerup")//
+            playGameSound("powerup")
         }
     })
 

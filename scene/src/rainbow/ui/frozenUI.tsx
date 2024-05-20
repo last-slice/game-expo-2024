@@ -8,12 +8,10 @@ import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
 export let show = false
 
 export let customText = new CustomUIText(8,8, 75, 'center', "images/customCounter/alpha_sheet.png")
-customText.setText("WINNER")
+customText.setText("Frozen!")
 
-export function displayWinnerUI(value: boolean) {
+export function displayFrozenUI(value: boolean) {
     show = value
-
-    customText.setText((gameRoom && gameRoom.state.winner === "tie" ? "GAME TIED" : 'WINNER IS\n' + (gameRoom && gameRoom.state.winner)))
 
     if(value){
         customText.show()
@@ -22,10 +20,10 @@ export function displayWinnerUI(value: boolean) {
     }
 }
 
-export function WinnerUI() {
+export function FrozenUI() {
     return (
         <UiEntity
-        key={"" + resources.slug + "winner-ui"}
+        key={"" + resources.slug + "frozen-ui"}
             uiTransform={{
                 display: show ? "flex" : "none",
                 flexDirection: 'column',

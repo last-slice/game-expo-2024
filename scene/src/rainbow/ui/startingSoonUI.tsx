@@ -7,11 +7,12 @@ import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
 
 export let show = false
 
-export let customText = new CustomUIText(8,8, 75, 'center', "images/customCounter/alpha_sheet.png")
+export let customText = new CustomUIText(8,8, 55, 'center', "images/customCounter/alpha_sheet.png")
 customText.setText("WAITING ON OTHER PLAYERS")
 
 export function displayStartingSoonUI(value: boolean, text:string) {
     show = value
+
     customText.setText(text)
 
     if(value){

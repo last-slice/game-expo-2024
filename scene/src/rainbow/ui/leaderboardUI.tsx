@@ -7,7 +7,7 @@ import { CustomCounter, UICounter } from '../../ui_components/UICounter'
 import { localPlayer } from '../components/player'
 import { playGameSound } from '../components/sounds'
 
-export let show = true
+export let show = false
 
 let counterSize:number = 20
 
@@ -107,7 +107,7 @@ export function LeaderboardUI() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    width: '90%',
+                    width: '80%',
                     height: '60%',
                 }}
             >

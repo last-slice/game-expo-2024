@@ -361,9 +361,9 @@ export class GameManager {
     enableFreeze(player:Player){
         this.room.state.frozen = true
         this.room.state.pods.forEach((pod:GamePod, key:number)=>{
-            if(pod.locked && pod.id !== player.dclData.userId){
+            // if(pod.locked && pod.id !== player.dclData.userId){
                 player.frozen = true
-            }
+            // }
         })
 
         this.freezeTimer = setTimeout(()=>{

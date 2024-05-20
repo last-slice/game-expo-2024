@@ -85,14 +85,11 @@ export class CustomUIText {
             margin: this.size * 0.33
         })
 
-        console.log('this digits are ', this.digits)
+        // console.log('this digits are ', this.digits)
     }
 
     getUVSingleNumber(digit: string): number[] {
         let index = this.letters.findIndex(letter => letter === digit)
-
-        console.log('digit index is', index)//
-
         let currentSpriteV = Math.floor(index / this.rows)
         let currentSpriteU = index % this.cols
         let stepU = 1 / this.rows
@@ -120,11 +117,7 @@ export class CustomUIText {
         let digits = _string.toLowerCase().split('');
         let realDigits = digits.map(String)
 
-        console.log('real digits', realDigits)
-
         realDigits.reverse()
-
-        console.log('real digits', realDigits)
         let margin = this.size * 0.33
 
         for (let i = 0; i < realDigits.length; i++) {

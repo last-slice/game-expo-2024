@@ -8,6 +8,7 @@ import { WinnerUI } from './winnerUI'
 import { LeaderboardUI } from './leaderboardUI'
 import { ReservationUI } from './reservationUI'
 import { StartingSoonUI, displayStartingSoonUI } from './startingSoonUI'
+import { FrozenUI } from './frozenUI'
 
 
 export let showGaming = true
@@ -38,6 +39,7 @@ export function createGamingUI() {
                 positionType: 'absolute',
             }}
         >
+            <FrozenUI/>
             <StartingSoonUI/>
             <ReservationUI/>
             <LeaderboardUI/>

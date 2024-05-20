@@ -47,17 +47,15 @@ export let podAnimations:any[] = [
 ]
 
 export let cannonBackpacks:any[] = [
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",
-    "cannon.glb",//
+    "redCannon.glb",
+    "orangeCannon.glb",
+    "yellowCannon.glb",
+    "greenCannon.glb",
+    "blueCannon.glb",
+    "indigoCannon.glb",
+    "violet.glb", 
+    "pinkCannon.glb",
 ]
-
 
 export let sounds:any = {
     starting:[
@@ -131,7 +129,7 @@ export let sounds:any = {
         "sounds/unequip.mp3"
     ]
 }
-//
+
 export default {
     DEBUG: true,
     noServer: false,
@@ -143,10 +141,12 @@ export default {
         directory: "models/",
         pigDirectory:"pigs/",
         balloonDirectory:"targets/",
+        cannonsDirectory:"cannons/",
         base: "scene.glb",
         rainbow:"rainbowAnimations/fullRainbowAnimation.glb",
         carousel:"carousel.glb",
         winningAnimation: 'winVFX.glb',
+        frozenAnimation: 'freezeVFX.glb',
         pigs:[
             "redPig.glb",
             "orangePig.glb",

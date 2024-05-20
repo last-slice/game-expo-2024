@@ -19,6 +19,8 @@ import { playSound } from "@dcl-sdk/utils";
 import { getRandomIntInclusive, playAnimation } from "../helpers/functions";
 import { playGameSound } from "./sounds";
 import { EncouragementTimeSystem } from "../systems/EncouragementTimer";
+import { hideAllPanels } from "../ui/ui";
+import { displayFrozenUI } from "../ui/frozenUI";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -66,7 +68,7 @@ export function lockPod(pod:any){
 
     let backpack = engine.addEntity()
     Transform.create(backpack, {parent:parent, position: Vector3.create(0,.8,0)})
-    GltfContainer.create(backpack, {src: resources.models.directory + cannonBackpacks[pod.index]})
+    GltfContainer.create(backpack, {src: resources.models.directory + resources.models.cannonsDirectory + cannonBackpacks[pod.index]})
     activationPods[pod.index].backpack = parent
 
 }
@@ -188,6 +190,7 @@ export function startGame(){
 }
 
 export function endGame(){
+    displayFrozenUI(false)
     removeInputSystem()
     engine.removeSystem(EncouragementTimeSystem)
     removePhysicsObjects()
