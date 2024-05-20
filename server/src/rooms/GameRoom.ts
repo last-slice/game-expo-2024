@@ -7,17 +7,17 @@ import { GameRoomState } from "./schema/GameRoomState";
 import { RoomHandler } from "./handlers/RoomHandler";
 import { GameManager } from "../Objects/GameManager";
 import { addGameRoom, gameRooms, removeGameRoom } from "../Objects/Admin";
+import { serverEnabled } from "../utils/config";
 
 export class GameRoom extends Room<GameRoomState> {
 
     async onAuth(client: Client, options: any, req: any) {
-        console.log('optiosn are ', options)
-        //check if player or ip is already added
+        console.log('player trying to join', options.userData.name)
 
         const ipAddress = req.headers['x-forwarded-for'] || req.socket.address().address;
 
         let ipAccounts = Object.values(this.state.players.toJSON()).filter((player:any) => player.ip === ipAddress).length
-        if(ipAccounts > 1){
+        if(ipAccounts > 2){
             console.log('too many ip logged in')
             return false
         }
@@ -30,9 +30,7 @@ export class GameRoom extends Room<GameRoomState> {
         client.auth = {}
         client.auth.ip = ipAddress
 
-        return true
-
-
+        return serverEnabled
         // return await this.doLogin(client, options, req)   
     }
 

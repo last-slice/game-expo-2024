@@ -9,8 +9,14 @@ export let giveawayAuth = ""
 export let airdropsEnabled = false
 export let mintsEnabled = false
 export let discordEnabled = false
+export let serverEnabled = true
 
 export let mintContract = ""
+
+
+export function updateServerEnabled(value:boolean){
+  serverEnabled = value
+}
 
 export function updateAirdropsEnabled(enabled:boolean){
   airdropsEnabled = enabled

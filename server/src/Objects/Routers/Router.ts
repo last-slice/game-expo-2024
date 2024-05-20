@@ -10,6 +10,9 @@ router.get("/hello_world", (req: any, res: any) => {
 
 expoRouter(router)
 
-
-
-
+export function authenticate(req:any, res:any, next:any){
+    if(!req.params.auth || req.params.auth !== process.env.ADMIN_AUTH){
+        return res.status(200).json({valid:false, message: 'Invalid Authorization' });
+    }
+    next()
+}

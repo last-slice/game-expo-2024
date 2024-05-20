@@ -2,7 +2,7 @@ import config from "@colyseus/tools";
 import cors from 'cors'
 import bodyParser from "body-parser";
 import { playground } from "@colyseus/playground";
-import { router } from "./Objects/Routers/Router";
+import { authenticate, router } from "./Objects/Routers/Router";
 import { GameRoom } from "./rooms/GameRoom";
 import { monitor } from "@colyseus/monitor";
 
@@ -24,8 +24,9 @@ export default config({
         app.use("/", router);
 
         // ...
-        app.use("/playground", playground);
-        app.use("/colyseus", monitor())
+        app.use("/playground/:auth", authenticate, playground);
+
+        app.use("/colyseus/:auth", authenticate, monitor())
     },
 
 
