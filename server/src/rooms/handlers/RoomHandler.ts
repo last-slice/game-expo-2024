@@ -2,6 +2,7 @@ import { generateId } from "colyseus";
 import { Player } from "../../Objects/Player";
 import { SCENE_MODES, SERVER_MESSAGE_TYPES } from "../../utils/types";
 import { GameRoom } from "../GameRoom";
+import { pushPlayfabEvent } from "../../Objects/PlayfabEvents";
 
 export class RoomHandler {
     room:GameRoom
@@ -44,6 +45,14 @@ export class RoomHandler {
                 info.id = player.pod
                 info.userId = player.dclData.userId
                 this.room.state.gameManager.createBall(player, info)
+            }
+        })
+
+        room.onMessage(SERVER_MESSAGE_TYPES.TUTORIAL_FINISHED, async(client, info)=>{
+            // console.log(SERVER_MESSAGE_TYPES.TUTORIAL_FINISHED + " message", info)
+            let player:Player = this.room.state.players.get(client.userData.userId)
+            if(player){
+                pushPlayfabEvent(SERVER_MESSAGE_TYPES.TUTORIAL_FINISHED, player, {})
             }
         })
     }

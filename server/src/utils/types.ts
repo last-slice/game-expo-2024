@@ -12,8 +12,19 @@ export enum SERVER_MESSAGE_TYPES {
 
     PLAYER_JOINED = 'player_joined',
     PLAYTIME = 'playtime',
-    EXPLODE_TARGET ='explode_target'
+    WIN_GAME = 'win_game',
+    FULL_GAME = 'full_game',
+    SOLO_GAME = 'solo_game',
+    MP_GAME = 'mp_game',
+    GAME_FINISHED = 'game_finished',
+    PIGS_FLEW = 'pigs_flew',
+    TARGETS_HIT = 'targets_hit',
+    PLAYER_FROZEN = 'player_frozen',
+    TUTORIAL_FINISHED = 'tutorial_finished',
+    GAME_FINISHED_EARLY = 'game_finished_early',
+    GAME_TIED = 'game_tied'
 }
+
 
 export enum SCENE_MODES {
     PLAYMODE,

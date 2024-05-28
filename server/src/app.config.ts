@@ -5,12 +5,14 @@ import { playground } from "@colyseus/playground";
 import { authenticate, router } from "./Objects/Routers/Router";
 import { GameRoom } from "./rooms/GameRoom";
 import { monitor } from "@colyseus/monitor";
+import { getServerConfig } from "./Objects/Admin";
 
 export default config({
 
     initializeGameServer: (gameServer) => {
         // initPlayFab()
 
+        getServerConfig()
         gameServer.define('game-expo', GameRoom)
         .filterBy(['world'])
     },

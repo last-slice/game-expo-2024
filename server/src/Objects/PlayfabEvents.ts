@@ -1,4 +1,4 @@
-import { addEvent } from "../utils/Playfab"
+import { PLAYFAB_DATA_ACCOUNT, addEvent } from "../utils/Playfab"
 import { DEBUG } from "../utils/config"
 import { Player } from "./Player"
 
@@ -32,12 +32,18 @@ export function pushPlayfabEvent(type:any, player:any, data:any){
         return 
     }
 
+    let account = player
+    if(player !== PLAYFAB_DATA_ACCOUNT){
+        account = player.playFabData.PlayFabId
+    }
+
     let event:any = {
         EventName: type,
-        PlayFabId: player.playFabData.PlayFabId,
+        PlayFabId: account,
         body:{
             player: player.dclData.name,
             wallet: player.dclData.userId,
+            data: data
         }
     }
 

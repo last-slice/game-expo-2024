@@ -7,7 +7,7 @@ import { GameRoomState } from "./schema/GameRoomState";
 import { RoomHandler } from "./handlers/RoomHandler";
 import { GameManager } from "../Objects/GameManager";
 import { addGameRoom, gameRooms, removeGameRoom } from "../Objects/Admin";
-import { serverEnabled } from "../utils/config";
+import { DEBUG, serverEnabled } from "../utils/config";
 
 export class GameRoom extends Room<GameRoomState> {
 
@@ -30,7 +30,11 @@ export class GameRoom extends Room<GameRoomState> {
         client.auth = {}
         client.auth.ip = ipAddress
 
-        return serverEnabled
+        if(DEBUG){
+            return true
+        }
+        
+        return serverEnabled && await this.doLogin(client, options, req)
         // return await this.doLogin(client, options, req)   
     }
 
@@ -71,6 +75,7 @@ export class GameRoom extends Room<GameRoomState> {
             this.state.players.delete(client.userData.userId)
 
             //if player is playing, handle leave
+            player.saveCache()
 
         //   setTimeout(()=>{
         //   //   console.log('player is not in another world, need to remove them from server')
@@ -101,112 +106,124 @@ export class GameRoom extends Room<GameRoomState> {
         )
     }
 
-    // async doLogin(client: any, options: any, request: any) {
-    //     // console.log('login options', options)
-    //     return new Promise((resolve) => {
-    //         setTimeout(async() => {
-    //             // console.log('Timeout finished!');
-    //             let info:any = false
-    //             try {
+    async doLogin(client: any, options: any, request: any) {
+        // console.log('login options', options)
+        return new Promise((resolve) => {
+            setTimeout(async() => {
+                // console.log('Timeout finished!');
+                let info:any = false
+                try {
 
-    //                 const ipAddress = request.headers['x-forwarded-for'] || request.socket.address().address;
-    //                 // console.log(`Client IP address: ${ipAddress}`);
-    //                 const playfabInfo = await playerLogin(
-    //                     {
-    //                         CreateAccount: true,
-    //                         ServerCustomId: options.userData.userId,
-    //                         InfoRequestParameters: {
-    //                             "UserDataKeys": [], "UserReadOnlyDataKeys": [],
-    //                             "GetUserReadOnlyData": true,
-    //                             "GetUserInventory": false,
-    //                             "GetUserVirtualCurrency": false,
-    //                             "GetPlayerStatistics": true,
-    //                             "GetCharacterInventories": false,
-    //                             "GetCharacterList": false,
-    //                             "GetPlayerProfile": true,
-    //                             "GetTitleData": false,
-    //                             "GetUserAccountInfo": true,
-    //                             "GetUserData": true,
-    //                         },
-    //                         CustomTags: {
-    //                             ipAddress: ipAddress
-    //                         }
-    //                     })
+                    const ipAddress = request.headers['x-forwarded-for'] || request.socket.address().address;
+                    // console.log(`Client IP address: ${ipAddress}`);
+                    const playfabInfo = await playerLogin(
+                        {
+                            CreateAccount: true,
+                            ServerCustomId: options.userData.userId,
+                            InfoRequestParameters: {
+                                "UserDataKeys": [], "UserReadOnlyDataKeys": [],
+                                "GetUserReadOnlyData": true,
+                                "GetUserInventory": false,
+                                "GetUserVirtualCurrency": false,
+                                "GetPlayerStatistics": true,
+                                "GetCharacterInventories": false,
+                                "GetCharacterList": false,
+                                "GetPlayerProfile": true,
+                                "GetTitleData": false,
+                                "GetUserAccountInfo": true,
+                                "GetUserData": true,
+                            },
+                            CustomTags: {
+                                ipAddress: ipAddress
+                            }
+                        })
         
-    //                 if (playfabInfo.error) {
-    //                  //    console.log('playfab login error => ', playfabInfo.error)
-    //                 } else {
-    //                    //  console.log('playfab login success')
-    //                     client.auth = {}
-    //                     client.auth.playfab = playfabInfo
-    //                     client.auth.ip = ipAddress
-    //                     // console.log('playfab info', playfabInfo)
+                    if (playfabInfo.error) {
+                     //    console.log('playfab login error => ', playfabInfo.error)
+                    } else {
+                       //  console.log('playfab login success')
+                        client.auth = {}
+                        client.auth.playfab = playfabInfo
+                        client.auth.ip = ipAddress
+                        // console.log('playfab info', playfabInfo)
         
-    //                     if (playfabInfo.NewlyCreated) {
-    //                         let [data, stats] = await this.initializeServerPlayerData(options, client.auth)
-    //                         client.auth.playfab.InfoResultPayload.PlayerStatistics = stats
-    //                         client.auth.playfab.InfoResultPayload.UserData = data
-    //                         info = client.auth
-    //                     } else {
-    //                         //to do
-    //                         // we have no stats yet
-    //                         //   let stats = await this.checkInitStats(client.auth)
-    //                         //   client.auth.InfoResultPayload.PlayerStatistics = stats
-    //                         info = client.auth
-    //                     }
-    //                 }
-    //             } catch (e) {
-    //                 console.log('playfab connection error', e)
-    //             }
-    //             resolve(info); // Resolve the Promise with the data
-    //           }, 2000); // Adjust the timeout duration as needed
-    //         });
-    // }
+                        if (playfabInfo.NewlyCreated) {
+                            let [data, stats] = await this.initializeServerPlayerData(options, client.auth)
+                            client.auth.playfab.InfoResultPayload.PlayerStatistics = stats
+                            client.auth.playfab.InfoResultPayload.UserData = data
+                            info = client.auth
+                        } else {
+                            //to do
+                            // we have no stats yet
+                            //   let stats = await this.checkInitStats(client.auth)
+                            //   client.auth.InfoResultPayload.PlayerStatistics = stats
+                            info = client.auth
+                        }
+                    }
+                } catch (e) {
+                    console.log('playfab connection error', e)
+                }
+                resolve(info); // Resolve the Promise with the data
+              }, 2000); // Adjust the timeout duration as needed
+            });
+    }
 
-    // async initializeServerPlayerData(options: any, auth: any) {
+    async initializeServerPlayerData(options: any, auth: any) {
+        // console.log('options are', options)
+        options.userData.name.replace(" ", "_").trim()
 
-    //     // console.log('options are', options)
-    //     options.userData.name.replace(" ", "_").trim()
+        //set new user display name
+        try{
+            const result = await updatePlayerDisplayName({
+                DisplayName: options.userData.name === "Guest" ? 
+                options.userData.name + options.userData.userId.substring(options.userData.userId.length - 5) : 
+                options.userData.name,
+                
+                PlayFabId: auth.playfab.PlayFabId
+            })
+        }
+        catch(e){
+            console.log('error updating display name', e)
+        }
+      
 
-    //     //set new user display name
-    //     const result = await updatePlayerDisplayName({
-    //         DisplayName: options.userData.name === "Guest" ? 
-    //         options.userData.name + options.userData.userId.substring(options.userData.userId.length - 5) : 
-    //         options.userData.name,
-            
-    //         PlayFabId: auth.playfab.PlayFabId
-    //     })
-    //    //  console.log('setting player name res is', result)
+        let def: any = {}
+        def.address = options.userData.userId
+        def.web3 = !options.userData.isGuest
 
-    //     let def: any = {}
-    //     def.address = options.userData.userId
-    //     def.web3 = !options.userData.isGuest
+        //set initial player data
+        try{
+            const initPlayerDataRes = await updatePlayerInternalData({
+                Data: def,
+                PlayFabId: auth.playfab.PlayFabId
+            })
+        }
+        catch(e){
+            console.log('error initializing player data', e)
+        }
 
-    //     //set initial player data
-    //     const initPlayerDataRes = await updatePlayerInternalData({
-    //         Data: def,
-    //         PlayFabId: auth.playfab.PlayFabId
-    //     })
-    //     // console.log('setting eth address result', initPlayerDataRes)
+        // console.log('setting eth address result', initPlayerDataRes)
 
-    //     let stats: any[] = []
-    //     //we have no stats for now
-    //     // initManager.pDefaultStats.forEach((stat,key)=>{
-    //     //   stats.push({StatisticName:stat.StatisticName, Value:stat.Value})
-    //     // })
+        let stats: any[] = []
+        //we have no stats for now
+        // initManager.pDefaultStats.forEach((stat,key)=>{
+        //   stats.push({StatisticName:stat.StatisticName, Value:stat.Value})
+        // })
 
-    //     let data:any = {
-    //       Settings:{
-    //         Value:JSON.stringify(iwbManager.defaultPlayerSettings)
-    //       },
-    //       Assets:{
-    //         Value:JSON.stringify([])
-    //       },
-    //       Scenes:{
-    //         Value:JSON.stringify([])
-    //       }
-    //     }
+        let data:any = {}
 
-    //     return [data, stats]
-    // }
+        // let data:any = {
+        //   Settings:{
+        //     Value:JSON.stringify(iwbManager.defaultPlayerSettings)
+        //   },
+        //   Assets:{
+        //     Value:JSON.stringify([])
+        //   },
+        //   Scenes:{
+        //     Value:JSON.stringify([])
+        //   }
+        // }
+
+        return [data, stats]
+    }
 }

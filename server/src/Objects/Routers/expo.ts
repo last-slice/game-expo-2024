@@ -1,9 +1,18 @@
 import { GameRoom } from "../../rooms/GameRoom";
 import { updateServerEnabled } from "../../utils/config";
-import { endGame, gameRooms } from "../Admin";
+import { endGame, gameRooms, getServerConfig } from "../Admin";
 import { authenticate } from "./Router";
 
 export function expoRouter(router:any){
+    router.get("/game/:auth/admin/getserverconfig/", async (req: any, res: any) => {
+        console.log('admin trying to updae game config', req.params.room)
+        if(!req.params.auth || req.params.auth !== process.env.ADMIN_AUTH){
+            return res.status(200).json({valid:false, message: 'Invalid Authorization' });
+        }
+        res.status(200).send({valid:true})
+        await getServerConfig()
+    });  
+
     router.get("/game/:auth/end/:room/", async (req: any, res: any) => {
         console.log('admin trying to force end game for room', req.params.room)
         if(!req.params.auth || req.params.auth !== process.env.ADMIN_AUTH){

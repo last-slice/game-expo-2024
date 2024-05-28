@@ -29,11 +29,6 @@ export function createServerHandlers(room:Room){
         createBall(info)
     })
 
-    room.onMessage(SERVER_MESSAGE_TYPES.EXPLODE_TARGET, (info:any)=>{
-        // console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
-        explodeTarget(info.id)
-    })
-
     room.onMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, (info:any)=>{
         // console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
         animateTarget(info)

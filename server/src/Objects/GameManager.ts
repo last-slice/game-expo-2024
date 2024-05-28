@@ -4,6 +4,8 @@ import { GamePod } from "../rooms/schema/GameRoomState";
 import { SERVER_MESSAGE_TYPES } from "../utils/types";
 import { TargetSystem } from "./GameTargetSystem";
 import { Player } from "./Player";
+import { pushPlayfabEvent } from "./PlayfabEvents";
+import { PLAYFAB_DATA_ACCOUNT } from "../utils/Playfab";
 
 export class GameManager {
 
@@ -12,8 +14,6 @@ export class GameManager {
     minPlayers:number = 1
     maxPlayers:number = 8
     numPlayers:number = 0
-
-    winThreshold:number = 180
 
     pods:any[] = []
 
@@ -132,6 +132,11 @@ export class GameManager {
     }
 
     startGame(){
+        console.log('starting game')
+
+        let gameType = this.numPlayers === 8 ? SERVER_MESSAGE_TYPES.FULL_GAME : this.numPlayers > 1 ? SERVER_MESSAGE_TYPES.MP_GAME : SERVER_MESSAGE_TYPES.SOLO_GAME
+        pushPlayfabEvent(gameType, PLAYFAB_DATA_ACCOUNT, {})
+       
         this.room.state.reset = false
         this.room.state.ended = false
         this.room.state.started = true
@@ -160,6 +165,8 @@ export class GameManager {
             }
         })
 
+        pushPlayfabEvent(SERVER_MESSAGE_TYPES.GAME_FINISHED, PLAYFAB_DATA_ACCOUNT, {})
+
         await this.determineWinner()
         //clean up etc
 
@@ -180,6 +187,7 @@ export class GameManager {
             if(pod.locked){
                 if(pod.score === highscore){
                     winner = "tie"
+                    pushPlayfabEvent(SERVER_MESSAGE_TYPES.GAME_TIED, PLAYFAB_DATA_ACCOUNT, {})
                 }else{
                     if(pod.score > highscore){
                         highscore = pod.score
@@ -191,6 +199,13 @@ export class GameManager {
         })
         this.room.state.winner = winner
         this.room.state.winnerId = winnerId
+
+        if(winner !== "tie"){
+            let player = this.room.state.players.get(winnerId)
+            if(player && this.numPlayers > 1){
+                player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.WIN_GAME, 1)
+            }
+        }
     }
 
     resetPlayers(){
@@ -226,6 +241,10 @@ export class GameManager {
         this.countdownTime = this.gameTimeBase
         this.countdownTimer = setTimeout(()=>{
             this.room.state.gameCountdown = -500
+
+            console.log('Game ended early because no one hit a target')
+            pushPlayfabEvent(SERVER_MESSAGE_TYPES.GAME_FINISHED_EARLY, PLAYFAB_DATA_ACCOUNT, {})
+
             this.clearCountdown()
             this.endGame()
           }, 1000 * this.countdownTime)
@@ -256,6 +275,7 @@ export class GameManager {
                             this.enableFreeze(player)
                         }else{
                         // console.log('adding score ', (pod.factor * target.multiplier))
+                        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.TARGETS_HIT, 1)
                         pod.score += (pod.factor * target.multiplier)
 
                         this.room.broadcast(SERVER_MESSAGE_TYPES.HIT_TARGET, target.id)
@@ -355,10 +375,15 @@ export class GameManager {
     }
 
     createBall(player:Player, info:any){
+        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.PIGS_FLEW, 1)
         this.room.broadcast(SERVER_MESSAGE_TYPES.CREATE_BALL, info)
     }
 
     enableFreeze(player:Player){
+        pushPlayfabEvent(
+            SERVER_MESSAGE_TYPES.PLAYER_FROZEN, player, {}
+        )
+
         this.room.state.frozen = true
         this.room.state.pods.forEach((pod:GamePod, key:number)=>{
             // if(pod.locked && pod.id !== player.dclData.userId){

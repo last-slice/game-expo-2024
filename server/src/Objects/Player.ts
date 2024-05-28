@@ -1,9 +1,11 @@
 import {MapSchema, Schema, type} from "@colyseus/schema";
 import {Client} from "@colyseus/core";
 import {SCENE_MODES, SERVER_MESSAGE_TYPES} from "../utils/types";
-import {abortFileUploads, fetchPlayfabFile, fetchPlayfabMetadata, fetchUserMetaData, finalizeUploadFiles, initializeUploadPlayerFiles, playfabLogin, setTitleData, updatePlayerData, uploadPlayerFiles} from "../utils/Playfab";
+import {abortFileUploads, fetchPlayfabFile, fetchPlayfabMetadata, fetchUserMetaData, finalizeUploadFiles, initializeUploadPlayerFiles, playfabLogin, setTitleData, updatePlayerData, updatePlayerStatistic, uploadPlayerFiles} from "../utils/Playfab";
 import { GameRoom } from "../rooms/GameRoom";
 import { pushPlayfabEvent } from "./PlayfabEvents";
+import { defaultStats, scoreFactor } from "./Admin";
+import { DEBUG } from "../utils/config";
 
 export class Player extends Schema {
   @type("string") id:string;
@@ -32,20 +34,27 @@ export class Player extends Schema {
   enteredPod:boolean = false
   podLocked:boolean = false
 
-  scoreFactor:number = .5
+  scoreFactor:number = 0
+
+  stats:Map<string, number> = new Map()
 
   constructor(room:GameRoom, client:Client){
     super()
     this.room = room
     this.client = client
 
-    this.playFabData = client.auth.playfab
+    this.playFabData = client.auth
     this.dclData = client.userData
     this.address = client.userData.userId
     this.name = client.userData.name
     this.ip = client.userData.ip
+    this.scoreFactor = scoreFactor
 
     this.startTime = Math.floor(Date.now()/1000)
+    if(DEBUG){
+      return
+    }
+    this.setStats(this.playFabData.InfoResultPayload.PlayerStatistics)
   }
 
   startPodLockCountdown(pod:number){
@@ -82,26 +91,25 @@ export class Player extends Schema {
     // console.log('player stats are ', stats)
     try{
      if(stats.length == 0){
-      //  console.log('need to initialize stats')
-       // updatePlayerStatistic({
-       //   PlayFabId: this.playFabData.PlayFabId,
-       //   Statistics:initManager.pDefaultStats
-       // })
+       console.log('need to initialize stats')
+       updatePlayerStatistic({
+         PlayFabId: this.playFabData.PlayFabId,
+         Statistics:defaultStats
+       })
  
-      //  stats = initManager.pDefaultStats
-      //  this.playFabData.InfoResultPayload.PlayerStatistics = initManager.pDefaultStats
+       stats = defaultStats
+       this.playFabData.InfoResultPayload.PlayerStatistics = defaultStats
      }
  
-    //  initManager.pDefaultStats.forEach((d:any)=>{
-    //   // if(stats.filter((stat)=> stat.StatisticName === d.StatisticName).length > 0){
-    //      this.stats.set(d.pKey, stats.filter((stat)=> stat.StatisticName === d.StatisticName)[0].Value)
-    //   // }
-    //  })
+     defaultStats.forEach((d:any)=>{
+      // if(stats.filter((stat)=> stat.StatisticName === d.StatisticName).length > 0){
+         this.stats.set(d.pKey, stats.filter((stat)=> stat.StatisticName === d.StatisticName)[0].Value)
+      // }
+     })
     }
     catch(e){
      console.log('error setting player stats', this.dclData.name)
     }
-     
    }
 
   increaseValueInMap(map:any, key:any, incrementAmount:number) {
@@ -146,10 +154,13 @@ export class Player extends Schema {
   }
 
   async saveCache(){
+    this.clearPlayer()
+    if(DEBUG){
+      return
+    }
+    
     await this.recordPlayerTime()
     await this.saveToDB()
-
-    this.clearPlayer()
   }
 
   async recordPlayerTime(){
@@ -166,45 +177,46 @@ export class Player extends Schema {
   async saveToDB(){
     // console.log('saving player updates to db', this.dclData.userId)
     // await this.saveSetttingsDB()
-    // let stats:any = []
-    // this.stats.forEach((stat,key)=>{
-    //   stats.push({StatisticName:initManager.pDefaultStats.filter((stat)=> stat.pKey === key)[0].StatisticName, Value:stat})
-    // })
 
-    // try{
-    //   // const chunkSize = 10;
-    //   // const chunks = [];
-    //   // for (let i = 0; i < stats.length; i += chunkSize) {
-    //   //   chunks.push(stats.slice(i, i + chunkSize));
-    //   // }
+    let stats:any = []
+    this.stats.forEach((stat,key)=>{
+      stats.push({StatisticName:defaultStats.filter((stat)=> stat.pKey === key)[0].StatisticName, Value:stat})
+    })
+
+    try{
+      const chunkSize = 10;
+      const chunks = [];
+      for (let i = 0; i < stats.length; i += chunkSize) {
+        chunks.push(stats.slice(i, i + chunkSize));
+      }
   
-    //   // chunks.forEach(async (chunk) => {
-    //   //   await updatePlayerStatistic({
-    //   //     PlayFabId: this.playFabData.PlayFabId,
-    //   //     Statistics: chunk
-    //   //   })
-    //   // });
+      chunks.forEach(async (chunk) => {
+        await updatePlayerStatistic({
+          PlayFabId: this.playFabData.PlayFabId,
+          Statistics: chunk
+        })
+      });
 
-    //   let assets:any[] = []
-    //   this.assets.forEach((value,key)=>{
-    //     assets.push(value)
-    //   })
+      // let assets:any[] = []
+      // this.assets.forEach((value,key)=>{
+      //   assets.push(value)
+      // })
 
-    //   const playerData:any = {
-    //     "Settings":JSON.stringify(this.settings),
-    //     "Scenes":JSON.stringify(assets)
-    //   }
+      // const playerData:any = {
+      //   "Settings":JSON.stringify(this.settings),
+      //   "Scenes":JSON.stringify(assets)
+      // }
 
-    //   console.log('player data to save is' ,playerData)
+      // console.log('player data to save is' ,playerData)
   
-    //   await updatePlayerData({
-    //     PlayFabId: this.playFabData.PlayFabId,
-    //     Data: playerData
-    //   })
-    // }
-    // catch(e){
-    //   console.log('saving player info to db error ->', e)
-    // }
+      // await updatePlayerData({
+      //   PlayFabId: this.playFabData.PlayFabId,
+      //   Data: playerData
+      // })
+    }
+    catch(e){
+      console.log('saving player info to db error ->', e)
+    }
   }
 
 }

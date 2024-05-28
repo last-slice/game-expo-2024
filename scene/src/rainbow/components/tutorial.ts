@@ -10,6 +10,8 @@ import { podPositions } from "./game";
 import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel";
 import { addBuilderHUDAsset } from "../../dcl-builder-hud";
 import { closeDialog } from "dcl-npc-toolkit/dist/dialog";
+import { sendServerMessage } from "./server";
+import { SERVER_MESSAGE_TYPES } from "../helpers/types";
 
 const targetPositions = [
     Vector3.create(13, 3, 13),
@@ -67,6 +69,7 @@ export let tutorialDialog:any[] = [
         playTutorial({newRelativePosition:{x:25.16, y:1, z:24.43}, cameraTarget:{x:15.7, y:2, z:16}})
     }},
     {text: "Now you're ready to play! Good luck!", audio: "sounds/tutorials/ready_to_play.mp3", triggeredByNext:()=>{
+        sendServerMessage(SERVER_MESSAGE_TYPES.TUTORIAL_FINISHED, {})
     }, isEndOfDialog:true},
 ]
 
