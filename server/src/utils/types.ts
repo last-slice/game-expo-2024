@@ -22,7 +22,10 @@ export enum SERVER_MESSAGE_TYPES {
     PLAYER_FROZEN = 'player_frozen',
     TUTORIAL_FINISHED = 'tutorial_finished',
     GAME_FINISHED_EARLY = 'game_finished_early',
-    GAME_TIED = 'game_tied'
+    GAME_TIED = 'game_tied',
+    PLAYER_SCORES = 'player_scores',
+    PLAYER_SCORED = 'score',
+    LEADERBOARDS_UPDATES = 'leaderboards_updates',
 }
 
 

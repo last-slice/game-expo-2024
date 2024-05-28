@@ -6,11 +6,12 @@ import { authenticate, router } from "./Objects/Routers/Router";
 import { GameRoom } from "./rooms/GameRoom";
 import { monitor } from "@colyseus/monitor";
 import { getServerConfig } from "./Objects/Admin";
+import { initPlayFab } from "./utils/Playfab";
 
 export default config({
 
     initializeGameServer: (gameServer) => {
-        // initPlayFab()
+        initPlayFab()
 
         getServerConfig()
         gameServer.define('game-expo', GameRoom)

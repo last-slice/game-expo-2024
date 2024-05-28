@@ -107,6 +107,9 @@ export class GamePod extends Schema{
   @type("number") factor:number = .1
   @type(GameRacerObject) racingObject: GameRacerObject = new GameRacerObject()
 
+  pigsFlown:number = 0
+  targetsHit:number = 0
+
   resetPod(){
     this.name = ""
     this.id = ""
@@ -114,6 +117,8 @@ export class GamePod extends Schema{
     this.factor = .1
     this.locked = false
     this.racingObject.resetObject()
+    this.pigsFlown = 0
+    this.targetsHit = 0
   }
 }
 

@@ -32,20 +32,26 @@ export function pushPlayfabEvent(type:any, player:any, data:any){
         return 
     }
 
+    try{}
+    catch(e){
+
+    }
+
+    let event:any = {}
+
     let account = player
     if(player !== PLAYFAB_DATA_ACCOUNT){
         account = player.playFabData.PlayFabId
-    }
-
-    let event:any = {
-        EventName: type,
-        PlayFabId: account,
-        body:{
-            player: player.dclData.name,
-            wallet: player.dclData.userId,
+        event.body = {
+            player: player.name,
+            wallet: player.userId,
             data: data
         }
     }
+    
+
+    event.EventName= type,
+    event.PlayFabId = account
 
     for(let key in data[0]){
         event.body[key] = data[0][key]

@@ -33,7 +33,7 @@ export class GameRoom extends Room<GameRoomState> {
         if(DEBUG){
             return true
         }
-        
+
         return serverEnabled && await this.doLogin(client, options, req)
         // return await this.doLogin(client, options, req)   
     }
@@ -145,12 +145,20 @@ export class GameRoom extends Room<GameRoomState> {
                         client.auth = {}
                         client.auth.playfab = playfabInfo
                         client.auth.ip = ipAddress
-                        // console.log('playfab info', playfabInfo)
+                        // console.log('playfab info', playfabInfo.InfoResultPayload)
+                        // console.log('playfab info', playfabInfo.InfoResultPayload.AccountInfo.TitleInfo.DisplayName)
+
+                        // let rest = await this.initializeServerPlayerData(options, client.auth)
+                        // console.log('rest is', rest)
         
-                        if (playfabInfo.NewlyCreated) {
-                            let [data, stats] = await this.initializeServerPlayerData(options, client.auth)
-                            client.auth.playfab.InfoResultPayload.PlayerStatistics = stats
-                            client.auth.playfab.InfoResultPayload.UserData = data
+                        if (playfabInfo.NewlyCreated || !playfabInfo.InfoResultPayload.AccountInfo.TitleInfo.DisplayName) {
+                            await this.initializeServerPlayerData(options, client.auth)
+
+                            if(playfabInfo.NewlyCreated){
+                                client.auth.playfab.InfoResultPayload.PlayerStatistics = []
+                                client.auth.playfab.InfoResultPayload.UserData = {}
+                            }
+                            
                             info = client.auth
                         } else {
                             //to do
@@ -169,7 +177,7 @@ export class GameRoom extends Room<GameRoomState> {
     }
 
     async initializeServerPlayerData(options: any, auth: any) {
-        // console.log('options are', options)
+        console.log('options are', options)
         options.userData.name.replace(" ", "_").trim()
 
         //set new user display name
@@ -181,6 +189,7 @@ export class GameRoom extends Room<GameRoomState> {
                 
                 PlayFabId: auth.playfab.PlayFabId
             })
+            console.log('result for new player', result)
         }
         catch(e){
             console.log('error updating display name', e)
@@ -193,7 +202,7 @@ export class GameRoom extends Room<GameRoomState> {
 
         //set initial player data
         try{
-            const initPlayerDataRes = await updatePlayerInternalData({
+            await updatePlayerInternalData({
                 Data: def,
                 PlayFabId: auth.playfab.PlayFabId
             })
@@ -201,29 +210,5 @@ export class GameRoom extends Room<GameRoomState> {
         catch(e){
             console.log('error initializing player data', e)
         }
-
-        // console.log('setting eth address result', initPlayerDataRes)
-
-        let stats: any[] = []
-        //we have no stats for now
-        // initManager.pDefaultStats.forEach((stat,key)=>{
-        //   stats.push({StatisticName:stat.StatisticName, Value:stat.Value})
-        // })
-
-        let data:any = {}
-
-        // let data:any = {
-        //   Settings:{
-        //     Value:JSON.stringify(iwbManager.defaultPlayerSettings)
-        //   },
-        //   Assets:{
-        //     Value:JSON.stringify([])
-        //   },
-        //   Scenes:{
-        //     Value:JSON.stringify([])
-        //   }
-        // }
-
-        return [data, stats]
     }
 }

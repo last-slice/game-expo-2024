@@ -21,6 +21,7 @@ import { playGameSound } from "./sounds";
 import { EncouragementTimeSystem } from "../systems/EncouragementTimer";
 import { hideAllPanels } from "../ui/ui";
 import { displayFrozenUI } from "../ui/frozenUI";
+import { displayScoreUI } from "../ui/scoreUI";
 
 export const BallComponent = engine.defineComponent("game::expo::ball::component", {})
 
@@ -216,6 +217,7 @@ export function resetGame(testing?:boolean){
     else{
         playGameResetAnimation(mainRainbow)
         displayLeaderboardUI(false)
+        displayScoreUI(false)
     }
 }
 

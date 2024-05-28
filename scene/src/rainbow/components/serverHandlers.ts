@@ -18,6 +18,7 @@ import { Animator } from "@dcl/sdk/ecs";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import { displayFrozenUI } from "../ui/frozenUI";
 import { utils } from "../helpers/libraries";
+import { updatePlayerUIScore } from "../ui/scoreUI";
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
@@ -32,6 +33,11 @@ export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, (info:any)=>{
         // console.log(SERVER_MESSAGE_TYPES.EXPLODE_TARGET + " received", info)
         animateTarget(info)
+    })
+
+    room.onMessage(SERVER_MESSAGE_TYPES.PLAYER_SCORES, (info:any)=>{
+        console.log(SERVER_MESSAGE_TYPES.PLAYER_SCORES + " received", info)
+        updatePlayerUIScore(info)
     })
 
     room.state.listen("gameCountdown", (c:any, p:any)=>{
@@ -200,22 +206,22 @@ export function createServerHandlers(room:Room){
         player.listen("frozen", (c:any, p:any)=>{
             console.log('frozen is', p, c, player)
             if(c){
-                if(player.playing && player.address === localPlayer.userId){
+                if(player.playing && player.userId === localPlayer.userId){
                     displayFrozenUI(true)
                     removeInputSystem()
                     playGameSound('frozenYou')
                 }
-                attachFrozenAnimation(player.address)
+                attachFrozenAnimation(player.userId)
             }
 
             if(!c && p){
-                if(player.playing && player.address === localPlayer.userId){
+                if(player.playing && player.userId === localPlayer.userId){
                     addInputSystem()
                 }
-            }
+            }//
         })
 
-        if(player.address === localPlayer.userId){
+        if(player.userId === localPlayer.userId){
             player.listen("podCountingDown", (c:any, p:any)=>{
                 console.log('podCountingDown changed', p, c)
                 displayReservationUI(player.pod, c)

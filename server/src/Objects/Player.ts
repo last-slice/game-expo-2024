@@ -8,8 +8,7 @@ import { defaultStats, scoreFactor } from "./Admin";
 import { DEBUG } from "../utils/config";
 
 export class Player extends Schema {
-  @type("string") id:string;
-  @type("string") address:string
+  @type("string") userId:string;
   @type("string") name:string 
   @type("boolean") podCountingDown:boolean
   @type("number") podCountdown:number = 3
@@ -43,9 +42,8 @@ export class Player extends Schema {
     this.room = room
     this.client = client
 
-    this.playFabData = client.auth
-    this.dclData = client.userData
-    this.address = client.userData.userId
+    this.playFabData = client.auth.playfab
+    this.userId = client.userData.userId
     this.name = client.userData.name
     this.ip = client.userData.ip
     this.scoreFactor = scoreFactor
@@ -54,10 +52,13 @@ export class Player extends Schema {
     if(DEBUG){
       return
     }
+
+    // console.log('playfab info is', this.playFabData)
     this.setStats(this.playFabData.InfoResultPayload.PlayerStatistics)
   }
 
   startPodLockCountdown(pod:number){
+    console.log('starigng pod lockdown for', pod)
     this.pod = pod
     this.podCountingDown = true
 
@@ -70,15 +71,12 @@ export class Player extends Schema {
         this.podLocked = true
         this.podCountingDown = false
         this.frozen = false
-        this.room.state.gameManager.lockPod(this.pod, this.dclData)
+        this.room.state.gameManager.lockPod(this.pod, {name:this.name, userId:this.userId})
       }
     }, 1000 * this.podCountdown)
 
-    // this.sendPlayerMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, this.podCountdown)
-
     this.podLockInterval = setInterval(()=>{
       this.podCountdown--
-      // this.sendPlayerMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, this.podCountdown)
     }, 1000)
   }
 
@@ -108,7 +106,7 @@ export class Player extends Schema {
      })
     }
     catch(e){
-     console.log('error setting player stats', this.dclData.name)
+     console.log('error setting player stats', this.name)
     }
    }
 

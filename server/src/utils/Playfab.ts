@@ -12,6 +12,7 @@ export function initPlayFab(){
 
   PlayFabAdmin.settings.titleId = PlayfabId
   PlayFabAdmin.settings.developerSecretKey = PlayfabKey
+  PLAYFAB_DATA_ACCOUNT = process.env.PLAYFAB_DATA_ACCOUNT;
 }
 
 const c = (resolve:any, reject:any) => {

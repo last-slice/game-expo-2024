@@ -43,7 +43,7 @@ export class RoomHandler {
             let player:Player = this.room.state.players.get(client.userData.userId)
             if(player && player.playing && this.room.state.started){
                 info.id = player.pod
-                info.userId = player.dclData.userId
+                info.userId = player.userId
                 this.room.state.gameManager.createBall(player, info)
             }
         })

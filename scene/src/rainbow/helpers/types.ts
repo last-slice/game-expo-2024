@@ -13,6 +13,7 @@ export enum SERVER_MESSAGE_TYPES {
     PLAYER_JOINED = 'player_joined',
     PLAYTIME = 'playtime',
     TUTORIAL_FINISHED = 'tutorial_finished',
+    PLAYER_SCORES = 'player_scores',
 }
 
 export enum POD_COLORS {

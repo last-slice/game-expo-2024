@@ -1,11 +1,10 @@
-import { Client } from "colyseus";
 import { GameRoom } from "../rooms/GameRoom";
 import { GamePod } from "../rooms/schema/GameRoomState";
 import { SERVER_MESSAGE_TYPES } from "../utils/types";
 import { TargetSystem } from "./GameTargetSystem";
 import { Player } from "./Player";
 import { pushPlayfabEvent } from "./PlayfabEvents";
-import { PLAYFAB_DATA_ACCOUNT } from "../utils/Playfab";
+import { PLAYFAB_DATA_ACCOUNT, getLeaderboard } from "../utils/Playfab";
 
 export class GameManager {
 
@@ -33,16 +32,63 @@ export class GameManager {
     freezeTimeBase:number = 5
     freezeTime:number = this.freezeTimeBase
 
+
+    leaderboardInterval:any
+    leaderboardIntervalTime:number = 60
+
     constructor(gameRoom:GameRoom){
         this.room = gameRoom
 
         this.targetSystem = new TargetSystem(gameRoom)
 
         this.initPods()
+
+        this.leaderboardInterval = setInterval(()=>{
+            this.refreshLeaderBoards()
+        }, 1000 * this.leaderboardIntervalTime)
+        this.refreshLeaderBoards()
+    }
+
+    async refreshLeaderBoards(){
+        let scoreRes = await getLeaderboard({
+            MaxResultsCount:10,
+            StartPosition:0,
+            StatisticName:"Score"
+        })
+        console.log('pig leaderboard is', scoreRes)
+
+        let pigRes = await getLeaderboard({
+            MaxResultsCount:10,
+            StartPosition:0,
+            StatisticName:"Pigs Flown"
+        })
+        console.log('pig leaderboard is', pigRes)
+
+        let winRes = await getLeaderboard({
+            MaxResultsCount:10,
+            StartPosition:0,
+            StatisticName:"Wins"
+        })
+
+        let targetsRes = await getLeaderboard({
+            MaxResultsCount:10,
+            StartPosition:0,
+            StatisticName:"Targets Hit"
+        })
+
+        this.room.broadcast(
+            SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES, 
+            {
+                score:scoreRes.Leaderboard, 
+                pigs:pigRes.Leaderboard, 
+                wins:winRes.Leaderboard,
+                targets:targetsRes.Leaderboard
+            })
     }
     
     garbageCollect(){
         this.clearCountdown()
+        clearInterval(this.leaderboardInterval)
     }
 
     removePlayer(player:Player){
@@ -162,13 +208,13 @@ export class GameManager {
             let player = this.room.state.players.get(pod.id)
             if(player){
                 player.playing = false
+                player.sendPlayerMessage(SERVER_MESSAGE_TYPES.PLAYER_SCORES, {pigs: pod.pigsFlown, targets: pod.targetsHit})
             }
         })
 
         pushPlayfabEvent(SERVER_MESSAGE_TYPES.GAME_FINISHED, PLAYFAB_DATA_ACCOUNT, {})
 
         await this.determineWinner()
-        //clean up etc
 
         this.countdownTime = this.gameResetTimeBase
         this.countdownTimer = setTimeout(()=>{
@@ -276,9 +322,15 @@ export class GameManager {
                         }else{
                         // console.log('adding score ', (pod.factor * target.multiplier))
                         player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.TARGETS_HIT, 1)
-                        pod.score += (pod.factor * target.multiplier)
+                        let score = (pod.factor * target.multiplier)
+                        pod.score += score
+
+                        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.PLAYER_SCORED, score)
+
+                        this.room.state.pods[player.pod].targetsHit++
 
                         this.room.broadcast(SERVER_MESSAGE_TYPES.HIT_TARGET, target.id)
+                        
                         this.advanceObject(pod)
                         }
                     }else{
@@ -376,6 +428,7 @@ export class GameManager {
 
     createBall(player:Player, info:any){
         player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.PIGS_FLEW, 1)
+        this.room.state.pods[player.pod].pigsFlown++
         this.room.broadcast(SERVER_MESSAGE_TYPES.CREATE_BALL, info)
     }
 
