@@ -8,6 +8,7 @@ export let players: Map<string, Player> = new Map<string, Player>()
 
 export async function addLocalPlayer(data:any){
     localPlayer = data
+    console.log('data', data)
 }
 
 export async function addPlayer(userId: string, local: boolean, data?: any[]){

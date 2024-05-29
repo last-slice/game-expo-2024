@@ -6,21 +6,11 @@ import { Color4 } from '@dcl/sdk/math'
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
 import { localPlayer } from '../components/player'
 import { playGameSound } from '../components/sounds'
+import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
 
 export let show = false
 
 let counterSize:number = 20
-
-export let positionCounters:any[] = [
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-    new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
-]
 
 export let scoreCounters:any[] = [
     new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
@@ -33,6 +23,17 @@ export let scoreCounters:any[] = [
     new CustomCounter( 4, 4, counterSize, 'center', "images/customCounter/number_sheet.png"),
 ]
 
+export let customNameTexts:any[] = [
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+    new CustomUIText( 8, 8, counterSize, 'center', "images/customCounter/alpha_sheet.png"),
+]
+
 export let visibleItems:any[] = []
 
 export function displayLeaderboardUI(value: boolean, test?:boolean) {
@@ -41,8 +42,8 @@ export function displayLeaderboardUI(value: boolean, test?:boolean) {
     updateLeaderboard(test)
 
     if(!value){
-        positionCounters.forEach((counter)=>{
-            counter.hide()
+        customNameTexts.forEach((text)=>{
+            text.hide()
         })
 
         scoreCounters.forEach((counter)=>{
@@ -77,7 +78,6 @@ export function updateLeaderboard(test?:boolean){
     }
 }
 
-const leaderboardPic = "images/leaderboard.jpeg"
 const newLeaderboardPic = "images/leaderboard.png"
 
 export function LeaderboardUI() {
@@ -127,7 +127,7 @@ function generateRows(){
 
     visibleItems.forEach((pod:any, i:number)=>{
         if(pod.locked){
-            arr.push(<LeaderboardRow item={pod} count={count} pCounter={positionCounters[count]} sCounter={scoreCounters[count]}/>)
+            arr.push(<LeaderboardRow item={pod} count={count} nText={customNameTexts[count]} sCounter={scoreCounters[count]}/>)
             count++
         }
     })
@@ -135,9 +135,9 @@ function generateRows(){
 }
 
 function LeaderboardRow(data:any){
-    data.pCounter.show()
-    data.pCounter.setNumber(data.count + 1)
+    data.nText.setText("" + data.item.name)
 
+    data.nText.show()
     data.sCounter.show()
     data.sCounter.setNumber(Math.floor(data.item.score / 180 * 100))
 
@@ -160,25 +160,12 @@ function LeaderboardRow(data:any){
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            width: '15%',
-            height: '100%',
-        }}
-        // uiBackground={{color:Color4.Yellow()}}
-        >
-            <UICounter customCounter={data.pCounter} />
-        </UiEntity>
-
-        <UiEntity
-        uiTransform={{
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
             width: '70%',
             height: '100%',
         }}
-        // uiBackground={{color:Color4.Red()}}
-        uiText={{value:"" + data.item.name, fontSize:sizeFont(30,20), textAlign:'middle-center', color:Color4.White()}}
-        />
+        >
+             <UISpriteText customText={data.nText} />
+        </UiEntity>
 
         <UiEntity
         uiTransform={{

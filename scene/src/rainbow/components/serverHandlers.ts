@@ -225,7 +225,7 @@ export function createServerHandlers(room:Room){
                 if(player.playing && player.userId === localPlayer.userId){
                     addInputSystem()
                 }
-            }//
+            }
         })
 
         if(player.userId === localPlayer.userId){

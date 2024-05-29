@@ -89,7 +89,9 @@ export function prepGame(){
     turnOffRainbow(mainRainbow)
 
     let random = getRandomIntInclusive(0, sounds.starting.length - 1)
-    playSound(sounds.starting[random], false)
+    if(!onGround){
+        playSound(sounds.starting[random], false)
+    }
 }
 
 export function animateTarget(id:string){
@@ -189,6 +191,9 @@ export function startGame(){
     gameRoom.state.pods.forEach((pod:any, i:number)=>{
         if(pod.locked){
             turnOnRainbowBand(mainRainbow, i)
+
+            Animator.playSingleAnimation(racingObjects[pod.index].object, "Fly", true)
+            Animator.playSingleAnimation(racingObjects[pod.index].object2, "Fly", true)
         }
         Animator.stopAllAnimations(activationPods[pod.index].podModel, true)
     })

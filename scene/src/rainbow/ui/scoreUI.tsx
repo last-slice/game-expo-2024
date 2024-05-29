@@ -2,16 +2,15 @@ import ReactEcs, { Button, Label, ReactEcsRenderer, UiEntity, Position, UiBackgr
 import { CustomCounter, UICounter } from '../../ui_components/UICounter'
 import resources from '../helpers/resources'
 import { CustomUIText, UISpriteText } from '../../ui_components/UISpriteText'
-import { Color4 } from '@dcl/sdk/math'
 
 export let show = true
 
 export let pigScore = new CustomCounter( 4, 4, 55, 'center', "images/customCounter/number_sheet.png")
-export let pigText = new CustomUIText(8,8, 55, 'center', "images/customCounter/alpha_sheet.png")
+export let pigText = new CustomUIText(8,8, 45, 'center', "images/customCounter/alpha_sheet.png")
 pigText.setText("PIGS FLOWN")
 
 export let targetScore = new CustomCounter( 4, 4, 55, 'center', "images/customCounter/number_sheet.png")
-export let targetText = new CustomUIText(8,8, 55, 'center', "images/customCounter/alpha_sheet.png")
+export let targetText = new CustomUIText(8,8, 45, 'center', "images/customCounter/alpha_sheet.png")
 targetText.setText("TARGETS HIT")
 
 export function displayScoreUI(value: boolean) {
@@ -79,7 +78,7 @@ export function ScoreUI() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '10%',
+                width: '20%',
                 height: '100%',
             }}
         >
@@ -118,7 +117,7 @@ export function ScoreUI() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: '10%',
+                width: '20%',
                 height: '100%',
             }}
         >

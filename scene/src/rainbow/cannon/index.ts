@@ -51,37 +51,27 @@ export function createBall(info:any){
     let direction = info.direction
 
     let entity = engine.addEntity()
-    // MeshRenderer.setSphere(entity)//
-    // Material.setPbrMaterial(entity, {albedoColor: colors[info.id], emissiveColor: colors[info.id], emissiveIntensity: 2})
-    Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size), rotation:Quaternion.fromEulerDegrees(0, direction.y, 0)})
+    Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size), rotation:Quaternion.fromEulerDegrees(0, info.rot, 0)})
     GltfContainer.create(entity, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[info.id]})
 
     const ballTransform = Transform.get(entity)
 
     const ballBody: CANNON.Body = new CANNON.Body({
-      mass: mass, // kg//
+      mass: mass,
       position: new CANNON.Vec3(ballTransform.position.x, ballTransform.position.y, ballTransform.position.z), // m
-      shape: new CANNON.Sphere(size) // m (Create sphere shaped body with a radius of 1)
+      shape: new CANNON.Sphere(size)
     })
 
-    ballBody.material = ballPhysicsMaterial // Add bouncy material to ball body
-    ballBody.linearDamping = 0.4 // Round will keep translating even with friction so you need linearDamping
-    ballBody.angularDamping = 0.4 // Round bodies will keep rotating even with friction so you need angularDamping
+    ballBody.material = ballPhysicsMaterial
+    ballBody.linearDamping = 0.4
+    ballBody.angularDamping = 0.4
 
     world.addBody(ballBody)
     ballBodies.set(entity, {pBody:ballBody, userId: info.userId})
 
     ballBody.velocity.set(direction.x * velocity, direction.y * velocity, direction.z * velocity)
 
-
-    // ballBody.applyImpulse(
-    //     new CANNON.Vec3(forwardVector.x * vectorScale, forwardVector.y * vectorScale, forwardVector.z * vectorScale),
-    //     // Applies impulse based on the player's position and where they click on the ball
-    //     new CANNON.Vec3(pos.x, 1, pos.z)
-    //   )
-
     BallComponent.create(entity)
-    // syncEntity(entity, [Transform.componentId], ballCount)
     ballCount++
 
     AudioSource.createOrReplace(entity, {audioClipUrl:"sounds/8bit_jump.mp3", playing:true, volume:.05})

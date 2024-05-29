@@ -23,7 +23,7 @@ export function createLeaderboard(name:string){
     let item = engine.addEntity()
     Transform.create(item, {position: Vector3.create(0, yFactor, 0), parent: parent})
     TextShape.create(item, {text: "" + name,  textColor:Color4.create(241/255, 31/255, 211/255), outlineColor:Color4.create(241/255, 31/255, 211/255), outlineWidth:.4})   
-    VisibilityComponent.create(item, {visible: true})
+    VisibilityComponent.create(item, {visible: false})
 
     yFactor -= 1
 
@@ -32,13 +32,13 @@ export function createLeaderboard(name:string){
         Transform.create(name, {position: Vector3.create(-4, yFactor, 0),scale:Vector3.create(0.5,0.5,0.5), parent: parent})
         TextShape.create(name, {text: "Long Name Here" + i, textColor:Color4.create(241/255, 31/255, 211/255), textAlign:TextAlignMode.TAM_MIDDLE_LEFT, outlineColor:Color4.create(241/255, 31/255, 211/255), outlineWidth:.4})
         names.push(name)
-        VisibilityComponent.create(name, {visible: true})
+        VisibilityComponent.create(name, {visible: false})
 
         let score = engine.addEntity()
         Transform.create(score, {position: Vector3.create(2, yFactor, 0),scale:Vector3.create(0.5,0.5,0.5), parent: parent})
         TextShape.create(score, {text: "100000" + i,  textColor:Color4.create(241/255, 31/255, 211/255), outlineColor:Color4.create(241/255, 31/255, 211/255), outlineWidth:.4})
         scores.push(score)
-        VisibilityComponent.create(score, {visible: true})
+        VisibilityComponent.create(score, {visible: false})
 
         yFactor -= .8
     }

@@ -12,10 +12,11 @@ import { createLightShows } from "./components/lightshow";
 import { checkTime } from "./systems/Time";
 import { AudioCompleteSystem } from "./components/sounds";
 import { createTests } from "./tests";
+import { addInputSystem } from "./systems/ClickSystem";
 
 export async function init(){
   setupUi()
-  
+
   await createLightShows()
   await createEnvironment()
   await checkTime()
@@ -37,6 +38,7 @@ export async function init(){
 
         let realmData = await getRealm({})
         updateRealm(realmData.realmInfo ? realmData.realmInfo.realmName : "")
+
 
         joinServer(realm)
       })

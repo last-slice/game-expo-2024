@@ -2,8 +2,9 @@ import { InputAction, PointerEventType, PointerLock, Transform, engine, inputSys
 import { createBall, velocity } from "../cannon"
 import { sendServerMessage } from "../components/server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
-import { Vector3 } from "@dcl/sdk/math"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { forwardVector } from "./Physics"
+import { localPlayer } from "../components/player"
 
 export let added = false
 export let factor = 10
@@ -65,7 +66,9 @@ export function AddBallSystem(dt:number){
         }
 
         let pos = Transform.get(engine.PlayerEntity).position
-        sendServerMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, {pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation)})
+        sendServerMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, {pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation), rot: Quaternion.toEulerAngles(Transform.get(engine.CameraEntity).rotation).y})
+
+        createBall({id:1, userId:localPlayer.userId, pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation), rot: Quaternion.toEulerAngles(Transform.get(engine.CameraEntity).rotation).y})
     }else{
         // if(mass >= 600000){
         //     if(time < .1){

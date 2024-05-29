@@ -4,6 +4,7 @@ import { activeLightShows, allOff, lightShows, presets } from "../components/lig
 import { utils } from "../helpers/libraries"
 import { getRandomIntInclusive, getRandomString } from "../helpers/functions"
 import { playGameSound } from "../components/sounds"
+import { onGround } from "../components/environment"
 
 export const LightshowComponent = engine.defineComponent("game::expo::rainbow::lightshow::component", {
     show:Schemas.String,
@@ -86,7 +87,7 @@ export function RainbowLightshowSystem(dt:number){
                     }
                     else{
                         let animation = preset.animations[preset.index]
-                        if(animation.sound){
+                        if(animation.sound && !onGround){
                             playGameSound(animation.sound)
                         }
                         if(animation.light){

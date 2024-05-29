@@ -343,8 +343,8 @@ function createsStartPods(){
         )
 
         let nameEntity = engine.addEntity()
-        Transform.create(nameEntity, {position: Vector3.create(0,3,0), parent:pod})
-        TextShape.createOrReplace(nameEntity, {text:"Name " + i, fontSize:3})
+        Transform.create(nameEntity, {position: Vector3.create(0,5,0), parent:pod})
+        TextShape.createOrReplace(nameEntity, {text:"Name " + i, fontSize:3, textColor:Color4.create(241/255, 31/255, 211/255), outlineColor:Color4.create(241/255, 31/255, 211/255), outlineWidth:.4})
         VisibilityComponent.createOrReplace(nameEntity, {visible:false})
         Billboard.create(nameEntity, {billboardMode: BillboardMode.BM_Y})
 

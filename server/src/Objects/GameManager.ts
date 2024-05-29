@@ -57,14 +57,14 @@ export class GameManager {
                 StartPosition:0,
                 StatisticName:"Score"
             })
-            console.log('pig leaderboard is', scoreRes)
+            // console.log('pig leaderboard is', scoreRes)
     
             let pigRes = await getLeaderboard({
                 MaxResultsCount:10,
                 StartPosition:0,
                 StatisticName:"Pigs Flown"
             })
-            console.log('pig leaderboard is', pigRes)
+            // console.log('pig leaderboard is', pigRes)
     
             let winRes = await getLeaderboard({
                 MaxResultsCount:10,
@@ -211,6 +211,7 @@ export class GameManager {
             if(player){
                 player.playing = false
                 player.sendPlayerMessage(SERVER_MESSAGE_TYPES.PLAYER_SCORES, {pigs: pod.pigsFlown, targets: pod.targetsHit})
+                player.saveToDB()
             }
         })
 
@@ -322,18 +323,17 @@ export class GameManager {
                             target.startDelete()
                             this.enableFreeze(player)
                         }else{
-                        // console.log('adding score ', (pod.factor * target.multiplier))
-                        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.TARGETS_HIT, 1)
-                        let score = (pod.factor * target.multiplier)
-                        pod.score += score
 
-                        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.PLAYER_SCORED, score)
+                        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.TARGETS_HIT, 1)
+                        pod.score += target.multiplier
+
+                        player.increaseValueInMap(player.stats, SERVER_MESSAGE_TYPES.PLAYER_SCORED, target.multiplier)
 
                         this.room.state.pods[player.pod].targetsHit++
 
                         this.room.broadcast(SERVER_MESSAGE_TYPES.HIT_TARGET, target.id)
                         
-                        this.advanceObject(pod)
+                        this.advanceObject(pod, (pod.factor * target.multiplier))
                         }
                     }else{
                         // console.log('couldnt find pod')
@@ -351,76 +351,56 @@ export class GameManager {
         }
     }
 
-    advanceObject(pod:GamePod){
-        // console.log('advancing object')
+    advanceObject(pod:GamePod, amount:number){
         let step:number
 
         switch(pod.stage){
             case 1:
-                // console.log('in stage one')
-                step = pod.factor + pod.racingObject.y
+                step = amount + pod.racingObject.y
     
                 if(step > 0){
                     pod.stage = 2
-                    pod.factor = 1
+                    pod.factor = 0.5
                     pod.racingObject.y = 22
                     this.rotateRacingObject(pod, step)
                 }else{
-                  this.moveRacingObject(pod, pod.factor)
+                  this.moveRacingObject(pod, amount)
                 }
             break;
     
             case 2:
-                // console.log('in stage 2')
+                step = pod.racingObject.rz + amount
 
-                // console.log('rotation is', pod.racingObject.rz)
-    
-                step = pod.racingObject.rz + pod.factor
-    
-                // console.log('rotation step is', step)
-    
                 if(step >= 180){
-                    // console.log('advance to stage 3')
                     pod.stage = 3
                     pod.factor = 0.1
                     pod.racingObject.y = 0
 
                     this.moveRacingObject(pod, step - pod.racingObject.rz)
                     pod.racingObject.rz = 180
-
-                    // console.log('target position is', pod.racingObject.y)
                 }else{
-                    this.rotateRacingObject(pod, pod.factor)
+                    this.rotateRacingObject(pod, amount)
                 }
             break;
     
             case 3:
-                // console.log('stage 3')
-                // console.log('target position is', pod.racingObject.y)
-                step = pod.racingObject.y + pod.factor
-
-                // console.log('pod racingObject is ', pod.racingObject.y)
-    
-                // console.log('step is', step)
+                step = pod.racingObject.y + amount
     
                 if(step >= 22){
-                    // console.log('advancing to stage 4')
                     pod.stage = 4
                     pod.racingObject.y = 22
                 }else{
-                   this.moveRacingObject(pod, pod.factor)
+                   this.moveRacingObject(pod, amount)
                 }
             break;
 
             case 4:
-                // console.log('stage 4')
                 this.endGame()
                 break;
         }
     }
 
     moveRacingObject(pod:GamePod, amount:number){
-        // console.log('moving object', amount)
         pod.racingObject.y += amount
     }
 
@@ -441,9 +421,9 @@ export class GameManager {
 
         this.room.state.frozen = true
         this.room.state.pods.forEach((pod:GamePod, key:number)=>{
-            // if(pod.locked && pod.id !== player.dclData.userId){
+            if(pod.locked && pod.id !== player.userId){
                 player.frozen = true
-            // }
+            }
         })
 
         this.freezeTimer = setTimeout(()=>{
