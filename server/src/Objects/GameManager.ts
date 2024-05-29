@@ -210,6 +210,7 @@ export class GameManager {
             let player = this.room.state.players.get(pod.id)
             if(player){
                 player.playing = false
+                player.frozen = false
                 player.sendPlayerMessage(SERVER_MESSAGE_TYPES.PLAYER_SCORES, {pigs: pod.pigsFlown, targets: pod.targetsHit})
                 player.saveToDB()
             }
@@ -422,7 +423,10 @@ export class GameManager {
         this.room.state.frozen = true
         this.room.state.pods.forEach((pod:GamePod, key:number)=>{
             if(pod.locked && pod.id !== player.userId){
-                player.frozen = true
+                let player = this.room.state.players.get(pod.id)
+                if(player){
+                    player.frozen = true
+                }
             }
         })
 
@@ -435,9 +439,9 @@ export class GameManager {
     disableFreeze(){
         this.room.state.frozen = false
         this.room.state.pods.forEach((pod:GamePod, key:number)=>{
-            if(pod.locked){
-                let player = this.room.state.players.get(pod.id)
-                    player.frozen = false
+            let player = this.room.state.players.get(pod.id)
+            if(player){
+                player.frozen = false
             }
         })
     }

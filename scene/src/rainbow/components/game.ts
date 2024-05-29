@@ -57,9 +57,10 @@ export function lockPod(pod:any){
 
     if(pod.id === localPlayer.userId){
         playSound("sounds/locked_in_f.mp3", false)
-        Animator.playSingleAnimation(racingObjects[pod.index].object, "Fly", true)
-        Animator.playSingleAnimation(racingObjects[pod.index].object2, "Fly", true)
     }
+
+    Animator.playSingleAnimation(racingObjects[pod.index].object, "Fly", true)
+    Animator.playSingleAnimation(racingObjects[pod.index].object2, "Fly", true)
 
     let parent = engine.addEntity()
     AvatarAttach.create(parent, {

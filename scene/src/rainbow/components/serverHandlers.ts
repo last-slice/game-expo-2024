@@ -165,11 +165,7 @@ export function createServerHandlers(room:Room){
 
             if(pod.id === localPlayer.userId){
                 playSound("sounds/ui_click_go.mp3", false)
-            }
-
-            // if(!onGround){
-               
-            // }            
+            }        
         })
 
         pod.listen("locked", (c:any, p:any)=>{
@@ -211,7 +207,7 @@ export function createServerHandlers(room:Room){
     room.state.players.onAdd((player:any, key:any) => {
 
         player.listen("frozen", (c:any, p:any)=>{
-            console.log('frozen is', p, c, player)
+            // console.log('frozen is', p, c, player)
             if(c){
                 if(player.playing && player.userId === localPlayer.userId){
                     displayFrozenUI(true)
@@ -222,6 +218,7 @@ export function createServerHandlers(room:Room){
             }
 
             if(!c && p){
+                console.log('player no longer frozen', player.userId)
                 if(player.playing && player.userId === localPlayer.userId){
                     addInputSystem()
                 }

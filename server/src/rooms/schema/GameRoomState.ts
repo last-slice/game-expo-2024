@@ -114,7 +114,7 @@ export class GamePod extends Schema{
     this.name = ""
     this.id = ""
     this.score = 0
-    this.stage = 0
+    this.stage = 1
     this.factor = .1
     this.locked = false
     this.racingObject.resetObject()

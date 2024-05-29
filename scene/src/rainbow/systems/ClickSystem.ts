@@ -15,7 +15,7 @@ export let pointerLocked:boolean = false
 
 export function addInputSystem(){
     if(!added){
-        console.log('added input system')
+        console.log('added input system')//
         added = true
         clicked = false
         engine.addSystem(InputListenSystem)
@@ -68,7 +68,7 @@ export function AddBallSystem(dt:number){
         let pos = Transform.get(engine.PlayerEntity).position
         sendServerMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, {pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation), rot: Quaternion.toEulerAngles(Transform.get(engine.CameraEntity).rotation).y})
 
-        createBall({id:1, userId:localPlayer.userId, pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation), rot: Quaternion.toEulerAngles(Transform.get(engine.CameraEntity).rotation).y})
+        // createBall({id:1, userId:localPlayer.userId, pos:pos, direction:forwardVector, vector:Vector3.rotate(Vector3.Forward(), Transform.get(engine.CameraEntity).rotation), rot: Quaternion.toEulerAngles(Transform.get(engine.CameraEntity).rotation).y})
     }else{
         // if(mass >= 600000){
         //     if(time < .1){
