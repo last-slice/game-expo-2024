@@ -4,15 +4,22 @@ import { engine } from '@dcl/sdk/ecs'
 import { utils } from '../helpers/libraries'
 
 let night:boolean = true
+let playedNight:boolean = false
 let timer:number = 10
 
 export async function checkTime(){
     utils.timers.setTimeout(async ()=>{
         night = await getTime()
         if(night){
+            if(playedNight){
+                engine.removeSystem(TimeSystem)
+                return
+            }
+
+            playedNight = true
             playGameSound('inNightMode')
         }else{
-            playGameSound('suggestNightMode')//
+            playGameSound('suggestNightMode')
         }
         engine.addSystem(TimeSystem)
     }, 1000 * 5)
@@ -30,8 +37,13 @@ async function getTime(){
 
 async function updateTime(){
     let isNight = await getTime()
+    if(playedNight){
+        engine.removeSystem(TimeSystem)
+        return
+    }
+
     if(!night && isNight){
-        console.log('user switched to night mode')
+        playedNight = true
         playGameSound('inNightMode')
     }
 }
