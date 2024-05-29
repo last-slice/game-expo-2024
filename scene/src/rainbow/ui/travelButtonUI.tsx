@@ -35,10 +35,10 @@ export function PlayButtonUI() {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: calculateImageDimensions(11, 1024/362).width,
-                height: calculateImageDimensions(11, 1024/362).height,
+                width: calculateImageDimensions(10, 1024/362).width,
+                height: calculateImageDimensions(10, 1024/362).height,
                 positionType: 'absolute',
-                position:{left: '1%', top:'25%'}
+                position:{left: '0%', top:'25%'}
             }}
             uiBackground={{
                 textureMode:'stretch',
@@ -67,7 +67,7 @@ export function PlayButtonUI() {
                 width: calculateImageDimensions(13, 1024/662).width,
                 height: calculateImageDimensions(13, 1024/662).height,
                 positionType: 'absolute',
-                position:{left: '1%', top:'32%'},
+                position:{left: '0.5%', top:'33%'},
                 display: infoPanelVisible ? "flex" : "none"
             }}
             uiBackground={{

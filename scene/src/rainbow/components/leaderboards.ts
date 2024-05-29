@@ -1,10 +1,8 @@
 import { TextAlignMode, TextShape, Transform, VisibilityComponent, engine } from "@dcl/sdk/ecs"
 import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
-import { addBuilderHUDAsset } from "../../dcl-builder-hud"
 import { utils } from "../helpers/libraries"
 import { sendServerMessage } from "./server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
-
 
 export let leaderboardViews:Map<string, any> = new Map()
 export let selectedBoard:string = "High Score"
@@ -14,11 +12,9 @@ let leaderboardRefreshindex:number = 0
 let leaderboardKeys:any[] = ["Score", "Wins", "Pigs Flown"]
 let leaderboards:Map<string, any> = new Map()
 
-
 export function createLeaderboard(name:string){
     let parent = engine.addEntity()
     Transform.create(parent, {position: Vector3.create(20.3, 7.5, 43), rotation: Quaternion.fromEulerDegrees(0, 315,0)})
-    // VisibilityComponent.create(parent, {visible: false})
 
     let names:any[] = []
     let scores:any[] = []
@@ -46,10 +42,8 @@ export function createLeaderboard(name:string){
 
         yFactor -= .8
     }
-    // addBuilderHUDAsset(parent, "" + name + "-leaderboard")
 
     leaderboardViews.set(name, {parent:parent, label:item, names:names, scores:scores})
-    // updateVisibleBoard({name:"Pigs Flown", scores:[]})
 
     utils.timers.setInterval(()=>{
         leaderboardRefreshindex++
@@ -101,4 +95,4 @@ export function updateVisibleBoard(){
             VisibilityComponent.getMutable(leaderboardView.scores[index]).visible = true
         })
     }
-}//
+}
