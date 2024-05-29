@@ -32,9 +32,10 @@ export class GameManager {
     freezeTimeBase:number = 5
     freezeTime:number = this.freezeTimeBase
 
+    leaderboards:Map<string, any> = new Map()
 
     leaderboardInterval:any
-    leaderboardIntervalTime:number = 60
+    leaderboardIntervalTime:number = 13
 
     constructor(gameRoom:GameRoom){
         this.room = gameRoom
@@ -50,40 +51,41 @@ export class GameManager {
     }
 
     async refreshLeaderBoards(){
-        let scoreRes = await getLeaderboard({
-            MaxResultsCount:10,
-            StartPosition:0,
-            StatisticName:"Score"
-        })
-        console.log('pig leaderboard is', scoreRes)
-
-        let pigRes = await getLeaderboard({
-            MaxResultsCount:10,
-            StartPosition:0,
-            StatisticName:"Pigs Flown"
-        })
-        console.log('pig leaderboard is', pigRes)
-
-        let winRes = await getLeaderboard({
-            MaxResultsCount:10,
-            StartPosition:0,
-            StatisticName:"Wins"
-        })
-
-        let targetsRes = await getLeaderboard({
-            MaxResultsCount:10,
-            StartPosition:0,
-            StatisticName:"Targets Hit"
-        })
-
-        this.room.broadcast(
-            SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES, 
-            {
-                score:scoreRes.Leaderboard, 
-                pigs:pigRes.Leaderboard, 
-                wins:winRes.Leaderboard,
-                targets:targetsRes.Leaderboard
+        try{
+            let scoreRes = await getLeaderboard({
+                MaxResultsCount:10,
+                StartPosition:0,
+                StatisticName:"Score"
             })
+            console.log('pig leaderboard is', scoreRes)
+    
+            let pigRes = await getLeaderboard({
+                MaxResultsCount:10,
+                StartPosition:0,
+                StatisticName:"Pigs Flown"
+            })
+            console.log('pig leaderboard is', pigRes)
+    
+            let winRes = await getLeaderboard({
+                MaxResultsCount:10,
+                StartPosition:0,
+                StatisticName:"Wins"
+            })
+    
+            let targetsRes = await getLeaderboard({
+                MaxResultsCount:10,
+                StartPosition:0,
+                StatisticName:"Targets Hit"
+            })
+    
+            this.leaderboards.set("Pigs Flown", pigRes.Leaderboard)
+            this.leaderboards.set("Wins", winRes.Leaderboard)
+            this.leaderboards.set("Targets Hit", targetsRes.Leaderboard)
+            this.leaderboards.set("Score", scoreRes.Leaderboard)
+        }
+        catch(e){
+            console.log('refresh leaderboard error', e)
+        }
     }
     
     garbageCollect(){

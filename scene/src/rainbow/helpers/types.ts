@@ -14,6 +14,7 @@ export enum SERVER_MESSAGE_TYPES {
     PLAYTIME = 'playtime',
     TUTORIAL_FINISHED = 'tutorial_finished',
     PLAYER_SCORES = 'player_scores',
+    LEADERBOARDS_UPDATES = 'leaderboards_updates',
 }
 
 export enum POD_COLORS {

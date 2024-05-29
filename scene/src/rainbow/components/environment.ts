@@ -52,8 +52,9 @@ const carouselPositions = [
 
 export async function createEnvironment(){
     await createBase()
-    await createLeaderboard("High Score")
-    await createLeaderboard("Fastest Time")
+    await createLeaderboard("leaderboard")
+    // await createLeaderboard("High Score")
+    // await createLeaderboard("Fastest Time")//
     await createSound()
     await createObjects()
     await createsStartPods()
@@ -497,7 +498,7 @@ export function createPigTrain(){
       TweenSequence.create(pig, { sequence: [], loop: TweenLoop.TL_YOYO })
 
       utils.timers.setTimeout(()=>{
-        engine.removeEntity(parent)
+        engine.removeEntityWithChildren(parent)
       }, 1000 * 7)
 
 

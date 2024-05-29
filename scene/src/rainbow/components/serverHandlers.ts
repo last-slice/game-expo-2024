@@ -19,6 +19,7 @@ import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
 import { displayFrozenUI } from "../ui/frozenUI";
 import { utils } from "../helpers/libraries";
 import { updatePlayerUIScore } from "../ui/scoreUI";
+import { updateLeaderboards, updateVisibleBoard } from "./leaderboards";
 
 export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
@@ -38,6 +39,12 @@ export function createServerHandlers(room:Room){
     room.onMessage(SERVER_MESSAGE_TYPES.PLAYER_SCORES, (info:any)=>{
         console.log(SERVER_MESSAGE_TYPES.PLAYER_SCORES + " received", info)
         updatePlayerUIScore(info)
+    })
+
+    room.onMessage(SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES, (info:any)=>{
+        console.log(SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES + " received", info)
+        // updateVisibleBoard({name:"Pigs", scores:info.pigs})
+        updateLeaderboards(info)
     })
 
     room.state.listen("gameCountdown", (c:any, p:any)=>{

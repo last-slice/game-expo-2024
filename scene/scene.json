@@ -2,9 +2,9 @@
   "ecs7": true,
   "runtimeVersion": "7",
   "display": {
-    "title": "When Pigs Fly",
+    "title": "Where Pigs Fly",
     "description": "Game Expo 2024",
-    "navmapThumbnail": "images/scene-thumbnail.png",
+    "navmapThumbnail": "images/thumbnail.png",
     "favicon": "favicon_asset"
   },
   "owner": "Lastraum & KJ Walker",
