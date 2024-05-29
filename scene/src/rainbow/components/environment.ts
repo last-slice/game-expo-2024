@@ -354,7 +354,7 @@ function createsStartPods(){
 
 function createCarousels(){
         const carouselCloud2 = engine.addEntity()
-        GltfContainer.create(carouselCloud2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        GltfContainer.create(carouselCloud2, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_NONE})
         Transform.create(carouselCloud2, {position: Vector3.create(58, -2.7, 50), rotation: Quaternion.fromEulerDegrees(0, -45, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
         Animator.create(carouselCloud2, {
             states: [
@@ -367,7 +367,7 @@ function createCarousels(){
         })
     
         const carouselCloud3 = engine.addEntity()
-        GltfContainer.create(carouselCloud3, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        GltfContainer.create(carouselCloud3, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_NONE})
         Transform.create(carouselCloud3, {position: Vector3.create(8, -2.7, 45), rotation: Quaternion.fromEulerDegrees(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
         Animator.create(carouselCloud3, {
             states: [
@@ -380,7 +380,7 @@ function createCarousels(){
         })
 
         const carouselCloud4 = engine.addEntity()
-        GltfContainer.create(carouselCloud4, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+        GltfContainer.create(carouselCloud4, {src: animatedClouds, invisibleMeshesCollisionMask: ColliderLayer.CL_NONE})
         Transform.create(carouselCloud4, {position: Vector3.create(55, -2.7, 19.5), rotation: Quaternion.fromEulerDegrees(0, -90, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
         Animator.create(carouselCloud4, {
             states: [
@@ -397,7 +397,7 @@ function createCarousels(){
         const carouselEntity = engine.addEntity();
         GltfContainer.create(carouselEntity, {
             src: resources.models.directory + resources.models.carousel,
-            visibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
+            invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS
         });
         Transform.create(carouselEntity, {
             position: position,
