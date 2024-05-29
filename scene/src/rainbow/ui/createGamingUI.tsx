@@ -9,6 +9,7 @@ import { LeaderboardUI } from './leaderboardUI'
 import { ReservationUI } from './reservationUI'
 import { StartingSoonUI, displayStartingSoonUI } from './startingSoonUI'
 import { FrozenUI } from './frozenUI'
+import { PlayButtonUI } from './travelButtonUI'
 
 
 export let showGaming = true
@@ -39,6 +40,7 @@ export function createGamingUI() {
                 positionType: 'absolute',
             }}
         >
+            <PlayButtonUI/>
             <FrozenUI/>
             <StartingSoonUI/>
             <ReservationUI/>

@@ -14,6 +14,7 @@ import { stopAllGroundRainbows, turnOffAllGroundRainbows } from "./animations"
 import { activeLightShows } from "./lightshow"
 import { createLeaderboard } from "./leaderboards"
 import { createTutorial, disableTutorial, enableTutorial } from "./tutorial"
+import { updateUITravelButton } from "../ui/travelButtonUI"
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
 
@@ -530,6 +531,8 @@ function disableGround(){
     startAudioFader("sounds/playing_bg_loop.mp3", 0)
 
     disableTutorial()
+
+    updateUITravelButton("ground")
 }
 
 function enableGround(){
@@ -548,4 +551,6 @@ function enableGround(){
     }
 
     enableTutorial()
+
+    updateUITravelButton("game")
 }
