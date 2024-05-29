@@ -38,16 +38,16 @@ const animatedClouds = 'models/cloudHover.glb'
 
 const rainbowTransforms = [
     { position: Vector3.create(32, 6.75, 61), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25)},
-    { position: Vector3.create(3.5, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.5) },
+    { position: Vector3.create(3.5, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
     { position: Vector3.create(32, 6.75, 4), rotation: Vector3.create(0, 0, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
     { position: Vector3.create(61, 6.75, 32), rotation: Vector3.create(0, 90, 0), scale: Vector3.create(0.25, 0.25, 0.25) },
 ]
 
 const carouselPositions = [
     // Vector3.create(13, 1.3, 13),
-    Vector3.create(51, 1.3, 50),
-    Vector3.create(13, 1.3, 50),
-    Vector3.create(50, 1.3, 15)
+    Vector3.create(51, 1.55, 50),
+    Vector3.create(13, 1.55, 50),
+    Vector3.create(50, 1.55, 15)
 ];
 
 export async function createEnvironment(){
@@ -266,6 +266,20 @@ const sceneEntity = engine.addEntity()
     GltfContainer.create(arrow2, {src: arrowModel})
     Transform.create(arrow2, {position: Vector3.create(32, 17, 52)})
     Animator.create(arrow2, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                
+            }
+        ]
+    })
+
+    //arrow above pig npc 
+    const arrowPig = engine.addEntity()
+    GltfContainer.create(arrowPig, {src: arrowModel})
+    Transform.create(arrowPig, {position: Vector3.create(22, 4, 22), rotation: Quaternion.fromEulerDegrees(180, 70, 0), scale: Vector3.create(0.25, 0.25, 0.25)})
+    Animator.create(arrowPig, {
         states: [
             {
                 clip: 'play',
