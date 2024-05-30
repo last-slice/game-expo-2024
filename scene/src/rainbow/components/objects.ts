@@ -38,7 +38,7 @@ export function createObjects(){
             states: animationStates
         })
 
-        racingObjects.push({object:ent, object2:ent2, r:radius, parent:parent, stage:1})
+        racingObjects.push({object:ent, object2:ent2, r:radius, parent:parent, stage:1, initialX:initialX})
         initialX += spacing
     }
 }
@@ -86,15 +86,24 @@ export function resetRacingObjects(){
         let rotation = Quaternion.toEulerAngles(transform.rotation)
         rotation.z = 0
         transform.rotation = Quaternion.fromEulerDegrees(rotation.x, rotation.y, rotation.z)
+
+        // Transform.createOrReplace(object.object,{
+        //     parent: object.parent,
+        //     position:Vector3.create(object.initialX, -22, -4.5),
+        //     rotation:Quaternion.fromEulerDegrees(0,180,0),
+        //     scale: Vector3.create(0.5,0.5,0.5)
+        // })
     
         let objectTransform = Transform.getMutable(object.object)
         objectTransform.position.y = -22
+        objectTransform.scale = Vector3.create(0.5,0.5,0.5)
         let objectRotation = Quaternion.toEulerAngles(objectTransform.rotation)
         objectRotation.z = -Quaternion.toEulerAngles(transform.rotation).z
         objectTransform.rotation = Quaternion.fromEulerDegrees(objectRotation.x, objectRotation.y, objectRotation.z)
 
         let objectTransform2 = Transform.getMutable(object.object2)
         objectTransform2.position.y = -22
+        objectTransform2.scale = Vector3.create(0.5,0.5,0.5)
         let objectRotation2 = Quaternion.toEulerAngles(objectTransform2.rotation)
         objectRotation2.z = -Quaternion.toEulerAngles(transform.rotation).z
         objectTransform2.rotation = Quaternion.fromEulerDegrees(objectRotation2.x, objectRotation2.y, objectRotation2.z)

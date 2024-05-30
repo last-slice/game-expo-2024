@@ -14,7 +14,7 @@ import { stopAllGroundRainbows, turnOffAllGroundRainbows } from "./animations"
 import { activeLightShows } from "./lightshow"
 import { createLeaderboard } from "./leaderboards"
 import { createTutorial, disableTutorial, enableTutorial } from "./tutorial"
-import { updateUITravelButton } from "../ui/travelButtonUI"
+import { updateUITravelButton } from "../ui/buttonsUI"
 
 export const PigTrainComponent = engine.defineComponent("game::expo::pig::train::component", {})
 
@@ -343,8 +343,8 @@ function createsStartPods(){
         )
 
         let nameEntity = engine.addEntity()
-        Transform.create(nameEntity, {position: Vector3.create(0,5,0), parent:pod})
-        TextShape.createOrReplace(nameEntity, {text:"Name " + i, fontSize:3, textColor:Color4.create(241/255, 31/255, 211/255), outlineColor:Color4.create(241/255, 31/255, 211/255), outlineWidth:.4})
+        Transform.create(nameEntity, {position: Vector3.create(0,1,0), parent:pod})
+        TextShape.createOrReplace(nameEntity, {text:"Name " + i, fontSize:10, textColor:Color4.create(51/255, 204/255, 223/255), outlineColor:Color4.create(51/255, 204/255, 223/255), outlineWidth:.4})
         VisibilityComponent.createOrReplace(nameEntity, {visible:false})
         Billboard.create(nameEntity, {billboardMode: BillboardMode.BM_Y})
 

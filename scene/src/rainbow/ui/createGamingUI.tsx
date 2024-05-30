@@ -9,7 +9,7 @@ import { LeaderboardUI } from './leaderboardUI'
 import { ReservationUI } from './reservationUI'
 import { StartingSoonUI, displayStartingSoonUI } from './startingSoonUI'
 import { FrozenUI } from './frozenUI'
-import { PlayButtonUI } from './travelButtonUI'
+import { PlayButtonUI } from './buttonsUI'
 
 
 export let showGaming = true

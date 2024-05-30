@@ -131,7 +131,7 @@ export let sounds:any = {
 }
 
 export default {
-    DEBUG: false,
+    DEBUG: true,
     noServer: false,
 
     slug:"game::jam::2024",

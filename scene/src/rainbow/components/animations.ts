@@ -7,8 +7,9 @@ import { getRandomString } from "../helpers/functions"
 import { playRainbowLightShow } from "../systems/Lightshow"
 import resources from "../helpers/resources"
 import { enableBuilderHUD } from "../../dcl-builder-hud/ui/builderpanel"
-import { Vector3 } from "@dcl/sdk/math"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { displayFrozenUI } from "../ui/frozenUI"
+import { racingObjects } from "./objects"
 
 
 export let rainbows:any[] = [
@@ -169,4 +170,26 @@ export function attachFrozenAnimation(player:string){
         engine.removeEntity(ent)
         displayFrozenUI(false)
     }, 1000 * 5)
+}
+
+export function attachPigToAvatar(pod:any){
+    // let avatarParent = engine.addEntity()
+
+    // AvatarAttach.createOrReplace(racingObjects[pod.index].object, {
+    //     anchorPointId: AvatarAnchorPointType.AAPT_NAME_TAG,
+    //     avatarId: pod.id
+    // })
+
+    // Transform.createOrReplace(racingObjects[pod.index].object,{
+    //     position: Vector3.create(0,-0.5,5),
+    //     scale: Vector3.create(0.5,0.5,0.5),
+    //     parent: engine.PlayerEntity,
+    //     rotation: Quaternion.fromEulerDegrees(0,0,0)
+    // })
+
+    let transform = Transform.getMutable(racingObjects[pod.index].object)
+    transform.scale = Vector3.create(1,1,1)
+
+    let transform2 = Transform.getMutable(racingObjects[pod.index].object2)
+    transform2.scale = Vector3.create(1,1,1)
 }

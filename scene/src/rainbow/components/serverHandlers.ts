@@ -12,7 +12,7 @@ import { createBall } from "../cannon";
 import { mainRainbow, onGround } from "./environment";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { playSound } from "@dcl-sdk/utils";
-import { attachFrozenAnimation, attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
+import { attachFrozenAnimation, attachPigToAvatar, attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
 import { Animator } from "@dcl/sdk/ecs";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
@@ -110,14 +110,6 @@ export function createServerHandlers(room:Room){
     room.state.listen("winner", (c:any, p:any)=>{
         if(c !== ""){
             displayWinnerUI(true)
-
-            if(gameRoom.state.winnerId === localPlayer.userId){
-                playGameSound("winner")
-                playGameSound("winSongs")
-            }else{
-                playGameSound("gameOver")
-            }
-
             turnOffRainbow(mainRainbow)
 
             console.log('gameroom state is', gameRoom.state)
@@ -127,11 +119,18 @@ export function createServerHandlers(room:Room){
                     Animator.stopAllAnimations(racingObjects[pod.index].object)
                     Animator.stopAllAnimations(racingObjects[pod.index].object2)
 
-                   
+                    if(pod.locked && pod.id === localPlayer.userId){
+                        attachPigToAvatar(pod)
+
+                        if(gameRoom.state.winnerId === localPlayer.userId){
+                            playGameSound("winner")
+                            playGameSound("winSongs")
+                        }else{
+                            playGameSound("gameOver")
+                        }
+                    }
 
                     if(pod.id === gameRoom.state.winnerId){
-                        console.log('playing win animation for pod', key, pod)
-
                         utils.timers.setTimeout(()=>{
                             Animator.playSingleAnimation(racingObjects[pod.index].object, "Win")
                             Animator.playSingleAnimation(racingObjects[pod.index].object2, "Win")
@@ -141,9 +140,8 @@ export function createServerHandlers(room:Room){
                         playWinner(pod.index, false)
                     }
                     else{
-                        console.log('playing lose animation for pod', key, pod)
-                        // Animator.playSingleAnimation(racingObjects[pod.index].object, "Lose")
-                        // Animator.playSingleAnimation(racingObjects[pod.index].object2, "Lose")
+                        Animator.playSingleAnimation(racingObjects[pod.index].object, "Lose")
+                        Animator.playSingleAnimation(racingObjects[pod.index].object2, "Lose")
                     }
                 })   
             }

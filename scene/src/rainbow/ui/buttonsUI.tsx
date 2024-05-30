@@ -5,6 +5,8 @@ import { UISpriteText } from '../../ui_components/UISpriteText'
 import { Color4 } from '@dcl/sdk/math'
 import { calculateImageDimensions, getImageAtlasMapping } from './ui'
 import { movePlayerTo } from '~system/RestrictedActions'
+import { playSound } from '@dcl-sdk/utils'
+import { utils } from '../helpers/libraries'
 
 export let show = true
 let playButtonMode = 'game'
@@ -56,6 +58,7 @@ export function PlayButtonUI() {
             }}
             onMouseDown={()=>{
                 infoPanelVisible = !infoPanelVisible
+                playSound("sounds/8bit_jump.mp3", false)
             }}
         />
 
@@ -137,6 +140,10 @@ export function PlayButtonUI() {
                 else{
                     movePlayerTo({newRelativePosition:{x:33.84, y:29, z:51.7}, cameraTarget:{x:33.84, y:29, z:16.5}})
                 }
+                utils.timers.setTimeout(()=>{
+                    playSound("sounds/8bit_jump.mp3", false)
+                }, 100)
+                
             }}
         />
 
