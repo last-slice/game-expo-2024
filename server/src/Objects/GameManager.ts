@@ -438,11 +438,8 @@ export class GameManager {
 
     disableFreeze(){
         this.room.state.frozen = false
-        this.room.state.pods.forEach((pod:GamePod, key:number)=>{
-            let player = this.room.state.players.get(pod.id)
-            if(player){
-                player.frozen = false
-            }
+        this.room.state.players.forEach((player:Player, key:string)=>{
+            player.frozen = false
         })
     }
 }
