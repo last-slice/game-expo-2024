@@ -159,11 +159,11 @@ export function createTutorial(){
         offset += 3
         tutorialTargets.push(ent)
 
-        let text = "" + (i+1) + "X"
-        if(i === 5){
-            text = "Freeze!"
-        }
-        TextShape.create(ent, {text:text, fontSize:15})
+        // let text = "" + (i+1) + "X"
+        // if(i === 5){
+        //     text = "Freeze!"
+        // }
+        // TextShape.create(ent, {text:text, fontSize:15})
     })
 
     let ent = engine.addEntity()
@@ -201,7 +201,7 @@ export function createTutorial(){
     for(let i = 0; i < podPositions.length; i++){
         let podModel = engine.addEntity()
         Transform.create(podModel, {parent: parent})
-        GltfContainer.create(podModel, {src: resources.models.directory + "activationPods/" + podAnimations[i]})
+        GltfContainer.create(podModel, {src: resources.models.directory + podAnimations[i]})
         Animator.create(podModel, {states: [
             {
                 clip: 'play',
