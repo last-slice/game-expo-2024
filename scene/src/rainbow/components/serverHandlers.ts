@@ -1,6 +1,6 @@
 import { Room } from "colyseus.js";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
-import { addPodTarget, animateTarget, endGame, explodeTarget, lockPod, moveTarget, prepGame, removeTarget, resetGame, resetPods, setPodPosition, startGame } from "./game";
+import { addPodTarget, animateTarget, endGame, lockPod, prepGame, removeTarget, resetGame, resetPods, setPodPosition, startGame } from "./game";
 import { displayGamingCountdown, levelCountdownTimer } from "../ui/gamingCountdown";
 import { racingObjects, setRacingPosition, setRacingRotation } from "./objects";
 import { displayWinnerUI } from "../ui/winnerUI";
@@ -10,7 +10,7 @@ import { updateLeaderboard } from "../ui/leaderboardUI";
 import { gameRoom } from "./server";
 import { createBall } from "../cannon";
 import { mainRainbow, onGround } from "./environment";
-import { displayStartingSoonUI } from "../ui/startingSoonUI";
+import { displayStartingSoonUI, updateWaitTimer } from "../ui/startingSoonUI";
 import { playSound } from "@dcl-sdk/utils";
 import { attachFrozenAnimation, attachPigToAvatar, attachWinnerAnimation, playWinner, turnOffRainbow, turnOffRainbowBand, turnOnRainbow, turnOnRainbowBand } from "./animations";
 import { playGameSound } from "./sounds";
@@ -22,10 +22,6 @@ import { updatePlayerUIScore } from "../ui/scoreUI";
 import { updateLeaderboards, updateVisibleBoard } from "./leaderboards";
 
 export function createServerHandlers(room:Room){
-    room.onMessage(SERVER_MESSAGE_TYPES.POD_COUNTDOWN, (info:any)=>{
-        // console.log(SERVER_MESSAGE_TYPES.POD_COUNTDOWN + " received", info)
-    })
-
     room.onMessage(SERVER_MESSAGE_TYPES.CREATE_BALL, (info:any)=>{
         // console.log(SERVER_MESSAGE_TYPES.CREATE_BALL + " received", info)
         createBall(info)
@@ -48,10 +44,17 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.listen("gameCountdown", (c:any, p:any)=>{
-        // console.log('game countodown', p, c)
+        // console.log('game countodown', p, c)//
         if(p !== undefined && (c !== -500 || c !== 0)){
             if(!onGround){
-                displayGamingCountdown(true)
+                if(!room.state.started && !room.state.startingSoon){
+                    updateWaitTimer(c)
+                    displayStartingSoonUI(true, "WAITING ON MORE PLAYERS")
+                }else{
+                    displayGamingCountdown(true)
+                }
+
+                
                 levelCountdownTimer.setNumber(c)
                 playSound("sounds/countdown.mp3", false)
             }else{
@@ -101,7 +104,7 @@ export function createServerHandlers(room:Room){
     })
 
     room.state.listen("reset", (c:any, p:any)=>{
-        console.log('reset variable', p, c)
+        // console.log('reset variable', p, c)
         if(c){
             resetGame()
         }
@@ -112,7 +115,7 @@ export function createServerHandlers(room:Room){
             displayWinnerUI(true)
             turnOffRainbow(mainRainbow)
 
-            console.log('gameroom state is', gameRoom.state)
+            // console.log('gameroom state is', gameRoom.state)
 
             if(gameRoom.state.winner !== "tie"){
                 gameRoom.state.pods.forEach((pod:any, key:number)=>{
@@ -188,7 +191,7 @@ export function createServerHandlers(room:Room){
 
         pod.racingObject.listen("rz", (c:any, p:any)=>{
             if(gameRoom.state.started && p !== undefined && pod.stage === 2){
-                console.log('need to set pod rz position')
+                // console.log('need to set pod rz position')
                 setRacingRotation(key, pod.racingObject.rz)
             }
 
@@ -216,7 +219,7 @@ export function createServerHandlers(room:Room){
             }
 
             if(!c && p){
-                console.log('player no longer frozen', player.userId)
+                // console.log('player no longer frozen', player.userId)
                 if(player.playing && player.userId === localPlayer.userId){
                     addInputSystem()
                 }
@@ -225,12 +228,12 @@ export function createServerHandlers(room:Room){
 
         if(player.userId === localPlayer.userId){
             player.listen("podCountingDown", (c:any, p:any)=>{
-                console.log('podCountingDown changed', p, c)
+                // console.log('podCountingDown changed', p, c)
                 displayReservationUI(player.pod, c)
             })
 
             player.listen("podCountdown", (c:any, p:any)=>{
-                console.log('countdown is', p, c, player.pod)
+                // console.log('countdown is', p, c, player.pod)
                 updateReservationCounter(player.pod, c)
             })
         }

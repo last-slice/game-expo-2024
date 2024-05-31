@@ -57,7 +57,7 @@ export class RoomHandler {
         })
 
         room.onMessage(SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES, async(client, info)=>{
-            console.log(SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES + " message", info)
+            // console.log(SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES + " message", info)
             client.send(SERVER_MESSAGE_TYPES.LEADERBOARDS_UPDATES, room.state.gameManager.leaderboards)
         })
     }

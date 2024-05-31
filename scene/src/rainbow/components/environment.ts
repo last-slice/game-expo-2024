@@ -321,16 +321,12 @@ const sceneEntity = engine.addEntity()
 }
 
 function createsStartPods(){
-    // enableBuilderHUD(true)
-    // utils.triggers.enableDebugDraw(true)
     let speed = 0.5
 
     for(let i = 0; i < podPositions.length; i++){
         let pod = engine.addEntity()
         let pos = podPositions[i]
         Transform.create(pod, {position: Vector3.create(pos.x, 0, pos.z), parent:sceneParent})
-        // addBuilderHUDAsset(pod, 'pod-' + i)
-
 
         let podModel = engine.addEntity()
         Transform.create(podModel, {position: sceneCenter})

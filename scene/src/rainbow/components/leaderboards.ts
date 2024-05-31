@@ -48,7 +48,7 @@ export function updateVisibleBoard(){
     let leaderboard = leaderboards.get(leaderboardKeys[leaderboardRefreshindex])
     
     if(leaderboardView && leaderboard){
-        add3DText(leaderboardEntities, leaderboardView.parent, (leaderboardRefreshindex === 1 ? "MP " : "") + leaderboardKeys[leaderboardRefreshindex], headerXStart, headerYStart, true)
+        add3DText(leaderboardEntities, leaderboardView.parent, (leaderboardRefreshindex === 1 ? "Multiplayer " : "") + leaderboardKeys[leaderboardRefreshindex], headerXStart, headerYStart, true)
 
         let yFactor = 4
         leaderboard.forEach(async (item:any, index:number)=>{

@@ -21,7 +21,7 @@ export class GameManager {
     countdownBase:number = 10
     countdownTime:number = this.countdownBase
 
-    gameTimeBase:number = 20
+    gameTimeBase:number = 60
     gameResetTimeBase:number = 12
 
     targetSystem:TargetSystem
@@ -145,14 +145,22 @@ export class GameManager {
             
             if(this.haveMinPlayers){
                 this.clearCountdown()
+                this.room.state.gameCountdown = -500
             }else{
                 this.haveMinPlayers = true
             }
 
+            this.room.state.gameCountdown = 10
+            this.countdownInterval = setInterval(()=>{
+                this.room.state.gameCountdown--
+              }, 1000)
+
             this.countdownTimer = setTimeout(()=>{
+                this.clearCountdown()
+
                 this.room.state.startingSoon = true
                 this.startGameCountdown()
-              }, 1000 * 5)
+              }, 1000 * 10)
         }
     }
 
@@ -164,6 +172,7 @@ export class GameManager {
     }
 
     startGameCountdown(){
+        this.room.state.gameCountdown = -500
         this.room.state.gameCountdown = this.countdownTime
 
         this.targetSystem.init()

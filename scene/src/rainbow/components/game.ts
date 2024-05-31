@@ -1,7 +1,7 @@
 import { Animator, AudioSource, AvatarAnchorPointType, AvatarAttach, EasingFunction, Entity, GltfContainer, InputAction, Material, MeshCollider, MeshRenderer, TextShape, Transform, Tween, TweenLoop, TweenSequence, VisibilityComponent, engine, pointerEventsSystem } from "@dcl/sdk/ecs";
 import { resetAllGamingUI } from "../ui/createGamingUI";
 import { displayGamingBorderUI } from "../ui/gamingborderUI";
-import { activationPods, mainRainbow, onGround, sceneParent, sceneYPosition } from "./environment";
+import { activationPods, mainRainbow, onGround } from "./environment";
 import { gameRoom, sendServerMessage } from "./server";
 import { Quaternion, Vector3 } from "@dcl/sdk/math";
 import { SERVER_MESSAGE_TYPES } from "../helpers/types";
@@ -11,7 +11,7 @@ import * as CANNON from 'cannon/build/cannon'
 import { localPlayer } from "./player";
 import { ballBodies, removeBall, world } from "../cannon";
 import { addInputSystem, removeInputSystem } from "../systems/ClickSystem";
-import resources, { cannonBackpacks, colors, sounds, targets } from "../helpers/resources";
+import resources, { cannonBackpacks, sounds, targets } from "../helpers/resources";
 import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { setForwardVector } from "../systems/Physics";
 import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
@@ -19,7 +19,6 @@ import { playSound } from "@dcl-sdk/utils";
 import { add3DText, clear3DText, getRandomIntInclusive, playAnimation } from "../helpers/functions";
 import { playGameSound } from "./sounds";
 import { EncouragementTimeSystem } from "../systems/EncouragementTimer";
-import { hideAllPanels } from "../ui/ui";
 import { displayFrozenUI } from "../ui/frozenUI";
 import { displayScoreUI } from "../ui/scoreUI";
 
@@ -41,9 +40,7 @@ export let gameTargets:any[] = []
 export let pointerLocked:boolean = false
 
 export function lockPod(pod:any){
-    console.log('locking pod', pod)
     let nameEntity = activationPods[pod.index].nameEntity
-    // TextShape.getMutable(nameEntity).text = pod.name
 
     add3DText(activationPods[pod.index].textArray, nameEntity, pod.name, 0, 0, true)
     VisibilityComponent.createOrReplace(nameEntity, {visible:true})
@@ -87,7 +84,7 @@ export function initGame(){
 export function prepGame(){
     setForwardVector()
     hideStartPods()
-    // displayStartingSoonUI(true, 'GAME STARTING SOON')
+    displayStartingSoonUI(false, '')
 
     turnOffRainbow(mainRainbow)
 
@@ -105,7 +102,6 @@ export function animateTarget(id:string){
 }
 
 export function addPodTarget(info:any){
-    // console.log('adding pod target', info)//
     let target = engine.addEntity()
     let pTarget:any
     let userId:any
@@ -156,7 +152,6 @@ export function hideStartPods(resetName?:boolean){
 
 export function resetPods(){
     activationPods.forEach((info, index:number)=>{
-        // TextShape.getMutable(info.nameEntity).text = ""
         clear3DText(info.textArray)
         Animator.playSingleAnimation(activationPods[index].podModel, "play", true)
         VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:true})
@@ -184,7 +179,6 @@ export function startGame(){
     playGameSound("gameStart")
 
     let player = gameRoom.state.players.get(localPlayer.userId)
-    console.log('game started, player is', player)
     if(player && player.playing){
         addInputSystem()
         engine.addSystem(EncouragementTimeSystem)
@@ -244,33 +238,7 @@ export function setPodPosition(pod:any, id:number){
     }
 }
 
-export function moveTarget(id:number){
-    if(gameRoom.state.started){
-        let target = gameTargets[id].target
-        Tween.deleteFrom(target)
-
-        let currentPosition = Transform.get(target).position
-        let serverTarget = gameRoom.state.pods[id].target
-
-        Tween.createOrReplace(target, {
-            mode: Tween.Mode.Move({
-            start: currentPosition,
-            end: Vector3.create(serverTarget.x, serverTarget.y, serverTarget.z),
-            }),
-            duration: 2000,
-            easingFunction: EasingFunction.EF_LINEAR,
-        })
-    }
-}
-
 export function sendScore(entity:Entity, target:any){
     removeBall(entity)
     sendServerMessage(SERVER_MESSAGE_TYPES.HIT_TARGET, {id:target, user:localPlayer.userId})
-}
-
-export function explodeTarget(id:string){
-    let index = gameTargets.findIndex(target => target.id === id)
-    if(index >= 0){
-        // console.log('play target explode animation')//
-    }
 }

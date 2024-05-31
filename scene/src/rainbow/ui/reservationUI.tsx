@@ -25,12 +25,7 @@ export function displayReservationUI(index:number, value: boolean) {
 
 export function updateReservationCounter(index:number, value:number){
     counter.setNumber(value)
-
-    // if(value > 0){
-    //     expandPodLock(index, value)
-    // }//
 }
-
 
 export function ReservationUI() {
     return (
@@ -44,7 +39,7 @@ export function ReservationUI() {
                 width: dimensions.width * 0.5,
                 height: dimensions.height * .2,
                 positionType: 'absolute',
-                position:{top:'20%', right:'25%'},
+                position:{top:'30%', right:'25%'},
             }}
             // uiBackground={{color:Color4.Green()}}
         >

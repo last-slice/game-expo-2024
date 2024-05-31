@@ -178,7 +178,7 @@ export function getFrontOfPlayerPosition() {
 }
 
 export function add3DText(array:any, parent:Entity, text:string, xStart:number, yStart:number, center?:boolean, colliders?:boolean){
-  let digitOffset = 0.4
+  let digitOffset = 0.45
   let digits = text.toLowerCase().split('')
 
   let offset = xStart

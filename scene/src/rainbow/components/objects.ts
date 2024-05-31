@@ -1,11 +1,9 @@
-import { Animator, Entity, GltfContainer, MeshCollider, MeshRenderer, Transform, engine } from "@dcl/sdk/ecs"
+import { Animator, GltfContainer, Transform, engine } from "@dcl/sdk/ecs"
 import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { sceneParent } from "./environment";
 import { podPositions } from "./game";
 import resources from "../helpers/resources";
 
-// Parameters
-// Parameters
 let initialX = -26.2; // Initial x position for the first object
 const spacing = 1.65; // Spacing of 1 meter between each object////
 
