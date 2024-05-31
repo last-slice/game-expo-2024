@@ -9,7 +9,9 @@ Available Now: **Decentraland**
 
 **Created by:**
 Lastraum
+
 FGR3D
+
 KJWalker
 
 *#DCLGX Game Jam 2024 Submission*
