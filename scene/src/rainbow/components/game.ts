@@ -16,7 +16,7 @@ import { displayStartingSoonUI } from "../ui/startingSoonUI";
 import { setForwardVector } from "../systems/Physics";
 import { playGameResetAnimation, turnOffRainbow, turnOnRainbowBand } from "./animations";
 import { playSound } from "@dcl-sdk/utils";
-import { getRandomIntInclusive, playAnimation } from "../helpers/functions";
+import { add3DText, clear3DText, getRandomIntInclusive, playAnimation } from "../helpers/functions";
 import { playGameSound } from "./sounds";
 import { EncouragementTimeSystem } from "../systems/EncouragementTimer";
 import { hideAllPanels } from "../ui/ui";
@@ -43,7 +43,9 @@ export let pointerLocked:boolean = false
 export function lockPod(pod:any){
     console.log('locking pod', pod)
     let nameEntity = activationPods[pod.index].nameEntity
-    TextShape.getMutable(nameEntity).text = pod.name
+    // TextShape.getMutable(nameEntity).text = pod.name
+
+    add3DText(activationPods[pod.index].textArray, nameEntity, pod.name, 0, 0, true)
     VisibilityComponent.createOrReplace(nameEntity, {visible:true})
 
     Animator.stopAllAnimations( activationPods[pod.index].podModel, true)
@@ -154,7 +156,8 @@ export function hideStartPods(resetName?:boolean){
 
 export function resetPods(){
     activationPods.forEach((info, index:number)=>{
-        TextShape.getMutable(info.nameEntity).text = ""
+        // TextShape.getMutable(info.nameEntity).text = ""
+        clear3DText(info.textArray)
         Animator.playSingleAnimation(activationPods[index].podModel, "play", true)
         VisibilityComponent.createOrReplace(activationPods[index].podModel, {visible:true})
     })

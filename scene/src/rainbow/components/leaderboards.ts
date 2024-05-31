@@ -1,9 +1,9 @@
-import { Entity, GltfContainer, MeshRenderer, TextAlignMode, TextShape, Transform, VisibilityComponent, engine } from "@dcl/sdk/ecs"
-import { Color4, Quaternion, Vector3 } from "@dcl/sdk/math"
+import { Transform, engine } from "@dcl/sdk/ecs"
+import { Quaternion, Vector3 } from "@dcl/sdk/math"
 import { utils } from "../helpers/libraries"
 import { sendServerMessage } from "./server"
 import { SERVER_MESSAGE_TYPES } from "../helpers/types"
-import resources, { alphabet } from "../helpers/resources"
+import { add3DText, clear3DText } from "../helpers/functions"
 
 export let leaderboardViews:Map<string, any> = new Map()
 export let selectedBoard:string = "High Score"
@@ -38,59 +38,25 @@ export function updateLeaderboards(boards:any){
         leaderboards.set(name, board)
     }
 
-    leaderboardEntities.forEach((entity)=>{
-        engine.removeEntity(entity)
-    })
-    leaderboardEntities.length = 0
+    clear3DText(leaderboardEntities)
 
     updateVisibleBoard()
 }
 
 export function updateVisibleBoard(){
-    console.log('visible board is', leaderboardKeys[leaderboardRefreshindex])
     let leaderboardView = leaderboardViews.get('leaderboard')
     let leaderboard = leaderboards.get(leaderboardKeys[leaderboardRefreshindex])
     
     if(leaderboardView && leaderboard){
-        add3DText(leaderboardView.parent, (leaderboardRefreshindex === 1 ? "MP " : "") + leaderboardKeys[leaderboardRefreshindex], headerXStart, headerYStart, true)
+        add3DText(leaderboardEntities, leaderboardView.parent, (leaderboardRefreshindex === 1 ? "MP " : "") + leaderboardKeys[leaderboardRefreshindex], headerXStart, headerYStart, true)
 
         let yFactor = 4
-        leaderboard.forEach((item:any, index:number)=>{
+        leaderboard.forEach(async (item:any, index:number)=>{
             if(item && item.DisplayName && item.StatValue){
-                add3DText(leaderboardView.parent, item.DisplayName, -4, yFactor)
-                add3DText(leaderboardView.parent, "" + item.StatValue, 2, yFactor)
+                add3DText(leaderboardEntities,leaderboardView.parent, item.DisplayName, -4, yFactor)
+                add3DText(leaderboardEntities,leaderboardView.parent, "" + item.StatValue, 1.5, yFactor)
                 yFactor -= 0.8
             }
         })
     }
-}
-
-
-function add3DText(parent:Entity, text:string, xStart:number, yStart:number, center?:boolean){
-    let digits = text.toLowerCase().split('')
-
-    let offset = xStart
-    if(center){
-        let middle = digits.length / 2
-        offset -= middle * 0.4
-
-        console.log('middle is', middle)
-        console.log('offset is', offset)
-    }
-
-    digits.forEach((digit:string, index:number)=>{
-        if(digit === " "){
-            offset += .3
-        }else{
-            let letterIndex = alphabet.findIndex(letter => letter === digit)
-            if(letterIndex >= 0){
-                let ent = engine.addEntity()
-                // MeshRenderer.setBox(ent)
-                GltfContainer.create(ent, {src: resources.models.directory + "alphaNum/" + alphabet[letterIndex] + ".glb"})
-                Transform.create(ent, {parent:parent, scale:Vector3.create(1,1,1), position: Vector3.create(offset, yStart, 0), rotation:Quaternion.fromEulerDegrees(0,180,0)})
-                offset += .4
-                leaderboardEntities.push(ent)
-            }
-        }
-    })
 }
