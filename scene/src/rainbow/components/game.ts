@@ -70,7 +70,7 @@ export function lockPod(pod:any){
 
     let backpack = engine.addEntity()
     Transform.create(backpack, {parent:parent, position: Vector3.create(0,.8,0)})
-    GltfContainer.create(backpack, {src: resources.models.directory + resources.models.cannonsDirectory + cannonBackpacks[pod.index]})
+    GltfContainer.create(backpack, {src: resources.models.directory + cannonBackpacks[pod.index]})
     activationPods[pod.index].backpack = parent
 
 }

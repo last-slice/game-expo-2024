@@ -139,11 +139,11 @@ export default {
 
     models:{
         directory: "models/",
-        pigDirectory:"pigs/",
-        balloonDirectory:"targets/",
+        pigDirectory:"",
+        balloonDirectory:"",
         cannonsDirectory:"cannons/",
         base: "scene.glb",
-        rainbow:"rainbowAnimations/fullRainbowAnimation.glb",
+        rainbow:"fullRainbowAnimation.glb",
         carousel:"carousel.glb",
         winningAnimation: 'winVFX.glb',
         frozenAnimation: 'freezeVFX.glb',

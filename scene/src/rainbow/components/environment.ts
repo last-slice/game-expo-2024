@@ -78,6 +78,34 @@ function createBase(){
 
 function createClouds(){
 
+
+    //cloud sofas
+    const cloudSofaShape = 'models/cloudSofa.glb'
+    const cloudSofa1 = engine.addEntity()
+    GltfContainer.create(cloudSofa1, {src: cloudSofaShape, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(cloudSofa1, {position: sceneCenter})
+    Animator.create(cloudSofa1, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.1
+            }
+        ]
+    })
+    const cloudSofa2 = engine.addEntity()
+    GltfContainer.create(cloudSofa2, {src: cloudSofaShape, invisibleMeshesCollisionMask: ColliderLayer.CL_PHYSICS})
+    Transform.create(cloudSofa2, {position: sceneCenter, rotation: Quaternion.fromEulerDegrees(0, 90, 0)})
+    Animator.create(cloudSofa2, {
+        states: [
+            {
+                clip: 'play',
+                playing: true,
+                speed: 0.2
+            }
+        ]
+    })
+
     //horizontal cloud for players to jump on
     const horizontalCloud = 'models/cloudHorizontalElevator.glb'
 
@@ -306,7 +334,7 @@ function createsStartPods(){
 
         let podModel = engine.addEntity()
         Transform.create(podModel, {position: sceneCenter})
-        GltfContainer.create(podModel, {src: resources.models.directory + "activationPods/" + podAnimations[i]})
+        GltfContainer.create(podModel, {src: resources.models.directory + podAnimations[i]})
         Animator.create(podModel, {states: [
             {
                 clip: 'play',

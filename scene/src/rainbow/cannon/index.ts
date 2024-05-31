@@ -52,7 +52,7 @@ export function createBall(info:any){
 
     let entity = engine.addEntity()
     Transform.createOrReplace(entity, {position: Vector3.create(pos.x, pos.y + 0.5, pos.z), scale: Vector3.create(size, size, size), rotation:Quaternion.fromEulerDegrees(0, info.rot, 0)})
-    GltfContainer.create(entity, {src: resources.models.directory + resources.models.pigDirectory + resources.models.pigs[info.id]})
+    GltfContainer.create(entity, {src: resources.models.directory + resources.models.pigs[info.id]})
 
     const ballTransform = Transform.get(entity)
 
