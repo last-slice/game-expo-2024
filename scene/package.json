@@ -30,6 +30,6 @@
     "cannon": "latest",
     "colyseus.js": "^0.15.10",
     "core-js": "^3.31.0",
-    "dcl-npc-toolkit": "^1.2.2"
+    "dcl-npc-toolkit": "latest"
   }
 }
